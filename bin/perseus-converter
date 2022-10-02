@@ -20,10 +20,21 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-
+import html
+import logging
+import unicodedata
+from io import StringIO
 from pathlib import PosixPath
-from bs4 import BeautifulSoup
 
+from betacode.conv import beta_to_uni
+from slugify import slugify
+
+from perseusconverter.config import Config
+from perseusconverter.converter import Classifier, Converter
+from perseusconverter.logging import Logger
+
+logger = Logger("perseus")
+config = Config({})
 
 def scanner(path: PosixPath):
     for directory in path.glob("**"):
@@ -31,15 +42,26 @@ def scanner(path: PosixPath):
             yield file.resolve()
 
 
+def koine_write(text: str) -> str:
+    corpus = StringIO()
+    text = html.unescape(text)
+    for line in beta_to_uni(text).splitlines():
+        for token in line.split(" "):
+            vacuumed = token.strip()
+            if vacuumed:
+                corpus.write(vacuumed + " ")
+
+    return unicodedata.normalize("NFD", corpus.getvalue())
+
+
 def xml_opener(xml_file: PosixPath):
-    with open(xml_file) as tei:
-        xml = BeautifulSoup(tei, "lxml")
-        print(xml_file)
-        print(xml.title.getText().strip())
-        for lang in xml.findAll("language"):
-            print(lang.getText(strip=True))
-        #print(xml.author.getText().strip())
-        print("\n")
+        item = Converter(xml_file)
+        classifier = Classifier()
+        if classifier.classify_tei(item.get_lxml(), Classifier.LANG_GREEK):
+            # print(classifier.filename(item.get_lxml()))
+            for note in item.get_lxml().select('note'):
+                note.extract()
+            print(koine_write(item.get_lxml().find("text").getText()))
 
 
 if __name__ == '__main__':
