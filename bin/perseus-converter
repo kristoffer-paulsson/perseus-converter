@@ -20,50 +20,56 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-import html
-import logging
-import unicodedata
-from io import StringIO
 from pathlib import PosixPath
 
-from betacode.conv import beta_to_uni
-from slugify import slugify
-
 from perseusconverter.config import Config
-from perseusconverter.converter import Classifier, Converter
+from perseusconverter.converter import Converter
 from perseusconverter.logging import Logger
+from perseusconverter.scanner import Scanner
 
 logger = Logger("perseus")
 config = Config({})
 
-def scanner(path: PosixPath):
-    for directory in path.glob("**"):
-        for file in directory.glob("*.xml"):
-            yield file.resolve()
+REMOVE = ("note", "bibl", "head")
+# REMOVE += ("del") # ?
+
+ALPBABET = ["_b", "_c", "_d"]
+NAMES = set()
 
 
-def koine_write(text: str) -> str:
-    corpus = StringIO()
-    text = html.unescape(text)
-    for line in beta_to_uni(text).splitlines():
-        for token in line.split(" "):
-            vacuumed = token.strip()
-            if vacuumed:
-                corpus.write(vacuumed + " ")
-
-    return unicodedata.normalize("NFD", corpus.getvalue())
+def calc_name(name: str, ext: int = 0) -> str:
+    alt_name = name
+    if name in NAMES:
+        alt_name = calc_name(name + ALPBABET[ext], ext + 1)
+    NAMES.add(name)
+    return alt_name
 
 
-def xml_opener(xml_file: PosixPath):
-        item = Converter(xml_file)
-        classifier = Classifier()
-        if classifier.classify_tei(item.get_lxml(), Classifier.LANG_GREEK):
-            # print(classifier.filename(item.get_lxml()))
-            for note in item.get_lxml().select('note'):
-                note.extract()
-            print(koine_write(item.get_lxml().find("text").getText()))
+def koine_dealer(file: PosixPath):
+    data = Converter(file, REMOVE)
+    if data.is_koine():
+        logger.info("Start converting: {}".format(data.file))
+        logger.info("Export: {}".format(
+            data.export(
+                PosixPath("../corpus"),
+                calc_name(data.get_filename()) + ".txt",
+                True
+            )
+        ))
+
+
+def latin_dealer(file: PosixPath):
+    data = Converter(file, REMOVE)
+    if data.is_latin():
+        logger.info("Start converting: {}".format(data.file))
+        logger.info("Export: {}".format(
+            data.export(
+                PosixPath("../corpus"),
+                calc_name(data.get_filename()) + ".txt",
+                True
+            )
+        ))
 
 
 if __name__ == '__main__':
-    for xml_file in scanner(PosixPath("../data")):
-        xml_opener(xml_file)
+    Scanner(PosixPath("../data")).scan(koine_dealer)

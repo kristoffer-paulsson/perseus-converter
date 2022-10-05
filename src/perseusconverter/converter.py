@@ -19,49 +19,84 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
+import html
+import re
+import textwrap
+import unicodedata
 from pathlib import PosixPath
+from typing import Tuple
 
-from bs4 import BeautifulSoup, BeautifulStoneSoup
+
+from betacode.conv import beta_to_uni
+from bs4 import BeautifulSoup
 from slugify import slugify
 
 
 class Converter:
-    def __init__(self, file: PosixPath):
+    LANG_GREEK = """Greek"""
+    LANG_LATIN = """Latin"""
+
+    def __init__(self, file: PosixPath, nodes: Tuple = ()):
         self.file = file
         self.xml = None
+        self.nodes = nodes
 
     def get_lxml(self) -> BeautifulSoup:
         if self.xml is None:
-            with open(self.file) as tei:
-                self.xml = BeautifulSoup(tei, "lxml")
+            with open(self.file) as text:
+                # Classics/Plutarch/opensource/plut.lyc_gk.xml
+                # Classics/Plutarch/opensource/plut.num_gk.xml
+                # Classics/Plutarch/opensource/plut.pyrrh_gk.xml
+                # Classics/Plutarch/opensource/plut.mar_gk.xml
+                # text = str(text).replace("type=\"sork\"", "type=\"work\"")
+                self.xml = BeautifulSoup(text, "lxml")
         return self.xml
 
-
-class Classifier:
-    LANG_GREEK = """Greek"""
-
-    def classify_tei(self, tei: BeautifulSoup, lang: str) -> bool:
-        return tei.language.getText().strip().title() == lang
-
-    # Classics/Plutarch/opensource/plut.lyc_gk.xml
-    # Classics/Plutarch/opensource/plut.num_gk.xml
-    # Classics/Plutarch/opensource/plut.pyrrh_gk.xml
-    # Classics/Plutarch/opensource/plut.mar_gk.xml
-    def get_title(self, tei: BeautifulSoup) -> str:
-        title = tei.find("title", attrs={"type": "work"})
+    def get_filename(self) -> str:
+        xml = self.get_lxml()
+        title = xml.find("title", attrs={"type": "work"})
         if title is not None:
             title = title.text
         else:
-            title = tei.title.text.replace("(Greek)", "").split(".")[0].strip()
-        # title = title.
+            title = xml.title.text.replace("(Greek)", "").split(".")[0].strip()
 
-        return title
-
-    def get_author(self, tei: BeautifulSoup) -> str:
-        author = tei.author
+        author = xml.author
         if author:
             author = author.getText().strip()
-        return author
 
-    def filename(self, tei: BeautifulSoup) -> str:
-        return slugify(str(self.get_author(tei))) + "_" + slugify(str(self.get_title(tei))) + ".txt"
+        return slugify(str(author)) + "_" + slugify(str(title))
+
+    def is_koine(self) -> bool:
+        try:
+            return self.get_lxml().language.getText().strip().title() == self.LANG_GREEK
+        except AttributeError:
+            return False
+
+    def is_latin(self) -> bool:
+        try:
+            return self.get_lxml().language.getText().strip().title() == self.LANG_LATIN
+        except AttributeError:
+            return False
+
+    def remove_nodes(self):
+        xml = self.get_lxml()
+        for node in self.nodes:
+            for element in self.get_lxml().select(node):
+                element.extract()
+
+    def export(self, path: PosixPath, name: str, koine: bool = False):
+        with open(path.joinpath(name), "x+") as corpus:
+            self.remove_nodes()
+            text = self.get_lxml().find("text").getText()
+            text = html.unescape(text)
+            if koine:
+                text = beta_to_uni(text)
+            text = re.sub("\W+", " ", text).strip()
+            text = unicodedata.normalize("NFD", text)
+            column = ""
+            for line in text.splitlines():
+                for token in line.split(" "):
+                    vacuumed = token.strip(" ")
+                    if vacuumed:
+                        column += vacuumed + " "
+            corpus.write(textwrap.fill(text, break_long_words=False, break_on_hyphens=False, expand_tabs=False))
