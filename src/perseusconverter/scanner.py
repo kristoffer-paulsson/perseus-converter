@@ -32,6 +32,6 @@ class Scanner:
             exe(file)
 
     def iter(self):
-        for directory in self.path.glob("**"):
-            for file in directory.glob("*.xml"):
+        for directory in sorted(self.path.glob("**")):
+            for file in sorted(directory.glob("*.xml")):
                 yield file.resolve()

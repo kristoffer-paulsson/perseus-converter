@@ -33,14 +33,14 @@ config = Config({})
 REMOVE = ("note", "bibl", "head")
 # REMOVE += ("del") # ?
 
-ALPBABET = ["_b", "_c", "_d"]
+ALPHABET = ["_b", "_c", "_d"]
 NAMES = set()
 
 
 def calc_name(name: str, ext: int = 0) -> str:
     alt_name = name
     if name in NAMES:
-        alt_name = calc_name(name + ALPBABET[ext], ext + 1)
+        alt_name = calc_name(name + ALPHABET[ext], ext + 1)
     NAMES.add(name)
     return alt_name
 

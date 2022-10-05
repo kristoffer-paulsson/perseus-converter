@@ -81,7 +81,7 @@ class Converter:
     def remove_nodes(self):
         xml = self.get_lxml()
         for node in self.nodes:
-            for element in self.get_lxml().select(node):
+            for element in xml.select(node):
                 element.extract()
 
     def export(self, path: PosixPath, name: str, koine: bool = False):
@@ -91,7 +91,7 @@ class Converter:
             text = html.unescape(text)
             if koine:
                 text = beta_to_uni(text)
-            text = re.sub("\W+", " ", text).strip()
+            text = re.sub("\s+", " ", text).strip()
             text = unicodedata.normalize("NFD", text)
             column = ""
             for line in text.splitlines():
