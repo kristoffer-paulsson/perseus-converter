@@ -24,11 +24,9 @@ import datetime
 import logging
 from pathlib import Path
 
-from perseusconverter.config import Config
-
 
 class Logger(logging.Logger):
-    _config = Config({})
+    _config = None
 
     def __init__(self, name):
         self._warn_cnt = 0

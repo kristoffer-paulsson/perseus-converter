@@ -19,26 +19,8 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
+"""Data used in the application for several reasons."""
 
-from perseusconverter.app.logging import Logger
-
-
-class Processor:
-    """Processor is a baseclass used for processing data in the Perseus Converter."""
-
-    def __init__(self, logger: Logger):
-        self._data = None
-        self.logger = logger
-
-    @property
-    def data(self) -> object:
-        return self._data
-
-
-__all__ = [
-    "Processor"
-]
-
-
-class ProcessException(RuntimeWarning):
-    """Process exception is thrown when a process won't handle its match."""
+NAME = """Perseus Converter"""
+VERSION = """0.1"""
+DESCRIPTION = f"""{NAME} {VERSION} is used to analyze The Bible's corpus grammatically and statistically."""

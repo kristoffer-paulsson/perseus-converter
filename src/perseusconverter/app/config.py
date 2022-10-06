@@ -19,26 +19,18 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-
-from perseusconverter.app.logging import Logger
-
-
-class Processor:
-    """Processor is a baseclass used for processing data in the Perseus Converter."""
-
-    def __init__(self, logger: Logger):
-        self._data = None
-        self.logger = logger
-
-    @property
-    def data(self) -> object:
-        return self._data
+"""Perseus Converter configuration class."""
+import logging
+from collections import ChainMap
+from pathlib import Path
 
 
-__all__ = [
-    "Processor"
-]
-
-
-class ProcessException(RuntimeWarning):
-    """Process exception is thrown when a process won't handle its match."""
+class Config(ChainMap):
+    def __init__(self, *maps):
+        ChainMap.__init__(self, {
+            "data": Path("./data").absolute(),
+            "corpus": Path("./corpus").absolute(),
+            "logs": Path("./logs").absolute(),
+            "level": logging.INFO,
+            "remove": ("note", "bibl", "head"),
+        }, *maps)

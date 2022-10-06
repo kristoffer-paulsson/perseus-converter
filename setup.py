@@ -26,8 +26,11 @@ from pathlib import Path, PurePath
 from setuptools import setup
 from sphinx.setup_command import BuildDoc
 
-NAME="perseus-converter"
-VERSION="0.1"
+here = PurePath(__file__)
+sys.path.append(here.parents[0].joinpath("src"))
+
+from perseusconverter.data import NAME, VERSION
+
 AUTHOR = "Kristoffer Paulsson"
 EMAIL = "kristoffer.paulsson@talenten.se"
 DESCRIPTION = """The purpose of the Persues Converter is to convert its Koine Greek data into nltk compatible data."""
@@ -42,7 +45,7 @@ setup(
     author_email=EMAIL,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    # entry_points={"console_scripts": ["bible-analyzer = bibleanalyzer.main:main"]},
+    entry_points={"console_scripts": ["perseus-converter = perseusconverter.main:main"]},
     cmdclass={
         "build_sphinx": BuildDoc,
     },

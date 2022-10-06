@@ -25,19 +25,28 @@ from argparse import ArgumentParser, Namespace
 class CLI:
 
     def __init__(self):
-        self._parser = ArgumentParser(description="Perseus Converter, for converting Koine Greek Material from the Perseus Digital Library")
+        self._parser = ArgumentParser(description="Use to convert the Perseus Digital Library into nltk corpora.")
         self._parser.add_argument("-d", "--debug", action="store_true", default=False,
                                   help="Print debug messages in the log file.")
         parsers = self._parser.add_subparsers(
             title="Commands",
-            description="Operations on how to import and convert data from the Perseus project.",
+            description="Extracting a corpus from Perseus for NLP use with nltk.",
             dest="command",
-            help="",
+            help="Use koine or latin for corpora.",
         )
-        self._import(parsers)
+        self._koine(parsers)
+        self._latin(parsers)
+
     @classmethod
     def parse_args(cls) -> Namespace:
         return cls()._parser.parse_args()
 
-    def _import(self, subparser):
-        imp = subparser.add_parser(name="import", help="Imports the Persues text data.")
+    def _koine(self, subparser):
+        load = subparser.add_parser(name="koine", help="Imports the corpora and caches them as \"parsings.\"")
+        load.add_argument("format", choices=["text", "markdown"], help="Which corpora to load.")
+        load.add_argument("-v", "--verify", action="store_true", default=False, help="Verify output against source.")
+
+    def _latin(self, subparser):
+        line = subparser.add_parser(name="latin", help="Lines up the corpora \"parsings\" into \"linear\" for analysis.")
+        line.add_argument("corpus", choices=["text", "markdown"], help="Which parsings to process.")
+        line.add_argument("-v", "--verify", action="store_true", default=False, help="Verify output against source.")

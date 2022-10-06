@@ -19,17 +19,10 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""BibleAnalyzer configuration class."""
-import logging
-from collections import ChainMap
-from pathlib import Path
+"""Program entry point for command line interface."""
+from .argparser import CLI
+from .cmd import Command
 
 
-class Config(ChainMap):
-    def __init__(self, *maps):
-        ChainMap.__init__(self, {
-            "corpus": Path("../corpus").absolute(),
-            "data": Path("./data").absolute(),
-            "logs": Path("../logs").absolute(),
-            "level": logging.INFO
-        }, *maps)
+def main() -> int:
+    return Command.execute(CLI.parse_args())
