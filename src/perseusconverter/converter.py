@@ -33,6 +33,8 @@ from slugify import slugify
 
 
 class Converter:
+    LANG = None
+
     LANG_GREEK = """Greek"""
     LANG_LATIN = """Latin"""
 
@@ -42,13 +44,57 @@ class Converter:
         self.nodes = nodes
 
     def get_lxml(self) -> BeautifulSoup:
+        pass
+
+    def get_filename(self) -> str:
+        pass
+
+    def is_lang(self) -> bool:
+        try:
+            return self.get_lxml().language.getText().strip().title() == self.LANG
+        except AttributeError:
+            return False
+
+    def remove_nodes(self):
+        xml = self.get_lxml()
+        for node in self.nodes:
+            for element in xml.select(node):
+                element.extract()
+
+    def export(self, path: PosixPath, name: str) -> str:
+        with open(path.joinpath(name), "x+") as corpus:
+            self.remove_nodes()
+            text = self.get_lxml().find("text").getText()
+            text = html.unescape(text)
+            if self.LANG == self.LANG_GREEK:
+                text = beta_to_uni(text)
+
+            text = re.sub("\s+", " ", text).strip()
+            text = unicodedata.normalize("NFD", text)
+
+            column = ""
+            for line in text.splitlines():
+                for token in line.split(" "):
+                    vacuumed = token.strip(" ")
+                    if vacuumed:
+                        column += vacuumed + " "
+            corpus.write(textwrap.fill(text, break_long_words=False, break_on_hyphens=False, expand_tabs=False))
+        return name
+
+
+class KoineConverter(Converter):
+    LANG = Converter.LANG_GREEK
+
+    def get_lxml(self) -> BeautifulSoup:
         if self.xml is None:
-            with open(self.file) as text:
+            with open(self.file) as tei:
+                text = tei.read()
+                text = text.replace("‧", ":")
                 # Classics/Plutarch/opensource/plut.lyc_gk.xml
                 # Classics/Plutarch/opensource/plut.num_gk.xml
                 # Classics/Plutarch/opensource/plut.pyrrh_gk.xml
                 # Classics/Plutarch/opensource/plut.mar_gk.xml
-                # text = str(text).replace("type=\"sork\"", "type=\"work\"")
+                text = text.replace("type=\"sork\"", "type=\"work\"")
                 self.xml = BeautifulSoup(text, "lxml")
         return self.xml
 
@@ -66,37 +112,27 @@ class Converter:
 
         return slugify(str(author)) + "_" + slugify(str(title))
 
-    def is_koine(self) -> bool:
-        try:
-            return self.get_lxml().language.getText().strip().title() == self.LANG_GREEK
-        except AttributeError:
-            return False
 
-    def is_latin(self) -> bool:
-        try:
-            return self.get_lxml().language.getText().strip().title() == self.LANG_LATIN
-        except AttributeError:
-            return False
+class LatinConverter(Converter):
+    LANG = Converter.LANG_LATIN
 
-    def remove_nodes(self):
+    def get_lxml(self) -> BeautifulSoup:
+        if self.xml is None:
+            with open(self.file) as tei:
+                text = tei.read()
+                self.xml = BeautifulSoup(text, "lxml")
+        return self.xml
+
+    def get_filename(self) -> str:
         xml = self.get_lxml()
-        for node in self.nodes:
-            for element in xml.select(node):
-                element.extract()
+        title = xml.find("title", attrs={"type": "work"})
+        if title is not None:
+            title = title.text
+        else:
+            title = xml.title.text.split(".")[0].strip()
 
-    def export(self, path: PosixPath, name: str, koine: bool = False):
-        with open(path.joinpath(name), "x+") as corpus:
-            self.remove_nodes()
-            text = self.get_lxml().find("text").getText()
-            text = html.unescape(text)
-            if koine:
-                text = beta_to_uni(text)
-            text = re.sub("\s+", " ", text).strip()
-            text = unicodedata.normalize("NFD", text)
-            column = ""
-            for line in text.splitlines():
-                for token in line.split(" "):
-                    vacuumed = token.strip(" ")
-                    if vacuumed:
-                        column += vacuumed + " "
-            corpus.write(textwrap.fill(text, break_long_words=False, break_on_hyphens=False, expand_tabs=False))
+        author = xml.author
+        if author:
+            author = author.getText().strip()
+
+        return slugify(str(author)) + "_" + slugify(str(title))

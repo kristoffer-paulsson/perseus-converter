@@ -23,7 +23,7 @@
 from pathlib import PosixPath
 
 from . import Command
-from ..converter import Converter
+from ..converter import KoineConverter
 from ..scanner import Scanner
 
 
@@ -36,14 +36,13 @@ class KoineCommand(Command):
         Scanner(self._config.get("data")).scan(self.dealer)
 
     def dealer(self, file: PosixPath):
-        data = Converter(file, self._config.get("remove"))
-        if data.is_koine():
+        data = KoineConverter(file, self._config.get("remove"))
+        if data.is_lang():
             self.logger.info("Start converting: {}".format(data.file))
             self.logger.info("Export: {}".format(
                 data.export(
                     self._config.get("corpus").joinpath("koine"),
                     self.calc_name(data.get_filename()) + ".txt",
-                    True
                 )
             ))
 

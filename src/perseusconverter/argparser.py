@@ -26,8 +26,10 @@ class CLI:
 
     def __init__(self):
         self._parser = ArgumentParser(description="Use to convert the Perseus Digital Library into nltk corpora.")
-        self._parser.add_argument("-d", "--debug", action="store_true", default=False,
-                                  help="Print debug messages in the log file.")
+        self._parser.add_argument("-d", "--destination", default="",
+                                  help="Path to the parent folder of the koine/latin corpora.")
+        self._parser.add_argument("-s", "--source", default="",
+                                  help="Path to the parent folder of the Perseus ./Classics/* folder.")
         parsers = self._parser.add_subparsers(
             title="Commands",
             description="Extracting a corpus from Perseus for NLP use with nltk.",
@@ -44,9 +46,7 @@ class CLI:
     def _koine(self, subparser):
         load = subparser.add_parser(name="koine", help="Imports the corpora and caches them as \"parsings.\"")
         load.add_argument("format", choices=["text", "markdown"], help="Which corpora to load.")
-        load.add_argument("-v", "--verify", action="store_true", default=False, help="Verify output against source.")
 
     def _latin(self, subparser):
         line = subparser.add_parser(name="latin", help="Lines up the corpora \"parsings\" into \"linear\" for analysis.")
         line.add_argument("corpus", choices=["text", "markdown"], help="Which parsings to process.")
-        line.add_argument("-v", "--verify", action="store_true", default=False, help="Verify output against source.")

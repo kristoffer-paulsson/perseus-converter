@@ -23,7 +23,7 @@
 from pathlib import PosixPath
 
 from . import Command
-from ..converter import Converter
+from ..converter import LatinConverter
 from ..scanner import Scanner
 
 
@@ -36,14 +36,13 @@ class LatinCommand(Command):
         Scanner(self._config.get("data")).scan(self.dealer)
 
     def dealer(self, file: PosixPath):
-        data = Converter(file, self._config.get("remove"))
-        if data.is_latin():
+        data = LatinConverter(file, self._config.get("remove"))
+        if data.is_lang():
             self.logger.info("Start converting: {}".format(data.file))
             self.logger.info("Export: {}".format(
                 data.export(
                     self._config.get("corpus").joinpath("latin"),
                     self.calc_name(data.get_filename()) + ".txt",
-                    False
                 )
             ))
 

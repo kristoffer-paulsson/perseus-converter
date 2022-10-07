@@ -25,6 +25,7 @@ import importlib
 import logging
 from argparse import Namespace
 from collections import ChainMap
+from pathlib import Path
 
 from perseusconverter.app.config import Config
 from perseusconverter.app.logging import Logger
@@ -50,8 +51,14 @@ class Command:
     def execute(cls, args: Namespace) -> int:
         status = cls.SUCCESS
         config = Config()
-        if args.debug:
-            config.update({"level": logging.DEBUG})
+
+        if args.destination:
+            config.update({"corpus": Path(args.destination).absolute()})
+        if args.source:
+            config.update({"data": Path(args.source).absolute()})
+
+        # if args.debug:
+        #    config.update({"level": logging.DEBUG})
         cls.logger = Logger.create(config, args.command)
 
         try:

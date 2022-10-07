@@ -19,18 +19,3 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Perseus Converter configuration class."""
-import logging
-from collections import ChainMap
-from pathlib import Path
-
-
-class Config(ChainMap):
-    def __init__(self, *maps):
-        ChainMap.__init__(self, {
-            "data": Path("./data").absolute(),
-            "corpus": Path("./corpus").absolute(),
-            "logs": Path("./logs").absolute(),
-            "level": logging.INFO,
-            "remove": ("note", "bibl", "head", "speaker"),
-        }, *maps)
