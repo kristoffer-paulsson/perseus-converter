@@ -48,4 +48,3 @@ class CLI:
 
     def _koine(self, subparser):
         load = subparser.add_parser(name="koine", help="Imports the corpora and caches them as \"parsings.\"")
-        load.add_argument("format", choices=["text", "markdown"], help="Which corpora to load.")

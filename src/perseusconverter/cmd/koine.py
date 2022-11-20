@@ -20,36 +20,15 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Module containing the LOAD command class."""
-from pathlib import PosixPath
+from hashlib import sha512
 
 from . import Command
-from ..converter import KoineConverter
-from ..scanner import Scanner
+from ..iterator import Iterator
 
 
 class KoineCommand(Command):
-    ALPHABET = ["", "_b", "_c", "_d"]
-    NAMES = set()
 
     def __call__(self):
-        self._config.get("corpus").joinpath("koine").mkdir(exist_ok=True)
-        Scanner(self._config.get("data")).scan(self.dealer)
+        for obj in Iterator(self._config.get("data")):
+            print(obj)
 
-    def dealer(self, file: PosixPath):
-        data = KoineConverter(file, self._config.get("remove"))
-        if data.is_lang():
-            self.logger.info("Start converting: {}".format(data.file))
-            self.logger.info("Export: {}".format(
-                data.export(
-                    self._config.get("corpus").joinpath("koine"),
-                    self.calc_name(data.get_filename()) + ".txt",
-                )
-            ))
-
-    def calc_name(self, name: str) -> str:
-        num = 0
-        while name + self.ALPHABET[num] in self.NAMES:
-            num += 1
-
-        self.NAMES.add(name + self.ALPHABET[num])
-        return name + self.ALPHABET[num]
