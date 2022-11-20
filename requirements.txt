@@ -6,8 +6,7 @@ sphinx
 recommonmark
 sphinx_rtd_theme
 
-pygtrie
-betacode
+GitPython
 lxml
 beautifulsoup4
 python-slugify

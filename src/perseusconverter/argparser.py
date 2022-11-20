@@ -36,17 +36,16 @@ class CLI:
             dest="command",
             help="Use koine or latin for corpora.",
         )
+        self._download(parsers)
         self._koine(parsers)
-        self._latin(parsers)
 
     @classmethod
     def parse_args(cls) -> Namespace:
         return cls()._parser.parse_args()
 
+    def _download(self, subparser):
+        load = subparser.add_parser(name="download", help="Downloads and updates the latest corpora")
+
     def _koine(self, subparser):
         load = subparser.add_parser(name="koine", help="Imports the corpora and caches them as \"parsings.\"")
         load.add_argument("format", choices=["text", "markdown"], help="Which corpora to load.")
-
-    def _latin(self, subparser):
-        line = subparser.add_parser(name="latin", help="Lines up the corpora \"parsings\" into \"linear\" for analysis.")
-        line.add_argument("corpus", choices=["text", "markdown"], help="Which parsings to process.")

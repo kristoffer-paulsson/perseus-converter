@@ -27,7 +27,7 @@ from setuptools import setup
 from sphinx.setup_command import BuildDoc
 
 here = PurePath(__file__)
-sys.path.append(here.parents[0].joinpath("src"))
+sys.path.append(str(here.parents[0].joinpath("src")))
 
 from perseusconverter.data import NAME, VERSION
 
