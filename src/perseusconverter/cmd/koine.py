@@ -20,15 +20,46 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Module containing the LOAD command class."""
-from hashlib import sha512
+import unicodedata
+from argparse import Namespace
+
+from bs4 import BeautifulSoup
 
 from . import Command
-from ..iterator import Iterator
+from ..app import Config
+from ..metaiterator import MetaIterator
 
 
 class KoineCommand(Command):
 
-    def __call__(self):
-        for obj in Iterator(self._config.get("data")):
-            print(obj)
+    def __init__(self, config: Config, args: Namespace):
+        Command.__init__(self, config, args)
+        self.target = self._config.get("data")
 
+    def __call__(self):
+
+        all = dict()
+
+        for obj in MetaIterator(self.target):
+            for filename in obj["grc"]:
+                resource = self.target.joinpath(filename)
+                if resource.is_file():
+                    with open(resource) as tei:
+                        xml = BeautifulSoup(tei, "xml")
+                        for char in list(xml.body.text):
+                            if char == ":":
+                                if str(resource) in all.keys():
+                                    all[str(resource)] += 1
+                                else:
+                                    all[str(resource)] = 1
+                else:
+                    self.logger.info("Registered but missing file: {}".format(resource))
+
+        for key, value in all.items():
+            print("{} number of ':' in file {}".format(value, key))
+        # tokens = list(all)
+        # tokens.sort()
+        # print(tokens)
+
+
+        # unicodedata.normalize("NFKD", xml.body.text)

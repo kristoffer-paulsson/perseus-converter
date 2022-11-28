@@ -25,7 +25,8 @@ from hashlib import md5
 from pathlib import PosixPath
 
 
-class Iterator:
+class MetaIterator:
+    """Iterator for the PDL using the canonical-greekLit.tracking.json"""
     def __init__(self, data_path: PosixPath):
         self.path = data_path
 
@@ -38,7 +39,6 @@ class Iterator:
         cnt_eng = 0
         res = dict()
         for x, y, z, p in self._load_iter():
-            print(x[:-8], md5(x[:-8].encode()).digest())
             hash = md5(x[:-8].encode()).digest()
             if "grc" in x:
                 if hash in res.keys():
