@@ -20,27 +20,23 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Data used in the application for several reasons."""
-import json
-from hashlib import md5
 from pathlib import PosixPath
 
 
-class MetaIterator:
+class RecursiveIterator:
     """Iterator for the PDL using the canonical-greekLit.tracking.json"""
     def __init__(self, data_path: PosixPath):
         self.path = data_path
 
     def __iter__(self):
-        for resource in self._res_iter().values():
+        data = self.path.joinpath("canonical-greekLit/data/")
+        for resource in self._iter_folder(data):
             yield resource
 
-    def _res_iter(self):
-        for x, y, z, p in self._load_iter():
-            hash = md5(x[:-8].encode()).digest()
-            if "grc" in x:
+    def _iter_folder(self, path: PosixPath):
+        for x in path.iterdir():
+            if x.is_dir():
+                for y in self._iter_folder(x):
+                    yield y
+            elif "grc" in x.name and x.suffix == ".xml":
                 yield x
-
-    def _load_iter(self):
-        with open(self.path.joinpath("canonical-greekLit/canonical-greekLit.tracking.json")) as obj:
-            for key, value in json.load(obj).items():
-                yield value["target"], value["valid_xml"] if "valid_xml" in value else None, value["has_cts_metadata"] if "has_cts_metadata" in value else None, value["has_cts_refsDecl"] if "has_cts_refsDecl" in value else None

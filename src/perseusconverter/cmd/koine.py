@@ -28,6 +28,7 @@ from bs4 import BeautifulSoup
 from . import Command
 from ..app import Config
 from ..metaiterator import MetaIterator
+from ..recursiveiterator import RecursiveIterator
 
 
 class KoineCommand(Command):
@@ -37,29 +38,12 @@ class KoineCommand(Command):
         self.target = self._config.get("data")
 
     def __call__(self):
-
-        all = dict()
-
-        for obj in MetaIterator(self.target):
-            for filename in obj["grc"]:
-                resource = self.target.joinpath(filename)
-                if resource.is_file():
-                    with open(resource) as tei:
-                        xml = BeautifulSoup(tei, "xml")
-                        for char in list(xml.body.text):
-                            if char == ":":
-                                if str(resource) in all.keys():
-                                    all[str(resource)] += 1
-                                else:
-                                    all[str(resource)] = 1
-                else:
-                    self.logger.info("Registered but missing file: {}".format(resource))
-
-        for key, value in all.items():
-            print("{} number of ':' in file {}".format(value, key))
-        # tokens = list(all)
-        # tokens.sort()
-        # print(tokens)
-
-
-        # unicodedata.normalize("NFKD", xml.body.text)
+        for filename in RecursiveIterator(self.target):
+            print(filename)
+            if not filename.is_file():
+                self.logger.info("Registered but missing file: {}".format(filename))
+                continue
+            with open(filename) as tei:
+                xml = BeautifulSoup(tei, "xml")
+                print(xml.body.text)
+                # print(unicodedata.normalize("NFD", xml.body.text))
