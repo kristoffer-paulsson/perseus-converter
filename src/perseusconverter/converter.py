@@ -27,7 +27,6 @@ from pathlib import PosixPath
 from typing import Tuple
 
 
-from betacode.conv import beta_to_uni
 from bs4 import BeautifulSoup
 from slugify import slugify
 

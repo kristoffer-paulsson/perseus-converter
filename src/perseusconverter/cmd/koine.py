@@ -24,11 +24,19 @@ import unicodedata
 from argparse import Namespace
 
 from bs4 import BeautifulSoup
+from lxml.etree import ElementTree, Element, XML, parse, XMLSyntaxError
 
 from . import Command
 from ..app import Config
 from ..metaiterator import MetaIterator
 from ..recursiveiterator import RecursiveIterator
+from ..traverse.general import GeneralTraverser
+
+
+def element_iterator(root: ElementTree, xml: Element):
+    print(root.getpath(xml), xml.attrib, xml.text, xml.tail)
+    for el in xml:
+        element_iterator(root, el)
 
 
 class KoineCommand(Command):
@@ -38,12 +46,19 @@ class KoineCommand(Command):
         self.target = self._config.get("data")
 
     def __call__(self):
+        count = 0
         for filename in RecursiveIterator(self.target):
-            print(filename)
             if not filename.is_file():
                 self.logger.info("Registered but missing file: {}".format(filename))
                 continue
-            with open(filename) as tei:
-                xml = BeautifulSoup(tei, "xml")
-                print(xml.body.text)
-                # print(unicodedata.normalize("NFD", xml.body.text))
+            with open(filename) as file:
+                self.logger.info("Processing file: {}".format(filename))
+                try:
+                    xml = GeneralTraverser(parse(file))
+                    if xml.root.tag == "TEI.2":
+                        print(filename)
+                        count += 1
+                except XMLSyntaxError as e:
+                    self.logger.warn("{}: {}".format(e.__class__, str(e)))
+
+        print(count)

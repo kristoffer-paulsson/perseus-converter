@@ -54,6 +54,6 @@ setup(
         "License :: OSI Approved :: ISC License (ISCL)"
     ],
     package_dir={"": "src"},
-    packages=["perseusconverter"],
+    packages=["perseusconverter", "greektextify"],
     python_requires=">=3.8, <4"
 )

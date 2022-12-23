@@ -8,5 +8,6 @@ sphinx_rtd_theme
 
 GitPython
 lxml
+nltk
 beautifulsoup4
 python-slugify
