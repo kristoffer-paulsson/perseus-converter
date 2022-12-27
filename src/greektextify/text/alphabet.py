@@ -22,7 +22,9 @@
 """The Greek alphabet as described in:
 
 Smyth, Herbert Weir. 1920. A Greek Grammar for Colleges. American Book Company.
+https://www.unicode.org/charts/PDF/U0300.pdf
 https://www.unicode.org/charts/PDF/U0370.pdf
+https://www.unicode.org/charts/PDF/U1F00.pdf
 """
 
 
@@ -55,6 +57,12 @@ class GreekAlphabet:
     LOWER_PSI = '\u03C8'
     LOWER_OMEGA = '\u03C9'
 
+    CASE_LOWER = frozenset((
+        LOWER_ALPHA, LOWER_BETA, LOWER_GAMMA, LOWER_DELTA, LOWER_EPSILON, LOWER_ZETA, LOWER_ETA, LOWER_THETA,
+        LOWER_IOTA, LOWER_KAPPA, LOWER_LAMBDA, LOWER_MU, LOWER_NU, LOWER_XI, LOWER_OMICRON, LOWER_PI, LOWER_RHO,
+        LOWER_SIGMA_FINAL, LOWER_SIGMA, LOWER_TAU, LOWER_UPSILON, LOWER_PHI, LOWER_CHI, LOWER_PSI, LOWER_OMEGA
+    ))
+
     UPPER_ALPHA = '\u0391'
     UPPER_BETA = '\u0392'
     UPPER_GAMMA = '\u0393'
@@ -79,4 +87,10 @@ class GreekAlphabet:
     UPPER_CHI = '\u03A7'
     UPPER_PSI = '\u03A8'
     UPPER_OMEGA = '\u03A9'
+
+    CASE_UPPER = frozenset((
+        UPPER_ALPHA, UPPER_BETA, UPPER_GAMMA, UPPER_DELTA, UPPER_EPSILON, UPPER_ZETA, UPPER_ETA, UPPER_THETA,
+        UPPER_IOTA, UPPER_KAPPA, UPPER_LAMBDA, UPPER_MU, UPPER_NU, UPPER_XI, UPPER_OMICRON, UPPER_PI, UPPER_RHO,
+        UPPER_SIGMA, UPPER_TAU, UPPER_UPSILON, UPPER_PHI, UPPER_CHI, UPPER_PSI, UPPER_OMEGA
+    ))
 

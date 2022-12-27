@@ -26,29 +26,21 @@ from greektextify.text.alphabet import GreekAlphabet
 class GreekVowels:
     """Koine vowels described as in Smyth grammar 1.1.2."""
 
-    VOWELS = (
-        GreekAlphabet.LOWER_ALPHA,
-        GreekAlphabet.LOWER_EPSILON,
-        GreekAlphabet.LOWER_ETA,
-        GreekAlphabet.LOWER_IOTA,
-        GreekAlphabet.LOWER_OMICRON,
-        GreekAlphabet.LOWER_UPSILON,
-        GreekAlphabet.LOWER_OMEGA
-    )
-
-    VOWELS_SHORT = (
+    VOWELS_SHORT = frozenset((
         GreekAlphabet.LOWER_EPSILON,
         GreekAlphabet.LOWER_OMICRON
-    )
+    ))
 
-    VOWELS_LONG = (
+    VOWELS_LONG = frozenset((
         GreekAlphabet.LOWER_ETA,
         GreekAlphabet.LOWER_OMEGA
-    )
+    ))
 
-    VOWELS_VAR = (
+    VOWELS_VAR = frozenset((
         GreekAlphabet.LOWER_ALPHA,
         GreekAlphabet.LOWER_IOTA,
         GreekAlphabet.LOWER_UPSILON
-    )
+    ))
+
+    VOWELS = frozenset(set(VOWELS_SHORT) + set(VOWELS_LONG) + set(VOWELS_VAR))
 
