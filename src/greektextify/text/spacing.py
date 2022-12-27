@@ -19,30 +19,13 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""The Greek Koine combining diacritics.
-
-See:
-https://www.unicode.org/charts/PDF/U0300.pdf
-https://www.unicode.org/charts/PDF/U0370.pdf
-"""
+"""Class for dealing with expected spaces from a corpora."""
 
 
-class GreekDiacritic:
-    """Koine combining accent."""
-
-    COMBINING_VARIA = '\u0300'
-    COMBINING_OXIA = '\u0301'
-    COMBINING_TONOS = COMBINING_OXIA  # Backward compatability
-    COMBINING_MACRON = '\u0304'
-    COMBINING_VRACHY = '\u0306'
-    COMBINING_DIALYTIKA = '\u0308'
-    COMBINING_DIAERESIS = COMBINING_DIALYTIKA  # Backwards comaptability
-
-    COMBINING_PSILI = '\u0313'  # Greek psili, smooth breathing mark (spiritus lenis)
-    COMBINING_DASIA = '\u0314'  # Greek dasia, rough breathing mark (spiritus asper)
-
-    COMBINING_PERISPOMENI = '\u0342'
-    COMBINING_KORONIS = COMBINING_PSILI  # Backward compatability
-    COMBINING_DIALYTIKA_TONOS = '\u0344'
-    COMBINING_YPOGEGRAMMENI = '\u0345'
-    COMBINING_PROSGEGRAMMENI = COMBINING_YPOGEGRAMMENI  # Backward compatibility
+class Spacing:
+    CHARACTER_TABULATION = '\t'
+    LINE_FEED = '\n'
+    LINE_TABULATION = '\v'
+    FORM_FEED = '\f'
+    CARRIAGE_RETURN = '\r'
+    SPACE = '\x20'.encode('UTF-8')
