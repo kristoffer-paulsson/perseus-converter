@@ -28,4 +28,15 @@ class Spacing:
     LINE_TABULATION = '\v'
     FORM_FEED = '\f'
     CARRIAGE_RETURN = '\r'
-    SPACE = '\x20'.encode('UTF-8')
+    SPACE = '\x20'  # .encode('UTF-8')
+
+    DEBUG_SPACE = '\u0020\u20DF'  # Symbol for invisible space characters
+
+    BLANKS = frozenset((
+        CHARACTER_TABULATION,
+        LINE_FEED,
+        LINE_TABULATION,
+        FORM_FEED,
+        CARRIAGE_RETURN,
+        SPACE
+    ))

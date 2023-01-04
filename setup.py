@@ -33,7 +33,7 @@ from perseusconverter.data import NAME, VERSION
 
 AUTHOR = "Kristoffer Paulsson"
 EMAIL = "kristoffer.paulsson@talenten.se"
-DESCRIPTION = """The purpose of the Persues Converter is to convert its Koine Greek data into nltk compatible data."""
+DESCRIPTION = """The purpose of the Persues Converter is to convert its Koine Greek data into nlp compatible data."""
 LONG_DESCRIPTION = Path("README.md").read_text()
 
 setup(

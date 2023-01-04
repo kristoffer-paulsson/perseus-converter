@@ -25,14 +25,14 @@ from argparse import ArgumentParser, Namespace
 class CLI:
 
     def __init__(self):
-        self._parser = ArgumentParser(description="Use to convert the Perseus Digital Library into nltk corpora.")
+        self._parser = ArgumentParser(description="Use to convert the Perseus Digital Library into nlp corpora.")
         self._parser.add_argument("-d", "--destination", default="",
                                   help="Path to the parent folder of the koine/latin corpora.")
         self._parser.add_argument("-s", "--source", default="",
                                   help="Path to the parent folder of the Perseus ./Classics/* folder.")
         parsers = self._parser.add_subparsers(
             title="Commands",
-            description="Extracting a corpus from Perseus for NLP use with nltk.",
+            description="Extracting a corpus from Perseus for NLP use with nlp.",
             dest="command",
             help="Use koine or latin for corpora.",
         )

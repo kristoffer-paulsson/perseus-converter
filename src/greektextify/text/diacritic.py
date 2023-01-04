@@ -46,3 +46,5 @@ class GreekDiacritic:
     COMBINING_DIALYTIKA_TONOS = '\u0344'
     COMBINING_YPOGEGRAMMENI = '\u0345'
     COMBINING_PROSGEGRAMMENI = COMBINING_YPOGEGRAMMENI  # Backward compatibility
+
+    DEBUG_CIRCLE = '\u20DD'  # Symbol for combining unicode character debugging
