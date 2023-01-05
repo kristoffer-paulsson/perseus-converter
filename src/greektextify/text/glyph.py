@@ -36,7 +36,7 @@ class GreekGlyph:
                 symbol_name = "NAME N/A"
 
             combining = "combining" in symbol_name.lower()
-            glyph = Spacing.DEBUG_SPACE if ch in Spacing.BLANKS else ch
+            glyph = Spacing.DEBUG_SPACE if ch in Spacing.BLANK_SPACE else ch
             row = "U+{ch:04X}       {symbol:<8} {name}".format(
                 ch=ord(ch),
                 symbol=(GreekDiacritic.DEBUG_CIRCLE if combining else "") + glyph,

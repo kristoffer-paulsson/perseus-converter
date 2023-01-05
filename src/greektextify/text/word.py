@@ -16,11 +16,16 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Greek word class segment."""
+from typing import List, Tuple
+
 from greektextify.text.alphabet import GreekAlphabet
 from greektextify.text.diacritic import GreekDiacritic
+from greektextify.text.extended import GreekExtended
+from greektextify.text.immaterializer import TokenImmaterializableMixin
+from greektextify.text.midway import GreekMidway
 
 
-class GreekWord:
+class GreekWord(TokenImmaterializableMixin):
     """Greek word analyzer and parsers."""
 
     # Smyth grammar 1.1.2 *6 -> ei and ou counts as genuine if having diaresis, else if without as spurious.
@@ -49,5 +54,20 @@ class GreekWord:
 
     # Smyth grammar 1.1.3 *9 -> All initial vowels and diphthongs must have any breathing mark.
 
+    WORD_CHARS = frozenset(
+        set(GreekExtended.LETTERS) | set(GreekMidway.LETTERS) | set(GreekAlphabet.CASE_LOWER) |
+        set(GreekAlphabet.CASE_UPPER) | set(GreekDiacritic.DIACRITICS)
+    )
+
     def __init__(self, word: str):
         self._word = word
+
+    @classmethod
+    def immaterialize(cls, text: str) -> Tuple[str]:
+        token = list()
+        for ch in text:
+            if ch in cls.WORD_CHARS:
+                token.append(ch)
+            else:
+                break
+        return tuple(token)

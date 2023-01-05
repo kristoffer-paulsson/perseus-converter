@@ -1,7 +1,3 @@
-#
-# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
-#
-# Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
 # permission notice appear in all copies.
 #
@@ -19,30 +15,31 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek punctuation combining and spacing with conversion built in."""
-from typing import Tuple
+"""Greek tokenization."""
+from typing import List, Tuple, TypeVar, Type
 
 from greektextify.text.immaterializer import TokenImmaterializableMixin
 
 
-class GreekPunctuation(TokenImmaterializableMixin):
-    """Greek punctuations."""
+class Tokenize:
 
-    FULL_STOP = '\u002E'
-    COMMA = '\u002C'
-    QUESTION_MARK = '\u037E'
-    ANO_TELIA = '\u0387'
+    def __init__(self, token_types: List[Type[TokenImmaterializableMixin]]):
+        self._token_type = token_types
 
-    PUNCT_MARKS = frozenset([
-        FULL_STOP, COMMA, QUESTION_MARK, ANO_TELIA
-    ])
+    def tokenize(self, text: str) -> List[Tuple[str]]:
+        tokens = list()
+        position = 0
 
-    @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str]:
-        token = list()
-        for ch in text:
-            if ch in cls.PUNCT_MARKS:
-                token.append(ch)
-            else:
-                break
-        return tuple(token)
+        while len(text) > position:
+            current = position
+            for immaterializer in self._token_type:
+                token = tuple(immaterializer.immaterialize(text[position:]))
+                if len(token) > 0:
+                    tokens.append(tuple(token))
+                    position += len(token)
+                    break
+
+            if current == position:
+                raise RuntimeWarning("Tokenizer can not immaterialize: {}".format(text[position]))
+
+        return tokens

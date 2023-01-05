@@ -20,23 +20,31 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Class for dealing with expected spaces from a corpora."""
+from typing import Tuple
+
+from greektextify.text.immaterializer import TokenImmaterializableMixin
 
 
-class Spacing:
+class Spacing(TokenImmaterializableMixin):
     CHARACTER_TABULATION = '\t'
     LINE_FEED = '\n'
     LINE_TABULATION = '\v'
     FORM_FEED = '\f'
     CARRIAGE_RETURN = '\r'
-    SPACE = '\x20'  # .encode('UTF-8')
+    SPACE = '\x20'
 
     DEBUG_SPACE = '\u0020\u20DF'  # Symbol for invisible space characters
 
-    BLANKS = frozenset((
-        CHARACTER_TABULATION,
-        LINE_FEED,
-        LINE_TABULATION,
-        FORM_FEED,
-        CARRIAGE_RETURN,
-        SPACE
-    ))
+    BLANK_SPACE = frozenset([
+        CHARACTER_TABULATION, LINE_FEED, LINE_TABULATION, FORM_FEED, CARRIAGE_RETURN, SPACE
+    ])
+
+    @classmethod
+    def immaterialize(cls, text: str) -> Tuple[str]:
+        token = list()
+        for ch in text:
+            if ch in cls.BLANK_SPACE:
+                token.append(ch)
+            else:
+                break
+        return tuple(token)

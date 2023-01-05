@@ -19,30 +19,28 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek punctuation combining and spacing with conversion built in."""
-from typing import Tuple
+from unittest import TestCase
 
-from greektextify.text.immaterializer import TokenImmaterializableMixin
+from greektextify.text.glyph import GreekGlyph
+from greektextify.text.punctuation import GreekPunctuation
+from greektextify.text.spacing import Spacing
+from greektextify.text.token import Tokenize
+from greektextify.text.word import GreekWord
+
+PARAGRAPH = """
+Υἱὸς ὀκτωκαίδεκα ἐτῶν Ιεχονιας ἐν τῷ βασιλεύειν αὐτὸν καὶ τρίμηνον καὶ 
+δέκα ἡμέρας ἐβασίλευσεν ἐν Ιερουσαλημ. καὶ ἐποίησεν τὸ πονηρὸν ἐνώπιον κυρίου.
+"""
 
 
-class GreekPunctuation(TokenImmaterializableMixin):
-    """Greek punctuations."""
+class TestTreeBase(TestCase):
 
-    FULL_STOP = '\u002E'
-    COMMA = '\u002C'
-    QUESTION_MARK = '\u037E'
-    ANO_TELIA = '\u0387'
-
-    PUNCT_MARKS = frozenset([
-        FULL_STOP, COMMA, QUESTION_MARK, ANO_TELIA
-    ])
-
-    @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str]:
-        token = list()
-        for ch in text:
-            if ch in cls.PUNCT_MARKS:
-                token.append(ch)
-            else:
-                break
-        return tuple(token)
+    def test_greek(self):
+        tokenizer = Tokenize([
+            GreekWord,
+            GreekPunctuation,
+            Spacing
+        ])
+        tokens = tokenizer.tokenize(PARAGRAPH)
+        for token in tokens:
+            print('\n'.join(GreekGlyph.debug(''.join(token))), '\n')
