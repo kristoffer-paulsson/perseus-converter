@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+# Copyright (c) 2023 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
@@ -19,31 +19,44 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek punctuation combining and spacing with conversion built in."""
+"""Brackets handling for tokenizer."""
 from typing import Tuple
 
 from greektextify.text.immaterializer import TokenImmaterializableMixin
 
 
-class GreekPunctuation(TokenImmaterializableMixin):
-    """Greek punctuations."""
+class GreekUnheard(TokenImmaterializableMixin):
+    """Bracketing parser."""
 
-    FULL_STOP = '\u002E'
-    COMMA = '\u002C'
-    QUESTION_MARK = '\u037E'
-    ANO_TELIA = '\u0387'
-    HYPHEN = '\u2010'
-    EM_DASH = '\u2014'
+    DIGIT_ZERO = '\u0030'
+    DIGIT_ONE = '\u0031'
+    DIGIT_TWO = '\u0032'
+    DIGIT_THREE = '\u0033'
+    DIGIT_FOUR = '\u0034'
+    DIGIT_FIVE = '\u0035'
+    DIGIT_NINE = '\u0039'
+    PERCENT_SIGN = '\u0025'
+    DAGGER = '\u2020'
+    MACRON = '\u00AF'
+    QUESTION_MARK = '\u003F'
+    COMBINING_DOT_BELOW = '\u0323'
+    ZERO_WIDTH_NO_BREAK_SPACE = '\uFEFF'
+    ASTERISK = '\u002A'
+    COMMERCIAL_AT = '\u0040'
 
-    PUNCT_MARKS = frozenset([
-        FULL_STOP, COMMA, QUESTION_MARK, ANO_TELIA, HYPHEN, EM_DASH
+    UNHEARD = frozenset([
+        DIGIT_ZERO, DIGIT_ONE, DIGIT_TWO, DIGIT_THREE, DIGIT_FOUR, DIGIT_FIVE, DIGIT_NINE, PERCENT_SIGN, DAGGER, MACRON,
+        QUESTION_MARK, COMBINING_DOT_BELOW, ZERO_WIDTH_NO_BREAK_SPACE, ASTERISK, COMMERCIAL_AT
     ])
+
+    def __init__(self, word: str):
+        self._word = word
 
     @classmethod
     def immaterialize(cls, text: str) -> Tuple[str]:
         token = list()
         for ch in text:
-            if ch in cls.PUNCT_MARKS:
+            if ch in cls.UNHEARD:
                 token.append(ch)
             else:
                 break

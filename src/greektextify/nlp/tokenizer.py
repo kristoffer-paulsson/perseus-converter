@@ -22,7 +22,7 @@
 """Koine tokenizer for NLTK based on greek-textify."""
 from typing import Iterator, Tuple, List
 
-import nltk
+from nltk.tokenize.api import TokenizerI
 
 from ..text.alphabet import GreekAlphabet
 from ..text.extended import GreekExtended
@@ -30,7 +30,7 @@ from ..text.midway import GreekMidway
 from ..text.spacing import Spacing
 
 
-class KoineTokenizer(nltk.tokenize.api.TokenizerI):
+class KoineTokenizer(TokenizerI):
 
     LETTERS = frozenset(
         set(GreekAlphabet.CASE_UPPER) |

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+# Copyright (c) 2023 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
@@ -19,32 +19,3 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek punctuation combining and spacing with conversion built in."""
-from typing import Tuple
-
-from greektextify.text.immaterializer import TokenImmaterializableMixin
-
-
-class GreekPunctuation(TokenImmaterializableMixin):
-    """Greek punctuations."""
-
-    FULL_STOP = '\u002E'
-    COMMA = '\u002C'
-    QUESTION_MARK = '\u037E'
-    ANO_TELIA = '\u0387'
-    HYPHEN = '\u2010'
-    EM_DASH = '\u2014'
-
-    PUNCT_MARKS = frozenset([
-        FULL_STOP, COMMA, QUESTION_MARK, ANO_TELIA, HYPHEN, EM_DASH
-    ])
-
-    @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str]:
-        token = list()
-        for ch in text:
-            if ch in cls.PUNCT_MARKS:
-                token.append(ch)
-            else:
-                break
-        return tuple(token)

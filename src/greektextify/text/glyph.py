@@ -16,7 +16,6 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Greek glyph representing main letter plus diacritics."""
-import re
 import unicodedata
 from typing import List
 
@@ -25,22 +24,4 @@ from greektextify.text.spacing import Spacing
 
 
 class GreekGlyph:
-
-    @staticmethod
-    def debug(text: str) -> List[str]:
-        debugging = list()
-        for ch in text:
-            try:
-                symbol_name = unicodedata.name(ch)
-            except ValueError:
-                symbol_name = "NAME N/A"
-
-            combining = "combining" in symbol_name.lower()
-            glyph = Spacing.DEBUG_SPACE if ch in Spacing.BLANK_SPACE else ch
-            row = "U+{ch:04X}       {symbol:<8} {name}".format(
-                ch=ord(ch),
-                symbol=(GreekDiacritic.DEBUG_CIRCLE if combining else "") + glyph,
-                name=symbol_name
-            )
-            debugging.append(row)
-        return debugging
+    pass

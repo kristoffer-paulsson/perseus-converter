@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+#
+# Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
 # permission notice appear in all copies.
 #
@@ -16,7 +20,7 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Greek word class segment."""
-from typing import List, Tuple
+from typing import Tuple
 
 from greektextify.text.alphabet import GreekAlphabet
 from greektextify.text.diacritic import GreekDiacritic
@@ -55,8 +59,9 @@ class GreekWord(TokenImmaterializableMixin):
     # Smyth grammar 1.1.3 *9 -> All initial vowels and diphthongs must have any breathing mark.
 
     WORD_CHARS = frozenset(
-        set(GreekExtended.LETTERS) | set(GreekMidway.LETTERS) | set(GreekAlphabet.CASE_LOWER) |
-        set(GreekAlphabet.CASE_UPPER) | set(GreekDiacritic.DIACRITICS)
+        set(GreekExtended.LETTERS) | set(GreekExtended.DIACRITICS) | set(GreekMidway.LETTERS) |
+        set(GreekAlphabet.CASE_LOWER) | set(GreekAlphabet.CASE_UPPER) | set(GreekDiacritic.DIACRITICS) |
+        set(GreekMidway.MODIFIERS)
     )
 
     def __init__(self, word: str):

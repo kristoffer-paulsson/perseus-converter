@@ -25,6 +25,9 @@ Smyth, Herbert Weir. 1920. A Greek Grammar for Colleges. American Book Company.
 https://www.unicode.org/charts/PDF/U0300.pdf
 https://www.unicode.org/charts/PDF/U0370.pdf
 https://www.unicode.org/charts/PDF/U1F00.pdf
+
+Following also has to be considered.
+https://unicode.org/charts/PDF/U02B0.pdf
 """
 
 

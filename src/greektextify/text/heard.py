@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+# Copyright (c) 2023 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
@@ -19,31 +19,31 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek punctuation combining and spacing with conversion built in."""
+"""Brackets handling for tokenizer."""
 from typing import Tuple
 
 from greektextify.text.immaterializer import TokenImmaterializableMixin
 
 
-class GreekPunctuation(TokenImmaterializableMixin):
-    """Greek punctuations."""
+class GreekHeard(TokenImmaterializableMixin):
+    """Bracketing parser."""
 
-    FULL_STOP = '\u002E'
-    COMMA = '\u002C'
-    QUESTION_MARK = '\u037E'
-    ANO_TELIA = '\u0387'
-    HYPHEN = '\u2010'
-    EM_DASH = '\u2014'
+    BREVE = '\u02D8'
+    GREEK_LUNATE_SIGMA_SYMBOL = '\u03F2'
+    GREEK_SMALL_LETTER_DIGAMMA = '\u03DD'
 
-    PUNCT_MARKS = frozenset([
-        FULL_STOP, COMMA, QUESTION_MARK, ANO_TELIA, HYPHEN, EM_DASH
+    HEARD_OF = frozenset([
+        BREVE, GREEK_LUNATE_SIGMA_SYMBOL, GREEK_SMALL_LETTER_DIGAMMA
     ])
+
+    def __init__(self, word: str):
+        self._word = word
 
     @classmethod
     def immaterialize(cls, text: str) -> Tuple[str]:
         token = list()
         for ch in text:
-            if ch in cls.PUNCT_MARKS:
+            if ch in cls.HEARD_OF:
                 token.append(ch)
             else:
                 break

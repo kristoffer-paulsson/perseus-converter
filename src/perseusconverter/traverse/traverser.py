@@ -23,52 +23,68 @@
 The purpose of a traverser is to traverse a Greek PDL TEI2 file in an ordered manner."""
 import re
 from abc import ABCMeta, abstractmethod
+from typing import List, Tuple
 
-from lxml.etree import ElementTree, Element, XML, parse, XMLSyntaxError
+from lxml.etree import ElementTree, Element
 
 
 class AbstractTraverser(metaclass=ABCMeta):
 
-    _root: Element
+    SKIP_TAGS = ('note', 'foreign', 'bibl', 'del')
 
-    def __init__(self, tree: ElementTree):
+    def __init__(self, tree: ElementTree, ignore: Tuple[str]):
+        self._ignore = ignore
         self._tree = tree
         self._root = tree.getroot()
-        self._id = list
-        self._primary = None
-        self._hierarchies = list()
-        self._get_id()
+        self._id = list()
+        self._hierarchy = None
+
+        if self.format == "TEI.2":
+            self._get_id()
+            self._build_hier()
+
+    @property
+    def format(self) -> str:
+        return self._root.tag
+
+    @property
+    def hierarchy(self) -> str:
+        return self._hierarchy
 
     @property
     def root(self) -> Element:
         return self._root
 
     def traverse(self):
-        self._traverse(self._root)
+        self._traverse(self._root[1])
 
     @abstractmethod
-    def general(self, xml: Element):
+    def general(self, xml: Element, skip: bool):
         return NotImplemented()
+
+    def _do_skip(self, xml: Element) -> bool:
+        path = self._tree.getpath(xml).strip()
+        skip = xml.tag if xml.tag in self.SKIP_TAGS else ''
+        return path.find(skip) or path in self._ignore
 
     def _clean_xpath(self, xml: Element) -> str:
         return re.sub(r"\[\d+\]", '', self._tree.getpath(xml))
 
     def _get_id(self):
-        for tid in self._tree.getroot().find("text[1]"):
+        for tid in self._root.xpath("text[1]"):
             if "id" in tid.attrib.keys():
-                self._id = tid.attrib["id"]
+                self._id.append(tid.attrib["id"])
 
     def _build_hier(self):
-        for refs in self._tree.getroot().iterfind("teiHeader/encodingDesc/refsDecl"):
-            units = list()
-            for state in refs.iterfind("state"):
+        ref = self._tree.getroot().find("teiHeader/encodingDesc/refsDecl[1][@doctype='TEI.2']")
+        units = list()
+        if ref is not None:
+            for state in ref.iterfind("state"):
                 units.append(state.attrib['unit'])
-            hierarchy = "-".join(units)
-            if not self._primary:
-                self._primary = hierarchy
-            self._hierarchies.add(hierarchy)
+            self._hierarchy = "-".join(units)
 
-    def _traverse(self, xml: Element):
-        self.general(xml)
+    def _traverse(self, xml: Element, in_skip: bool = False):
+        self.general(xml, in_skip)
+        in_skip = in_skip if not self._do_skip(xml) else True
         for el in xml:
-            self._traverse(el)
+            self._traverse(el, in_skip)

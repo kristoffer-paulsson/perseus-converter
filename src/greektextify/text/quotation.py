@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+# Copyright (c) 2023 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
@@ -19,31 +19,37 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek punctuation combining and spacing with conversion built in."""
+"""Greek qoutation marks."""
 from typing import Tuple
 
 from greektextify.text.immaterializer import TokenImmaterializableMixin
 
 
-class GreekPunctuation(TokenImmaterializableMixin):
-    """Greek punctuations."""
+class GreekQuotation(TokenImmaterializableMixin):
+    """Greek quotation parser."""
 
-    FULL_STOP = '\u002E'
-    COMMA = '\u002C'
-    QUESTION_MARK = '\u037E'
-    ANO_TELIA = '\u0387'
-    HYPHEN = '\u2010'
-    EM_DASH = '\u2014'
+    QUOTATION_MARK = '\u0022'
+    LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = '\u00AB'
+    RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = '\u00BB'
+    LEFT_SINGLE_QUOTATION_MARK = '\u2018'
+    RIGHT_SINGLE_QUOTATION_MARK = '\u2019'
+    LEFT_DOUBLE_QUOTATION_MARK = '\u201C'
+    RIGHT_DOUBLE_QUOTATION_MARK = '\u201D'
 
-    PUNCT_MARKS = frozenset([
-        FULL_STOP, COMMA, QUESTION_MARK, ANO_TELIA, HYPHEN, EM_DASH
+    QUOTE_MARKS = frozenset([
+        QUOTATION_MARK, LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK, RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK,
+        LEFT_SINGLE_QUOTATION_MARK, RIGHT_SINGLE_QUOTATION_MARK, LEFT_DOUBLE_QUOTATION_MARK,
+        RIGHT_DOUBLE_QUOTATION_MARK
     ])
+
+    def __init__(self, word: str):
+        self._word = word
 
     @classmethod
     def immaterialize(cls, text: str) -> Tuple[str]:
         token = list()
         for ch in text:
-            if ch in cls.PUNCT_MARKS:
+            if ch in cls.QUOTE_MARKS:
                 token.append(ch)
             else:
                 break

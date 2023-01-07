@@ -20,23 +20,31 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Module containing the LOAD command class."""
-import unicodedata
 from argparse import Namespace
 
-from bs4 import BeautifulSoup
-from lxml.etree import ElementTree, Element, XML, parse, XMLSyntaxError
+from lxml.etree import parse, XMLSyntaxError
 
 from . import Command
 from ..app import Config
 from ..metaiterator import MetaIterator
 from ..recursiveiterator import RecursiveIterator
-from ..traverse.general import GeneralTraverser
+from ..traverse.general import GeneralTraverser, EXCEPTIONS
 
 
-def element_iterator(root: ElementTree, xml: Element):
-    print(root.getpath(xml), xml.attrib, xml.text, xml.tail)
-    for el in xml:
-        element_iterator(root, el)
+BETACODE = (
+    'tlg2003.tlg008.perseus-grc1.xml',
+    'tlg2003.tlg002.perseus-grc1.xml',
+    'tlg2003.tlg011.perseus-grc1.xml',
+    'tlg2003.tlg005.perseus-grc1.xml',
+    'tlg2003.tlg001.perseus-grc1.xml',
+    'tlg2003.tlg012.perseus-grc1.xml',
+    'tlg2003.tlg006.perseus-grc1.xml',
+    'tlg2003.tlg004.perseus-grc1.xml',
+    'tlg2003.tlg010.perseus-grc1.xml',
+    'tlg2003.tlg003.perseus-grc1.xml',
+    'tlg2003.tlg009.perseus-grc1.xml',
+    'tlg2003.tlg007.perseus-grc1.xml'
+)
 
 
 class KoineCommand(Command):
@@ -54,9 +62,11 @@ class KoineCommand(Command):
             with open(filename) as file:
                 self.logger.info("Processing file: {}".format(filename))
                 try:
-                    xml = GeneralTraverser(parse(file))
-                    if xml.root.tag == "TEI.2":
-                        print(filename)
+                    xml = GeneralTraverser(parse(file), EXCEPTIONS[filename.name] if filename.name in EXCEPTIONS.keys() else tuple())
+                    if xml.format == "TEI.2":
+                        print(filename.name)
+                        if filename.name not in BETACODE:
+                            xml.traverse()
                         count += 1
                 except XMLSyntaxError as e:
                     self.logger.warn("{}: {}".format(e.__class__, str(e)))

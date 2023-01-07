@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2023 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+#
+# Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
 # permission notice appear in all copies.
 #
@@ -16,7 +20,8 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Greek tokenization."""
-from typing import List, Tuple, TypeVar, Type
+import unicodedata
+from typing import List, Tuple, Type
 
 from greektextify.text.immaterializer import TokenImmaterializableMixin
 
@@ -26,20 +31,33 @@ class Tokenize:
     def __init__(self, token_types: List[Type[TokenImmaterializableMixin]]):
         self._token_type = token_types
 
-    def tokenize(self, text: str) -> List[Tuple[str]]:
-        tokens = list()
+    def span_tokenize(self, text: str) -> Tuple[int, int]:
         position = 0
 
         while len(text) > position:
-            current = position
+            current = start_i = position
             for immaterializer in self._token_type:
-                token = tuple(immaterializer.immaterialize(text[position:]))
+                token = immaterializer.immaterialize(text[position:])
                 if len(token) > 0:
-                    tokens.append(tuple(token))
-                    position += len(token)
+                    end_i = start_i + len(token)
+                    yield start_i, end_i
+                    position = end_i
                     break
 
             if current == position:
-                raise RuntimeWarning("Tokenizer can not immaterialize: {}".format(text[position]))
+                print(text[position], position, unicodedata.name(text[position]))
+                raise RuntimeWarning("Tokenizer can not immaterialize: {} at '{}' called {}".format(
+                    text[position],
+                    position,
+                    unicodedata.name(text[position])
+                ))
+
+    def tokenize(self, text: str) -> List[str]:
+        tokens = list()
+
+        for start, end in self.span_tokenize(text):
+            token = text[start:end].strip()
+            if token:
+                tokens.append(token)
 
         return tokens

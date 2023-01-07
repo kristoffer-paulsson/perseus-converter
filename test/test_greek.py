@@ -21,26 +21,45 @@
 #
 from unittest import TestCase
 
-from greektextify.text.glyph import GreekGlyph
+from greektextify.nlp.debug import Debugger
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.spacing import Spacing
 from greektextify.text.token import Tokenize
 from greektextify.text.word import GreekWord
 
-PARAGRAPH = """
+PARAGRAPH1 = """
 Υἱὸς ὀκτωκαίδεκα ἐτῶν Ιεχονιας ἐν τῷ βασιλεύειν αὐτὸν καὶ τρίμηνον καὶ 
 δέκα ἡμέρας ἐβασίλευσεν ἐν Ιερουσαλημ. καὶ ἐποίησεν τὸ πονηρὸν ἐνώπιον κυρίου.
 """
 
+PARAGRAPH2 = """ἐκ Διὸς ἀρχώμεσθα, τὸν οὐδέποτʼ ἄνδρες ἐῶμεν"""
 
-class TestTreeBase(TestCase):
+PARAGRAPH3 = """καθ᾽"""
+
+PARAGRAPH4 = """᾿Εξαγαγέτω"""  # Academic bible
+
+PARAGRAPH5 = """῾Ο"""  # Academic bible
+
+PARAGRAPH6 = """γʼ"""  # PDL
+
+PARAGRAPH7 = """Ἑλίκῃ"""  # PDL
+
+PARAGRAPH8 = """῞Οτι"""  # Academic bible
+
+PARAGRAPH9 = """ Ὕδρη,"""  # PDL
+
+class TestGreek(TestCase):
 
     def test_greek(self):
+        print(Debugger.glyph(PARAGRAPH3))
+        print(Debugger.glyph(PARAGRAPH9))
         tokenizer = Tokenize([
             GreekWord,
             GreekPunctuation,
             Spacing
         ])
-        tokens = tokenizer.tokenize(PARAGRAPH)
-        for token in tokens:
-            print('\n'.join(GreekGlyph.debug(''.join(token))), '\n')
+        tokens = tokenizer.tokenize(PARAGRAPH4)
+        print(tokens)
+        # for token in tokens:
+        #    print(token)
+            # print(GreekGlyph.debug(token), '\n')
