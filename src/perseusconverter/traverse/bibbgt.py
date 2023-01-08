@@ -19,33 +19,24 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Abstract traverser."""
-from abc import ABCMeta, abstractmethod
+"""Plain text BGT traverser."""
 from pathlib import PurePath
+from regex import regex
 
-from greektextify.text.token import Tokenize
+from greektextify.text.standardize import Standardize
+from perseusconverter.traverse.plain import AbstractPlainTraverser
 
 
-class AbstractTraverser(metaclass=ABCMeta):
+class BgtTraverser(AbstractPlainTraverser):
 
-    def __init__(self, tokenizer: Tokenize, path: PurePath):
-        self._hierarchy = None
-        self._tokenizer = tokenizer
-        self._filename = path
+    def __init__(self, path: PurePath):
+        AbstractPlainTraverser.__init__(self, path)
+        self._hierarchy = 'book-chapter-verse'
+        self._book = None
+        self._chapter = None
+        self._verse = None
 
-    @property
-    def hierarchy(self) -> str:
-        return self._hierarchy
-
-    @property
-    def filename(self) -> str:
-        return str(self._filename)
-
-    @abstractmethod
-    def traverse(self):
-        return NotImplemented
-
-    @abstractmethod
-    def general(self):
-        return NotImplemented
-
+    def _traverse(self, line: str):
+        self._book, self._chapter, self._verse, text = regex.search(r"(.*) (\d+):(\d+)?(.*)$", line.strip()).groups()
+        std = Standardize.pdl(text.strip())
+        self.general(std)

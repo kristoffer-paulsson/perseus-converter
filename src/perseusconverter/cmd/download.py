@@ -30,27 +30,42 @@ from ..app import Config
 
 class DownloadCommand(Command):
 
-    GIT = "https://github.com/PerseusDL/canonical-greekLit.git"
+    GIT = {
+        'pdl': ("Perseus Digital Library", "https://github.com/PerseusDL/canonical-greekLit.git", "canonical-greekLit"),
+        'bib': ("Bib", "https://github.com/kristoffer-paulsson/bible-analyzer-corpora.git", "bible-analyzer-corpora"),
+    }
 
     def __init__(self, config: Config, args: Namespace):
         Command.__init__(self, config, args)
-        self.target = self._config.get("data").joinpath("canonical-greekLit")
+        self.target = self._config.get("data").joinpath(self.GIT[self._args.corpora][2])
 
     def __call__(self):
         if self.target.is_dir():
-            self.logger.info("Perseus Digital Library found")
+            self.logger.info("{} found".format(self.GIT[self._args.corpora][0]))
             self.upgrade()
         else:
-            self.logger.info("Perseus Digital Library NOT found")
+            self.logger.info("{} NOT found".format(self.GIT[self._args.corpora][0]))
             self.clone()
 
     def clone(self):
-        self.logger.info("Start cloning PDT from {} to {}".format(self.GIT, self.target))
-        git.Git(self._config.get("data")).clone(self.GIT)
-        self.logger.info("Done cloning PDT from {}".format(self.GIT))
+        self.logger.info("Start cloning {} from {} to {}".format(
+            self.GIT[self._args.corpora][0],
+            self.GIT[self._args.corpora][1],
+            self.target))
+        git.Git(self._config.get("data")).clone(self.GIT[self._args.corpora][1])
+        self.logger.info("Done cloning {} from {}".format(
+            self.GIT[self._args.corpora][0],
+            self.GIT[self._args.corpora][1],
+        ))
 
     def upgrade(self):
-        self.logger.info("Start upgrading PDT from {}".format(self.GIT))
+        self.logger.info("Start upgrading {} from {}".format(
+            self.GIT[self._args.corpora][0],
+            self.GIT[self._args.corpora][1]
+        ))
         origin = git.Repo(self.target).remotes.origin
         origin.pull()
-        self.logger.info("Done upgrading PDT from {}".format(self.GIT))
+        self.logger.info("Done upgrading {} from {}".format(
+            self.GIT[self._args.corpora][0],
+            self.GIT[self._args.corpora][1]
+        ))

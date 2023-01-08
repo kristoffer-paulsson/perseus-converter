@@ -43,7 +43,8 @@ BETACODE = (
     'tlg2003.tlg010.perseus-grc1.xml',
     'tlg2003.tlg003.perseus-grc1.xml',
     'tlg2003.tlg009.perseus-grc1.xml',
-    'tlg2003.tlg007.perseus-grc1.xml'
+    'tlg2003.tlg007.perseus-grc1.xml',
+    'tlg2040.tlg002.perseus-grc1.xml',
 )
 
 
@@ -59,16 +60,15 @@ class KoineCommand(Command):
             if not filename.is_file():
                 self.logger.info("Registered but missing file: {}".format(filename))
                 continue
-            with open(filename) as file:
-                self.logger.info("Processing file: {}".format(filename))
-                try:
-                    xml = GeneralTraverser(parse(file), EXCEPTIONS[filename.name] if filename.name in EXCEPTIONS.keys() else tuple())
-                    if xml.format == "TEI.2":
-                        print(filename.name)
-                        if filename.name not in BETACODE:
-                            xml.traverse()
-                        count += 1
-                except XMLSyntaxError as e:
-                    self.logger.warn("{}: {}".format(e.__class__, str(e)))
+            self.logger.info("Processing file: {}".format(filename))
+            try:
+                xml = GeneralTraverser(filename, EXCEPTIONS[filename.name] if filename.name in EXCEPTIONS.keys() else tuple())
+                if xml.format == "TEI.2":
+                    print(filename.name)
+                    if filename.name not in BETACODE:
+                        xml.traverse()
+                    count += 1
+            except XMLSyntaxError as e:
+                self.logger.warn("{}: {}".format(e.__class__, str(e)))
 
         print(count)

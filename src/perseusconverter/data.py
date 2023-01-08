@@ -22,5 +22,5 @@
 """Data used in the application for several reasons."""
 
 NAME = """Perseus Converter"""
-VERSION = """0.1"""
+VERSION = """0.2"""
 DESCRIPTION = f"""{NAME} {VERSION} is used to analyze The Bible's corpus grammatically and statistically."""

@@ -22,19 +22,11 @@
 """General traverser without specific purpose."""
 from typing import List, Tuple
 
-from lxml.etree import Element, ElementTree
+from lxml.etree import Element
 
 from greektextify.nlp.debug import Debugger
-from greektextify.text.bracket import Bracketing
-from greektextify.text.heard import GreekHeard
-from greektextify.text.punctuation import GreekPunctuation
-from greektextify.text.quotation import GreekQuotation
-from greektextify.text.spacing import Spacing
 from greektextify.text.standardize import Standardize
-from greektextify.text.token import Tokenize
-from greektextify.text.unheard import GreekUnheard
-from greektextify.text.word import GreekWord
-from perseusconverter.traverse.traverser import AbstractTraverser
+from perseusconverter.traverse.xml import AbstractXmlTraverser
 
 
 EXCEPTIONS = {
@@ -44,23 +36,20 @@ EXCEPTIONS = {
     'tlg0060.tlg001.perseus-grc3.xml': (
         '/TEI.2/text/body/div1[7]/argument/p[9]/title',
     ),
+    'tlg0086.tlg035.perseus-grc1.xml': (
+        '/TEI.2/text/body/div[114]/p/title'
+    ),
+    'tlg0086.tlg010.perseus-grc1.xml': (
+        '/TEI.2/text/body/div[126]/p[1]/head'
+    )
 }
 
 
-class GeneralTraverser(AbstractTraverser):
+class GeneralTraverser(AbstractXmlTraverser):
 
-    def __init__(self, tree: ElementTree, ignore: Tuple[str]):
-        AbstractTraverser.__init__(self, tree, ignore)
+    def __init__(self, path, ignore: Tuple[str]):
+        AbstractXmlTraverser.__init__(self, path, ignore)
         self._states = set()
-        self._tokenizer = Tokenize([
-            GreekWord,
-            Bracketing,
-            GreekPunctuation,
-            GreekQuotation,
-            Spacing,
-            GreekHeard,
-            GreekUnheard,
-        ])
 
     def general(self, xml: Element, skip: bool):
         if not isinstance(xml.tag, str) or skip:
@@ -82,8 +71,8 @@ class GeneralTraverser(AbstractTraverser):
             if std != '':
                 try:
                     # print("TEXT", std)
-                    # print(self._tokenizer.tokenize(std))
-                    self._tokenizer.tokenize(std)
+                    print(self._tokenizer.tokenize(std))
+                    # self._tokenizer.tokenize(std)
                 except RuntimeWarning:
                     print(self._tree.getpath(e))
                     print("TEXT", std)
