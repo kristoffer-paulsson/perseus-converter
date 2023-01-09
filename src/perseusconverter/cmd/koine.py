@@ -22,11 +22,10 @@
 """Module containing the LOAD command class."""
 from argparse import Namespace
 
-from lxml.etree import parse, XMLSyntaxError
+from lxml.etree import XMLSyntaxError
 
 from . import Command
 from ..app import Config
-from ..metaiterator import MetaIterator
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import GeneralTraverser, EXCEPTIONS
@@ -58,7 +57,7 @@ class KoineCommand(Command):
     def _pdl(self):
         count = 0
         for filename in RecursiveIterator(self.target.joinpath("canonical-greekLit/data/")):
-            if not filename.is_file():
+            if not filename.is_file() or not filename.name[23:].startswith('grc') or not filename.name.endswith('.xml'):
                 self.logger.info("Registered but missing file: {}".format(filename))
                 continue
             self.logger.info("Processing file: {}".format(filename))
@@ -83,11 +82,13 @@ class KoineCommand(Command):
                 self.logger.info("Registered but missing file: {}".format(filename))
                 continue
             self.logger.info("Processing file: {}".format(filename))
-            try:
-                txt = BgtTraverser(filename)
-                txt.traverse()
-            except XMLSyntaxError as e:
-                self.logger.warn("{}: {}".format(e.__class__, str(e)))
+            txt = BgtTraverser(filename)
+            txt.traverse()
 
     def __call__(self):
-        self._pdl()
+        if self._args.corpora == 'bib':
+            self._bib()
+        elif self._args.corpora == 'pdl':
+            self._pdl()
+        else:
+            pass

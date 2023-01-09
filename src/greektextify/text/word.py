@@ -20,19 +20,18 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Greek word class segment."""
-from typing import Tuple
+from typing import Tuple, List
 
 from greektextify.text.alphabet import GreekAlphabet
 from greektextify.text.diacritic import GreekDiacritic
 from greektextify.text.extended import GreekExtended
+from greektextify.text.glyph import GreekGlyph
 from greektextify.text.immaterializer import TokenImmaterializableMixin
 from greektextify.text.midway import GreekMidway
 
 
 class GreekWord(TokenImmaterializableMixin):
     """Greek word analyzer and parsers."""
-
-    HYPHEN_MINUS = '\u002D'
 
     # Smyth grammar 1.1.2 *6 -> ei and ou counts as genuine if having diaresis, else if without as spurious.
     # Smyth grammar 1.1.2 *6 + *7 -> learn
@@ -62,12 +61,25 @@ class GreekWord(TokenImmaterializableMixin):
 
     WORD_CHARS = frozenset(
         set(GreekExtended.LETTERS) | set(GreekExtended.DIACRITICS) | set(GreekMidway.LETTERS) |
-        set(GreekAlphabet.CASE_LOWER) | set(GreekAlphabet.CASE_UPPER) | set(GreekDiacritic.DIACRITICS) |
-        set(GreekMidway.MODIFIERS) | {HYPHEN_MINUS}
+        set(GreekAlphabet.ALPHABET) | set(GreekDiacritic.DIACRITICS) |
+        set(GreekMidway.MODIFIERS)
     )
 
     def __init__(self, word: str):
         self._word = word
+        self._glyphs = self.glyphen(word)
+
+    @property
+    def glyphs(self) -> Tuple[GreekGlyph]:
+        return self._glyphs
+
+    @property
+    def hyphen(self) -> bool:
+        return GreekAlphabet.HYPHEN_MINUS in self._word
+
+    @property
+    def apostrophe(self) -> bool:
+        return self._word[-1] == GreekMidway.APOSTROPHE
 
     @classmethod
     def immaterialize(cls, text: str) -> Tuple[str]:
@@ -80,9 +92,26 @@ class GreekWord(TokenImmaterializableMixin):
 
         if len(token) == 0:
             return tuple()
-        elif token[-1] == cls.HYPHEN_MINUS:
+        elif token[-1] == GreekAlphabet.HYPHEN_MINUS:
             return tuple(token[:-1])
-        elif token[0] == cls.HYPHEN_MINUS:
+        elif token[0] == GreekAlphabet.HYPHEN_MINUS:
             return tuple()
         else:
             return tuple(token)
+
+    @classmethod
+    def glyphen(cls, word: str) -> Tuple[GreekGlyph]:
+        position = 0
+        length = len(word)-1 if word[-1] == GreekMidway.APOSTROPHE else len(word)
+        glyphs = list()
+
+        while position != length:
+            glyph, size = GreekGlyph.glyphen(word[position:])
+            glyphs.append(glyph)
+            position += size
+
+        return tuple(glyphs)
+
+
+
+

@@ -26,6 +26,7 @@ from lxml.etree import Element
 
 from greektextify.nlp.debug import Debugger
 from greektextify.text.standardize import Standardize
+from greektextify.text.word import GreekWord
 from perseusconverter.traverse.xml import AbstractXmlTraverser
 
 
@@ -70,17 +71,11 @@ class GeneralTraverser(AbstractXmlTraverser):
             std = Standardize.pdl(text.strip())
             if std != '':
                 try:
-                    # print("TEXT", std)
-                    # print(self._tokenizer.tokenize(std))
                     tokens = self._tokenizer.tokenize(std)
                     for token in tokens:
-                        if token.startswith('\u1F50\u03C0\u03B1'):
-                            print(1, tokens)
-                            exit()
-                        if '\u03C5\u03C0\u03B1' in token:
-                            print(2, token, tokens)
-                            exit()
-                    # self._tokenizer.tokenize(std)
+                        if len(token) > 1:
+                            print(GreekWord.glyphen(token))
+                    print(tokens)
                 except RuntimeWarning:
                     print(self._tree.getpath(e))
                     print("TEXT", std)

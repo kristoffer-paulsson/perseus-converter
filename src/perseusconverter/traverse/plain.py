@@ -48,7 +48,11 @@ class AbstractPlainTraverser(AbstractTraverser):
         self._states = set()
 
     def general(self, text: str):
-        print(self._tokenizer.tokenize(text))
+        tokens = self._tokenizer.tokenize(text)
+        print(tokens)
+        for token in tokens:
+            if len(token) > 1:
+                print(GreekWord(token).glyphs)
 
     def _traverse(self, line: str):
         raise NotImplementedError()
