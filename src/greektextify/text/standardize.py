@@ -20,6 +20,8 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Greek standardization of Koine unicode variants of spelling in the academic."""
+import regex
+
 from greektextify.text.extended import GreekExtended
 from greektextify.text.midway import GreekMidway
 from greektextify.text.punctuation import GreekPunctuation
@@ -31,15 +33,17 @@ class Standardize:
     SEMICOLON = '\u003B'
     MODIFIER_LETTER_REVERSED_COMMA = '\u02BD'
     HYPHEN_MINUS = '\u002D'
+    EM_DASH = '\u2014'
 
     PDL_TRANSFORM = {
         ord(MODIFIER_LETTER_APOSTROPHE): ord(GreekMidway.APOSTROPHE),
         ord(MIDDLE_DOT): ord(GreekPunctuation.ANO_TELIA),
         ord(SEMICOLON): ord(GreekPunctuation.QUESTION_MARK),
         ord(MODIFIER_LETTER_REVERSED_COMMA): ord(GreekExtended.DASIA),
-        ord(HYPHEN_MINUS): ord(GreekPunctuation.HYPHEN)
     }
 
     @classmethod
     def pdl(cls, text: str) -> str:
-        return text.translate(cls.PDL_TRANSFORM)
+        text = regex.sub(r'--', cls.EM_DASH, text)  # Translates two HYPHEN MINUS as EM DASH
+        text = regex.sub(r'-(?!\S)|(?<!\S)-', cls.EM_DASH, text)  # Translates HYPHEN MINUS not between two words as EM DASH
+        return text.translate(cls.PDL_TRANSFORM)  # Translates the rest

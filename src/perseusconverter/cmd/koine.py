@@ -28,6 +28,7 @@ from . import Command
 from ..app import Config
 from ..metaiterator import MetaIterator
 from ..recursiveiterator import RecursiveIterator
+from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import GeneralTraverser, EXCEPTIONS
 
 
@@ -54,9 +55,9 @@ class KoineCommand(Command):
         Command.__init__(self, config, args)
         self.target = self._config.get("data")
 
-    def __call__(self):
+    def _pdl(self):
         count = 0
-        for filename in RecursiveIterator(self.target):
+        for filename in RecursiveIterator(self.target.joinpath("canonical-greekLit/data/")):
             if not filename.is_file():
                 self.logger.info("Registered but missing file: {}".format(filename))
                 continue
@@ -72,3 +73,21 @@ class KoineCommand(Command):
                 self.logger.warn("{}: {}".format(e.__class__, str(e)))
 
         print(count)
+
+    def _bib(self):
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
+        txt = BgtTraverser(filename)
+        txt.traverse()
+        for filename in RecursiveIterator(self.target.joinpath("bible-analyzer-corpora/corpora/abcom/")):
+            if not filename.is_file():
+                self.logger.info("Registered but missing file: {}".format(filename))
+                continue
+            self.logger.info("Processing file: {}".format(filename))
+            try:
+                txt = BgtTraverser(filename)
+                txt.traverse()
+            except XMLSyntaxError as e:
+                self.logger.warn("{}: {}".format(e.__class__, str(e)))
+
+    def __call__(self):
+        self._pdl()

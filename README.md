@@ -16,4 +16,3 @@ The purpose of the Persues Converter is to convert its Koine Greek data into nlt
 * [Combining Diacritical Marks](https://www.unicode.org/charts/PDF/U0300.pdf)
 * [Greek and Coptic](https://www.unicode.org/charts/PDF/U0370.pdf)
 * [Greek Extended](https://www.unicode.org/charts/PDF/U1F00.pdf)
-

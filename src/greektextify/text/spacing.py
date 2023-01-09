@@ -33,7 +33,7 @@ class Spacing(TokenImmaterializableMixin):
     CARRIAGE_RETURN = '\r'
     SPACE = '\x20'
 
-    DEBUG_SPACE = '\u0020\u20DF'  # Symbol for invisible space characters
+    DEBUG_SPACE = '\u20DF'  # Symbol for invisible space characters
 
     BLANK_SPACE = frozenset([
         CHARACTER_TABULATION, LINE_FEED, LINE_TABULATION, FORM_FEED, CARRIAGE_RETURN, SPACE

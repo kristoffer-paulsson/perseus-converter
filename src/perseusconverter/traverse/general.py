@@ -71,7 +71,15 @@ class GeneralTraverser(AbstractXmlTraverser):
             if std != '':
                 try:
                     # print("TEXT", std)
-                    print(self._tokenizer.tokenize(std))
+                    # print(self._tokenizer.tokenize(std))
+                    tokens = self._tokenizer.tokenize(std)
+                    for token in tokens:
+                        if token.startswith('\u1F50\u03C0\u03B1'):
+                            print(1, tokens)
+                            exit()
+                        if '\u03C5\u03C0\u03B1' in token:
+                            print(2, token, tokens)
+                            exit()
                     # self._tokenizer.tokenize(std)
                 except RuntimeWarning:
                     print(self._tree.getpath(e))

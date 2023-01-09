@@ -32,11 +32,10 @@ class GreekPunctuation(TokenImmaterializableMixin):
     COMMA = '\u002C'
     QUESTION_MARK = '\u037E'
     ANO_TELIA = '\u0387'
-    HYPHEN = '\u2010'
     EM_DASH = '\u2014'
 
     PUNCT_MARKS = frozenset([
-        FULL_STOP, COMMA, QUESTION_MARK, ANO_TELIA, HYPHEN, EM_DASH
+        FULL_STOP, COMMA, QUESTION_MARK, ANO_TELIA, EM_DASH
     ])
 
     @classmethod

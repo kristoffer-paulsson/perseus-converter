@@ -32,6 +32,8 @@ from greektextify.text.midway import GreekMidway
 class GreekWord(TokenImmaterializableMixin):
     """Greek word analyzer and parsers."""
 
+    HYPHEN_MINUS = '\u002D'
+
     # Smyth grammar 1.1.2 *6 -> ei and ou counts as genuine if having diaresis, else if without as spurious.
     # Smyth grammar 1.1.2 *6 + *7 -> learn
     # Smyth grammar 1.1.2 *8 -> dipthongs ending in iota or upsilon with diaeresis are not diphtongs!
@@ -61,7 +63,7 @@ class GreekWord(TokenImmaterializableMixin):
     WORD_CHARS = frozenset(
         set(GreekExtended.LETTERS) | set(GreekExtended.DIACRITICS) | set(GreekMidway.LETTERS) |
         set(GreekAlphabet.CASE_LOWER) | set(GreekAlphabet.CASE_UPPER) | set(GreekDiacritic.DIACRITICS) |
-        set(GreekMidway.MODIFIERS)
+        set(GreekMidway.MODIFIERS) | {HYPHEN_MINUS}
     )
 
     def __init__(self, word: str):
@@ -75,4 +77,12 @@ class GreekWord(TokenImmaterializableMixin):
                 token.append(ch)
             else:
                 break
-        return tuple(token)
+
+        if len(token) == 0:
+            return tuple()
+        elif token[-1] == cls.HYPHEN_MINUS:
+            return tuple(token[:-1])
+        elif token[0] == cls.HYPHEN_MINUS:
+            return tuple()
+        else:
+            return tuple(token)

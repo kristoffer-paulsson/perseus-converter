@@ -29,8 +29,7 @@ class RecursiveIterator:
         self.path = data_path
 
     def __iter__(self):
-        data = self.path.joinpath("canonical-greekLit/data/")
-        for resource in self._iter_folder(data):
+        for resource in self._iter_folder(self.path):
             yield resource
 
     def _iter_folder(self, path: PosixPath):
@@ -38,5 +37,8 @@ class RecursiveIterator:
             if x.is_dir():
                 for y in self._iter_folder(x):
                     yield y
-            elif "grc" in x.name and x.suffix == ".xml":
+            else:
                 yield x
+
+            #elif "grc" in x.name and x.suffix == ".xml":
+            #    yield x
