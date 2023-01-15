@@ -19,6 +19,7 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
+from abc import ABCMeta
 from unittest import TestCase
 
 from greektextify.nlp.debug import Debugger

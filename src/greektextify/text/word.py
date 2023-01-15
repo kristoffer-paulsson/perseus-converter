@@ -20,7 +20,7 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Greek word class segment."""
-from typing import Tuple, List
+from typing import Tuple
 
 from greektextify.text.alphabet import GreekAlphabet
 from greektextify.text.diacritic import GreekDiacritic

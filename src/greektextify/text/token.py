@@ -23,6 +23,7 @@
 import unicodedata
 from typing import List, Tuple, Type
 
+from greektextify.nlp.contextual import NlpWarning
 from greektextify.text.immaterializer import TokenImmaterializableMixin
 
 
@@ -45,12 +46,7 @@ class Tokenize:
                     break
 
             if current == position:
-                print(text[position], position, unicodedata.name(text[position]))
-                raise RuntimeWarning("Tokenizer can not immaterialize: {} at '{}' called {}".format(
-                    text[position],
-                    position,
-                    unicodedata.name(text[position])
-                ))
+                raise NlpWarning(*NlpWarning.TOKENIZE_ERROR, {"pos": position, "line": text})
 
     def tokenize(self, text: str) -> List[str]:
         tokens = list()

@@ -24,12 +24,12 @@ from argparse import Namespace
 
 from lxml.etree import XMLSyntaxError
 
+from greektextify.nlp.contextual import NlpContext
 from . import Command
 from ..app import Config
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import GeneralTraverser, EXCEPTIONS
-
 
 BETACODE = (
     'tlg2003.tlg008.perseus-grc1.xml',
@@ -58,16 +58,17 @@ class KoineCommand(Command):
         count = 0
         for filename in RecursiveIterator(self.target.joinpath("canonical-greekLit/data/")):
             if not filename.is_file() or not filename.name[23:].startswith('grc') or not filename.name.endswith('.xml'):
-                self.logger.info("Registered but missing file: {}".format(filename))
+                self.logger.warn("Registered but missing file: {}".format(filename))
                 continue
             self.logger.info("Processing file: {}".format(filename))
             try:
-                xml = GeneralTraverser(filename, EXCEPTIONS[filename.name] if filename.name in EXCEPTIONS.keys() else tuple())
-                if xml.format == "TEI.2":
-                    print(filename.name)
-                    if filename.name not in BETACODE:
-                        xml.traverse()
-                    count += 1
+                with NlpContext(GeneralTraverser(filename, EXCEPTIONS[
+                        filename.name] if filename.name in EXCEPTIONS.keys() else tuple()), self.logger) as xml:
+                    if xml.format == "TEI.2":
+                        print(filename.name)
+                        if filename.name not in BETACODE:
+                            xml.traverse()
+                        count += 1
             except XMLSyntaxError as e:
                 self.logger.warn("{}: {}".format(e.__class__, str(e)))
 
@@ -79,7 +80,7 @@ class KoineCommand(Command):
         txt.traverse()
         for filename in RecursiveIterator(self.target.joinpath("bible-analyzer-corpora/corpora/abcom/")):
             if not filename.is_file():
-                self.logger.info("Registered but missing file: {}".format(filename))
+                self.logger.warn("Registered but missing file: {}".format(filename))
                 continue
             self.logger.info("Processing file: {}".format(filename))
             txt = BgtTraverser(filename)

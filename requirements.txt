@@ -1,14 +1,14 @@
 pip
-setuptools
+setuptools~=65.5.1
 wheel
 coverage
-sphinx
+sphinx~=5.3.0
 recommonmark
 sphinx_rtd_theme
 
 GitPython
-lxml
-nltk
-beautifulsoup4
-python-slugify
-regex
+lxml~=4.9.2
+nltk~=3.8.1
+beautifulsoup4~=4.11.1
+python-slugify~=7.0.0
+regex~=2022.10.31

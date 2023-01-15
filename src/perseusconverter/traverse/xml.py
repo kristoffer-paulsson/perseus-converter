@@ -51,8 +51,8 @@ class AbstractXmlTraverser(AbstractTraverser):
             GreekPunctuation,
             GreekQuotation,
             Spacing,
-            GreekHeard,
-            GreekUnheard,
+            # GreekHeard,
+            # GreekUnheard,
         ])
         AbstractTraverser.__init__(self, tokenizer, path)
         self._ignore = ignore

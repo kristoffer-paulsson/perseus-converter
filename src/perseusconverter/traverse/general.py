@@ -24,6 +24,7 @@ from typing import List, Tuple
 
 from lxml.etree import Element
 
+from greektextify.nlp.contextual import ContextObject, NlpOperation
 from greektextify.nlp.debug import Debugger
 from greektextify.text.standardize import Standardize
 from greektextify.text.word import GreekWord
@@ -46,10 +47,11 @@ EXCEPTIONS = {
 }
 
 
-class GeneralTraverser(AbstractXmlTraverser):
+class GeneralTraverser(AbstractXmlTraverser, ContextObject):
 
     def __init__(self, path, ignore: Tuple[str]):
         AbstractXmlTraverser.__init__(self, path, ignore)
+        ContextObject.__init__(self)
         self._states = set()
 
     def general(self, xml: Element, skip: bool):
@@ -66,19 +68,20 @@ class GeneralTraverser(AbstractXmlTraverser):
     def states(self) -> set:
         return self._states
 
+    @NlpOperation()
     def _tokenize(self, text: str, e: Element) -> List[str]:
         if text is not None:
             std = Standardize.pdl(text.strip())
             if std != '':
-                try:
-                    tokens = self._tokenizer.tokenize(std)
-                    for token in tokens:
-                        if len(token) > 1:
-                            print(GreekWord.glyphen(token))
-                    print(tokens)
-                except RuntimeWarning:
-                    print(self._tree.getpath(e))
-                    print("TEXT", std)
-                    print("ORIG", text)
-                    print('\n'.join(Debugger.glyph(std)))
-                    exit()
+                # try:
+                tokens = self._tokenizer.tokenize(std)
+                for token in tokens:
+                    if len(token) > 1:
+                        print(GreekWord.glyphen(token))
+                print(tokens)
+                # except RuntimeWarning:
+                #    print(self._tree.getpath(e))
+                #    print("TEXT", std)
+                #    print("ORIG", text)
+                #    print('\n'.join(Debugger.glyph(std)))
+                #    exit()
