@@ -55,6 +55,7 @@ class AbstractXmlTraverser(AbstractTraverser):
             # GreekUnheard,
         ])
         AbstractTraverser.__init__(self, tokenizer, path)
+        self._filename = path.name
         self._ignore = ignore
         self._fd = open(str(path))
         self._tree = parse(self._fd)

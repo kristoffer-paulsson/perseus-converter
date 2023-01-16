@@ -53,6 +53,7 @@ class GeneralTraverser(AbstractXmlTraverser, ContextObject):
         AbstractXmlTraverser.__init__(self, path, ignore)
         ContextObject.__init__(self)
         self._states = set()
+        self._xpath = ""
 
     def general(self, xml: Element, skip: bool):
         if not isinstance(xml.tag, str) or skip:
@@ -68,9 +69,13 @@ class GeneralTraverser(AbstractXmlTraverser, ContextObject):
     def states(self) -> set:
         return self._states
 
+    def location(self) -> Tuple:
+        return self._filename, self._xpath
+
     @NlpOperation()
     def _tokenize(self, text: str, e: Element) -> List[str]:
         if text is not None:
+            self._xpath = self._tree.getpath(e)
             std = Standardize.pdl(text.strip())
             if std != '':
                 # try:
@@ -79,9 +84,3 @@ class GeneralTraverser(AbstractXmlTraverser, ContextObject):
                     if len(token) > 1:
                         print(GreekWord.glyphen(token))
                 print(tokens)
-                # except RuntimeWarning:
-                #    print(self._tree.getpath(e))
-                #    print("TEXT", std)
-                #    print("ORIG", text)
-                #    print('\n'.join(Debugger.glyph(std)))
-                #    exit()

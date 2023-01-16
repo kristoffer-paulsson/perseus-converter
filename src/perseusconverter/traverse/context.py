@@ -21,14 +21,5 @@
 #
 
 """
-def _handle(self, exc_type: TokenizationError):
-    start = max(0, exc_type.pos-19)
-    end = min(len(exc_type.line)-1, exc_type.pos+19)
-    pos = min(19, start)
-    debug = Debugger.glyph(exc_type.line[start:end])
-    for index in range(0, end-start):
-        if index != pos:
-            print(debug[index])
-        else:
-            print("\u001b[33m" + debug[index] + "\u001b[0m")
+
 """

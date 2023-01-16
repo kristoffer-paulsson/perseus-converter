@@ -20,11 +20,14 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Contextual description and error reporting of tokenization and other operations."""
-from abc import ABCMeta
+import unicodedata
+from abc import ABCMeta, abstractmethod
 import contextlib
 from contextvars import ContextVar
 from typing import Tuple, List
 from logging import Logger
+
+from greektextify.nlp.debug import Debugger
 
 nlp_ctx = ContextVar("nlp", default=None)
 
@@ -36,8 +39,12 @@ class ContextObject(metaclass=ABCMeta):
         self.__err = list()
 
     @property
-    def err(self) -> List[Tuple[str, int, dict]]:
+    def err(self) -> List:
         return self.__err
+
+    @abstractmethod
+    def location(self) -> Tuple:
+        return NotImplemented
 
 
 class NlpWarning(UserWarning):
@@ -66,7 +73,7 @@ class NlpOperation(contextlib.ContextDecorator):
 
         context = nlp_ctx.get()
         if isinstance(context, ContextObject) and isinstance(exc_type, type(NlpWarning)):
-            context.err.append(exc_val)
+            context.err.append((exc_val, "_".join(list(context.location()))))
             return True
 
         return False
@@ -81,7 +88,14 @@ class NlpContext(contextlib.AbstractContextManager):
 
     def __analyze(self, context: ContextObject):
         e = False
-        for err in context.err:
+        for err, loc in context.err:
+
+            print("\n{}, {}".format(err, loc))
+            if err.code == NlpWarning.TOKENIZE_ERROR[1]:
+                debug_glyph(err.info.get("line"), err.info.get("pos"))
+            elif err.code == NlpWarning.NON_GREEK_GLYPH[1]:
+                debug_glyph(err.info.get("char"))
+
             if self.__logger:
                 self.__logger.error("Nlp error {} '{}', info: {}".format(err.code, err, err.info))
             e = True
@@ -101,3 +115,17 @@ class NlpContext(contextlib.AbstractContextManager):
         nlp_ctx.reset(self.__token)
 
         return None
+
+
+def debug_glyph(text: str, pos: int = None):
+    noprint = pos is None
+    start = max(0, pos-19)
+    end = min(len(text)-1, pos+19)
+    cur = pos - start
+    debug = Debugger.glyph(text[start:end])
+    print("At position {} with {}\nIssue in '{}'".format(pos, unicodedata.name(text[pos]), text))
+    for index in range(0, end-start):
+        if index != cur or noprint:
+            print(debug[index])
+        else:
+            print("\u001b[33m" + debug[index] + "\u001b[0m")
