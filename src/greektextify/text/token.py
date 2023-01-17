@@ -20,7 +20,6 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Greek tokenization."""
-import unicodedata
 from typing import List, Tuple, Type
 
 from greektextify.nlp.contextual import NlpWarning

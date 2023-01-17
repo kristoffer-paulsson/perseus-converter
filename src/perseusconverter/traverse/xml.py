@@ -21,7 +21,6 @@
 #
 """Common traverser interface.
 The purpose of a traverser is to traverse a Greek PDL TEI2 file in an ordered manner."""
-import os
 import re
 from abc import abstractmethod
 from pathlib import PurePath
@@ -30,12 +29,10 @@ from typing import Tuple
 from lxml.etree import Element, parse
 
 from greektextify.text.bracket import Bracketing
-from greektextify.text.heard import GreekHeard
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.quotation import GreekQuotation
 from greektextify.text.spacing import Spacing
 from greektextify.text.token import Tokenize
-from greektextify.text.unheard import GreekUnheard
 from greektextify.text.word import GreekWord
 from perseusconverter.traverse.traverser import AbstractTraverser
 
@@ -100,14 +97,23 @@ class AbstractXmlTraverser(AbstractTraverser):
                 self._id.append(tid.attrib["id"])
 
     def _build_hier(self):
-        ref = self._tree.getroot().find("teiHeader/encodingDesc/refsDecl[1][@doctype='TEI.2']")
+        # ref = self._tree.getroot().find("teiHeader/encodingDesc/refsDecl[1][@doctype='TEI.2']")
+        ref = self._tree.getroot().find("teiHeader/encodingDesc/refsDecl[@doctype='TEI.2']")
         units = list()
         if ref is not None:
             for state in ref.iterfind("state"):
                 units.append(state.attrib['unit'])
-            self._hierarchy = "-".join(units)
+            self._hierarchy = ("-".join(units), tuple(units), dict())
+
+    def _update_ref(self, xml: Element):
+        if "type" in xml.attrib.keys():
+            unit = xml.attrib["type"].lower()  # if xml.tag != "l" else "line"
+            if unit in self._hierarchy[1]:
+                num = xml.attrib["n"] if 'n' in xml.attrib else 'n/a'
+                self._hierarchy[2][unit] = num
 
     def _traverse(self, xml: Element, in_skip: bool = False):
+        self._update_ref(xml)
         self.general(xml, in_skip)
         in_skip = in_skip if not self._do_skip(xml) else True
         for el in xml:

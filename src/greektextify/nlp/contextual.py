@@ -87,7 +87,6 @@ class NlpContext(contextlib.AbstractContextManager):
         self.__token = nlp_ctx.set(context)
 
     def __analyze(self, context: ContextObject):
-        e = False
         for err, loc in context.err:
 
             print("\n{}, {}".format(err, loc))
@@ -98,10 +97,6 @@ class NlpContext(contextlib.AbstractContextManager):
 
             if self.__logger:
                 self.__logger.error("Nlp error {} '{}', info: {}".format(err.code, err, err.info))
-            e = True
-
-        if e:
-            exit()
 
     def __enter__(self):
         return nlp_ctx.get()
@@ -118,12 +113,22 @@ class NlpContext(contextlib.AbstractContextManager):
 
 
 def debug_glyph(text: str, pos: int = None):
-    noprint = pos is None
+    if pos is None:
+        pos = 0
+        noprint = True
+    else:
+        noprint = False
+
     start = max(0, pos-19)
     end = min(len(text)-1, pos+19)
     cur = pos - start
     debug = Debugger.glyph(text[start:end])
-    print("At position {} with {}\nIssue in '{}'".format(pos, unicodedata.name(text[pos]), text))
+
+    if noprint:
+        print("Issue in, w/o specific position '{}'".format(text))
+    else:
+        print("At position {} with {}\nIssue in '{}'".format(pos, unicodedata.name(text[pos]), text))
+
     for index in range(0, end-start):
         if index != cur or noprint:
             print(debug[index])

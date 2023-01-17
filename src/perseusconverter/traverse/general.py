@@ -25,7 +25,6 @@ from typing import List, Tuple
 from lxml.etree import Element
 
 from greektextify.nlp.contextual import ContextObject, NlpOperation
-from greektextify.nlp.debug import Debugger
 from greektextify.text.standardize import Standardize
 from greektextify.text.word import GreekWord
 from perseusconverter.traverse.xml import AbstractXmlTraverser
@@ -78,7 +77,7 @@ class GeneralTraverser(AbstractXmlTraverser, ContextObject):
             self._xpath = self._tree.getpath(e)
             std = Standardize.pdl(text.strip())
             if std != '':
-                # try:
+                print(self._hierarchy)
                 tokens = self._tokenizer.tokenize(std)
                 for token in tokens:
                     if len(token) > 1:
