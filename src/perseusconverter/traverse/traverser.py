@@ -22,6 +22,7 @@
 """Abstract traverser."""
 from abc import ABCMeta, abstractmethod
 from pathlib import PurePath
+from typing import Tuple
 
 from greektextify.text.token import Tokenize
 
@@ -33,13 +34,17 @@ class AbstractTraverser(metaclass=ABCMeta):
         self._tokenizer = tokenizer
         self._filename = path
 
-    @property
-    def hierarchy(self) -> str:
-        return self._hierarchy
+    @abstractmethod
+    def hierarchy(self):
+        return NotImplemented
 
     @property
     def filename(self) -> str:
         return str(self._filename)
+
+    # @abstractmethod
+    # def location(self) -> Tuple:
+    #     return NotImplemented
 
     @abstractmethod
     def traverse(self):

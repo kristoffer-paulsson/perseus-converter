@@ -24,57 +24,42 @@ The purpose of a traverser is to traverse a Greek PDL TEI2 file in an ordered ma
 import re
 from abc import abstractmethod
 from pathlib import PurePath
-from typing import Tuple
+from typing import Tuple, List, Dict
 
-from lxml.etree import Element, parse
+from lxml.etree import Element, ElementTree
 
-from greektextify.text.bracket import Bracketing
-from greektextify.text.punctuation import GreekPunctuation
-from greektextify.text.quotation import GreekQuotation
-from greektextify.text.spacing import Spacing
 from greektextify.text.token import Tokenize
-from greektextify.text.word import GreekWord
 from perseusconverter.traverse.traverser import AbstractTraverser
 
 
 class AbstractXmlTraverser(AbstractTraverser):
 
-    SKIP_TAGS = ('note', 'foreign', 'bibl', 'del')
+    SKIP_TAGS = tuple()
 
-    def __init__(self, path: PurePath, ignore: Tuple[str]):
-        tokenizer = Tokenize([
-            GreekWord,
-            Bracketing,
-            GreekPunctuation,
-            GreekQuotation,
-            Spacing,
-            # GreekHeard,
-            # GreekUnheard,
-        ])
+    def __init__(self, path: PurePath, tree: ElementTree, tokenizer: Tokenize):
         AbstractTraverser.__init__(self, tokenizer, path)
-        self._filename = path.name
-        self._ignore = ignore
-        self._fd = open(str(path))
-        self._tree = parse(self._fd)
+        self._tree = tree
         self._root = self._tree.getroot()
-        self._id = list()
-        self._hierarchy = None
-
-        if self.format == "TEI.2":
-            self._get_id()
-            self._build_hier()
-
-    @property
-    def format(self) -> str:
-        return self._root.tag
-
-    @property
-    def hierarchy(self) -> str:
-        return self._hierarchy
+        self._xpath = list()
 
     @property
     def root(self) -> Element:
         return self._root
+
+    @property
+    def hierarchy(self) -> Tuple[str, List[str], Dict[str, str]]:
+        return self._hierarchy
+
+    def location(self) -> Tuple:
+        return str(self._filename.name), self._xpath[-1]
+
+    @abstractmethod
+    def _hierarchy_init(self):
+        raise NotImplemented
+
+    @abstractmethod
+    def _hierarchy_update(self, xml: Element):
+        raise NotImplemented
 
     def traverse(self):
         self._traverse(self._root[1])
@@ -86,35 +71,20 @@ class AbstractXmlTraverser(AbstractTraverser):
     def _do_skip(self, xml: Element) -> bool:
         path = self._tree.getpath(xml).strip()
         skip = xml.tag if xml.tag in self.SKIP_TAGS else ''
-        return path.find(skip) or path in self._ignore
+        return path.find(skip)
 
     def _clean_xpath(self, xml: Element) -> str:
         return re.sub(r"\[\d+\]", '', self._tree.getpath(xml))
 
-    def _get_id(self):
-        for tid in self._root.xpath("text[1]"):
-            if "id" in tid.attrib.keys():
-                self._id.append(tid.attrib["id"])
-
-    def _build_hier(self):
-        # ref = self._tree.getroot().find("teiHeader/encodingDesc/refsDecl[1][@doctype='TEI.2']")
-        ref = self._tree.getroot().find("teiHeader/encodingDesc/refsDecl[@doctype='TEI.2']")
-        units = list()
-        if ref is not None:
-            for state in ref.iterfind("state"):
-                units.append(state.attrib['unit'])
-            self._hierarchy = ("-".join(units), tuple(units), dict())
-
-    def _update_ref(self, xml: Element):
-        if "type" in xml.attrib.keys():
-            unit = xml.attrib["type"].lower()  # if xml.tag != "l" else "line"
-            if unit in self._hierarchy[1]:
-                num = xml.attrib["n"] if 'n' in xml.attrib else 'n/a'
-                self._hierarchy[2][unit] = num
-
     def _traverse(self, xml: Element, in_skip: bool = False):
-        self._update_ref(xml)
+        self._xpath.append(self._tree.getpath(xml))
+
+        self._hierarchy_update(xml)
         self.general(xml, in_skip)
         in_skip = in_skip if not self._do_skip(xml) else True
+
         for el in xml:
             self._traverse(el, in_skip)
+
+        self._xpath.pop()
+

@@ -20,39 +20,106 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """General traverser without specific purpose."""
+from pathlib import PurePath
 from typing import List, Tuple
 
-from lxml.etree import Element
+from lxml.etree import Element, parse, ElementTree
 
 from greektextify.nlp.contextual import ContextObject, NlpOperation
+from greektextify.text.bracket import Bracketing
+from greektextify.text.punctuation import GreekPunctuation
+from greektextify.text.quotation import GreekQuotation
+from greektextify.text.spacing import Spacing
 from greektextify.text.standardize import Standardize
+from greektextify.text.token import Tokenize
 from greektextify.text.word import GreekWord
 from perseusconverter.traverse.xml import AbstractXmlTraverser
 
 
-EXCEPTIONS = {
-    'tlg7000.tlg001.perseus-grc5.xml': (
-        '/TEI.2/text/body/div1[1]/div2[29]/label/title',
-    ),
-    'tlg0060.tlg001.perseus-grc3.xml': (
-        '/TEI.2/text/body/div1[7]/argument/p[9]/title',
-    ),
-    'tlg0086.tlg035.perseus-grc1.xml': (
-        '/TEI.2/text/body/div[114]/p/title'
-    ),
-    'tlg0086.tlg010.perseus-grc1.xml': (
-        '/TEI.2/text/body/div[126]/p[1]/head'
-    )
-}
+class AbstractTeiTraverser(AbstractXmlTraverser, ContextObject):
 
-
-class GeneralTraverser(AbstractXmlTraverser, ContextObject):
-
-    def __init__(self, path, ignore: Tuple[str]):
-        AbstractXmlTraverser.__init__(self, path, ignore)
+    def __init__(self, path: PurePath, tree: ElementTree, tokenizer: Tokenize):
+        AbstractXmlTraverser.__init__(self, path, tree, tokenizer)
         ContextObject.__init__(self)
-        self._states = set()
-        self._xpath = ""
+
+        self._hierarchy_init()
+
+    def _hierarchy_init(self):
+        pass
+
+    def _hierarchy_update(self, xml: Element):
+        pass
+
+    def general(self, xml: Element, skip: bool):
+        pass
+
+    @staticmethod
+    def open(filename: PurePath) -> "AbstractTeiTraverser":
+        tree = None
+        with open(str(filename)) as fd:
+            tree = parse(fd)
+
+        root = tree.getroot()
+
+        tokenizer = Tokenize([
+            GreekWord,
+            Bracketing,
+            GreekPunctuation,
+            GreekQuotation,
+            Spacing,
+        ])
+
+        if root.tag == "TEI.2":
+            return Tei2Traverser(filename, tree, tokenizer)
+        elif root.tag == "{http://www.tei-c.org/ns/1.0}TEI":
+            return Tei1Traverser(filename, tree, tokenizer)
+        else:
+            raise ValueError("Xml is not a valid TEI format! {}".format(root.tag))
+
+
+class Tei1Traverser(AbstractTeiTraverser):
+    def __init__(self, path: PurePath, tree: ElementTree, tokenizer: Tokenize):
+        AbstractTeiTraverser.__init__(self, path, tree, tokenizer)
+
+    def _hierarchy_init(self):
+        raise NotImplemented
+
+    def _hierarchy_update(self, xml: Element):
+        raise NotImplemented
+
+    def general(self, xml: Element, skip: bool):
+        raise NotImplemented
+
+
+class Tei2Traverser(AbstractTeiTraverser):
+
+    SKIP_TAGS = ('note', 'foreign', 'bibl', 'del')
+
+    def __init__(self, path: PurePath, tree: ElementTree, tokenizer: Tokenize):
+        AbstractTeiTraverser.__init__(self, path, tree, tokenizer)
+        self._id = list()
+        self._get_id()
+
+    def _get_id(self):
+        for tid in self._root.xpath("text[1]"):
+            if "id" in tid.attrib.keys():
+                self._id.append(tid.attrib["id"])
+
+    def _hierarchy_init(self):
+        ref = self._tree.getroot().find("teiHeader/encodingDesc/refsDecl[1][@doctype='TEI.2']")
+        # ref = self._root.find("teiHeader/encodingDesc/refsDecl[@doctype='TEI.2']")
+        units = list()
+        if ref is not None:
+            for state in ref.iterfind("state"):
+                units.append(state.attrib['unit'])
+            self._hierarchy = ("-".join(units), tuple(units), dict())
+
+    def _hierarchy_update(self, xml: Element):
+        if "type" in xml.attrib.keys():
+            unit = xml.attrib["type"].lower()  # if xml.tag != "l" else "line"
+            if unit in self._hierarchy[1]:
+                num = xml.attrib["n"] if 'n' in xml.attrib else 'n/a'
+                self._hierarchy[2][unit] = num
 
     def general(self, xml: Element, skip: bool):
         if not isinstance(xml.tag, str) or skip:
@@ -64,17 +131,9 @@ class GeneralTraverser(AbstractXmlTraverser, ContextObject):
             self._tokenize(xml.text, xml)
             self._tokenize(xml.tail, xml)
 
-    @property
-    def states(self) -> set:
-        return self._states
-
-    def location(self) -> Tuple:
-        return self._filename, self._xpath
-
     @NlpOperation()
     def _tokenize(self, text: str, e: Element) -> List[str]:
         if text is not None:
-            self._xpath = self._tree.getpath(e)
             std = Standardize.pdl(text.strip())
             if std != '':
                 print(self._hierarchy)

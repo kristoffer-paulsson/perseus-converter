@@ -29,7 +29,7 @@ from . import Command
 from ..app import Config
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
-from ..traverse.general import GeneralTraverser, EXCEPTIONS
+from ..traverse.general import AbstractTeiTraverser, Tei2Traverser
 
 BETACODE = (
     'tlg2003.tlg008.perseus-grc1.xml',
@@ -62,9 +62,8 @@ class KoineCommand(Command):
                 continue
             self.logger.info("Processing file: {}".format(filename))
             try:
-                with NlpContext(GeneralTraverser(filename, EXCEPTIONS[
-                        filename.name] if filename.name in EXCEPTIONS.keys() else tuple()), self.logger) as xml:
-                    if xml.format == "TEI.2":
+                with NlpContext(AbstractTeiTraverser.open(filename), self.logger) as xml:
+                    if isinstance(xml, Tei2Traverser):
                         print(filename.name)
                         if filename.name not in BETACODE:
                             xml.traverse()
