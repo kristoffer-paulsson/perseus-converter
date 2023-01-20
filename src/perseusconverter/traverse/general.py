@@ -21,9 +21,9 @@
 #
 """General traverser without specific purpose."""
 from pathlib import PurePath
-from typing import List, Tuple
+from typing import List
 
-from lxml.etree import Element, parse, ElementTree
+from lxml.etree import Element, parse, ElementTree, QName
 
 from greektextify.nlp.contextual import ContextObject, NlpOperation
 from greektextify.text.bracket import Bracketing
@@ -45,13 +45,21 @@ class AbstractTeiTraverser(AbstractXmlTraverser, ContextObject):
         self._hierarchy_init()
 
     def _hierarchy_init(self):
-        pass
+        self._hierarchy = ("", list(), dict())
 
     def _hierarchy_update(self, xml: Element):
-        pass
+        keys = xml.attrib.keys()
+        if "type" in keys:
+            unit = xml.attrib.get("type").lower()
+            num = xml.attrib["n"] if 'n' in xml.attrib else 'n/a'
+            if unit == "textpart" and "subtype" in keys:
+                unit = xml.attrib.get("subtype").lower()
 
-    def general(self, xml: Element, skip: bool):
-        pass
+            if unit not in self._hierarchy[1]:
+                self._hierarchy[1].append(unit)
+                self._hierarchy[2][unit] = num
+            else:
+                self._hierarchy[2][unit] = num
 
     @staticmethod
     def open(filename: PurePath) -> "AbstractTeiTraverser":
@@ -69,26 +77,40 @@ class AbstractTeiTraverser(AbstractXmlTraverser, ContextObject):
             Spacing,
         ])
 
-        if root.tag == "TEI.2":
+        tag = QName(root).localname
+        if tag == "TEI.2":
             return Tei2Traverser(filename, tree, tokenizer)
-        elif root.tag == "{http://www.tei-c.org/ns/1.0}TEI":
+        elif tag == "TEI":
             return Tei1Traverser(filename, tree, tokenizer)
         else:
-            raise ValueError("Xml is not a valid TEI format! {}".format(root.tag))
+            raise ValueError("Xml is not a valid TEI format! {}".format(tag))
 
 
 class Tei1Traverser(AbstractTeiTraverser):
+
+    SKIP_TAGS = ('note', 'foreign', 'bibl', )  # 'del')
+
     def __init__(self, path: PurePath, tree: ElementTree, tokenizer: Tokenize):
         AbstractTeiTraverser.__init__(self, path, tree, tokenizer)
 
-    def _hierarchy_init(self):
-        raise NotImplemented
+    def do_text(self, xml: Element):
+        self._tokenize(xml.text, xml)
 
-    def _hierarchy_update(self, xml: Element):
-        raise NotImplemented
+    def do_tail(self, xml: Element):
+        self._tokenize(xml.tail, xml)
 
-    def general(self, xml: Element, skip: bool):
-        raise NotImplemented
+    @NlpOperation()
+    def _tokenize(self, text: str, e: Element) -> List[str]:
+        if text is not None:
+            std = Standardize.pdl(text.strip())
+            if std != '':
+                # print(self._hierarchy)
+                tokens = self._tokenizer.tokenize(std)
+                for token in tokens:
+                    if len(token) > 1:
+                        pass
+                        # print(GreekWord.glyphen(token))
+                # print(tokens)
 
 
 class Tei2Traverser(AbstractTeiTraverser):
@@ -105,7 +127,7 @@ class Tei2Traverser(AbstractTeiTraverser):
             if "id" in tid.attrib.keys():
                 self._id.append(tid.attrib["id"])
 
-    def _hierarchy_init(self):
+    """def _hierarchy_init(self):
         ref = self._tree.getroot().find("teiHeader/encodingDesc/refsDecl[1][@doctype='TEI.2']")
         # ref = self._root.find("teiHeader/encodingDesc/refsDecl[@doctype='TEI.2']")
         units = list()
@@ -119,26 +141,23 @@ class Tei2Traverser(AbstractTeiTraverser):
             unit = xml.attrib["type"].lower()  # if xml.tag != "l" else "line"
             if unit in self._hierarchy[1]:
                 num = xml.attrib["n"] if 'n' in xml.attrib else 'n/a'
-                self._hierarchy[2][unit] = num
+                self._hierarchy[2][unit] = num"""
 
-    def general(self, xml: Element, skip: bool):
-        if not isinstance(xml.tag, str) or skip:
-            return
-        if self._do_skip(xml):
-            if xml.text:
-                self._tokenize(xml.tail, xml)
-        else:
-            self._tokenize(xml.text, xml)
-            self._tokenize(xml.tail, xml)
+    def do_text(self, xml: Element):
+        self._tokenize(xml.text, xml)
+
+    def do_tail(self, xml: Element):
+        self._tokenize(xml.tail, xml)
 
     @NlpOperation()
     def _tokenize(self, text: str, e: Element) -> List[str]:
         if text is not None:
             std = Standardize.pdl(text.strip())
             if std != '':
-                print(self._hierarchy)
+                # print(self._hierarchy)
                 tokens = self._tokenizer.tokenize(std)
                 for token in tokens:
                     if len(token) > 1:
-                        print(GreekWord.glyphen(token))
-                print(tokens)
+                        pass
+                        # print(GreekWord.glyphen(token))
+                # print(tokens)

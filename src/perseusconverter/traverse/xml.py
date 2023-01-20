@@ -26,7 +26,7 @@ from abc import abstractmethod
 from pathlib import PurePath
 from typing import Tuple, List, Dict
 
-from lxml.etree import Element, ElementTree
+from lxml.etree import Element, ElementTree, QName
 
 from greektextify.text.token import Tokenize
 from perseusconverter.traverse.traverser import AbstractTraverser
@@ -47,8 +47,8 @@ class AbstractXmlTraverser(AbstractTraverser):
         return self._root
 
     @property
-    def hierarchy(self) -> Tuple[str, List[str], Dict[str, str]]:
-        return self._hierarchy
+    def hierarchy(self) -> Dict[str, str]:
+        return {k: v for k, v in self._hierarchy[2] if v != 'n/a'}
 
     def location(self) -> Tuple:
         return str(self._filename.name), self._xpath[-1]
@@ -64,27 +64,41 @@ class AbstractXmlTraverser(AbstractTraverser):
     def traverse(self):
         self._traverse(self._root[1])
 
-    @abstractmethod
     def general(self, xml: Element, skip: bool):
+        return NotImplemented()
+
+    @abstractmethod
+    def do_text(self, xml: Element):
+        return NotImplemented()
+
+    @abstractmethod
+    def do_tail(self, xml: Element):
         return NotImplemented()
 
     def _do_skip(self, xml: Element) -> bool:
         path = self._tree.getpath(xml).strip()
-        skip = xml.tag if xml.tag in self.SKIP_TAGS else ''
+        tag = QName(xml).localname
+        skip = tag if tag in self.SKIP_TAGS else ''
         return path.find(skip)
 
     def _clean_xpath(self, xml: Element) -> str:
         return re.sub(r"\[\d+\]", '', self._tree.getpath(xml))
 
-    def _traverse(self, xml: Element, in_skip: bool = False):
-        self._xpath.append(self._tree.getpath(xml))
+    def _traverse(self, xml: Element):
+        try:
+            tag = QName(xml).localname
+            self._xpath.append(self._tree.getpath(xml))
+            self._hierarchy_update(xml)
 
-        self._hierarchy_update(xml)
-        self.general(xml, in_skip)
-        in_skip = in_skip if not self._do_skip(xml) else True
-
-        for el in xml:
-            self._traverse(el, in_skip)
-
-        self._xpath.pop()
+            if tag in self.SKIP_TAGS:
+                self._xpath.pop()
+                self.do_tail(xml)
+            else:
+                self.do_text(xml)
+                for el in xml:
+                    self._traverse(el)
+                self._xpath.pop()
+                self.do_tail(xml)
+        except ValueError:
+            pass
 

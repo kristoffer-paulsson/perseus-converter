@@ -63,9 +63,9 @@ class KoineCommand(Command):
             self.logger.info("Processing file: {}".format(filename))
             try:
                 with NlpContext(AbstractTeiTraverser.open(filename), self.logger) as xml:
-                    if isinstance(xml, Tei2Traverser):
-                        print(filename.name)
+                    if isinstance(xml, AbstractTeiTraverser):
                         if filename.name not in BETACODE:
+                            self.logger.info("Traversing file {}".format(filename.name))
                             xml.traverse()
                         count += 1
             except XMLSyntaxError as e:
