@@ -64,7 +64,7 @@ class KoineCommand(Command):
             try:
                 with NlpContext(AbstractTeiTraverser.open(filename), self.logger) as xml:
                     if isinstance(xml, AbstractTeiTraverser):
-                        if filename.name not in BETACODE:
+                        if filename.name in BETACODE:
                             self.logger.info("Traversing file {}".format(filename.name))
                             xml.traverse()
                         count += 1

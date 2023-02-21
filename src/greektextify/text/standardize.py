@@ -37,7 +37,7 @@ class Standardize:
 
     PDL_TRANSFORM = {
         ord(MODIFIER_LETTER_APOSTROPHE): ord(GreekMidway.APOSTROPHE),
-        ord(MIDDLE_DOT): ord(GreekPunctuation.ANO_TELIA),
+        ord(MIDDLE_DOT): ord(GreekPunctuation.ANO_TELEIA),
         ord(SEMICOLON): ord(GreekPunctuation.QUESTION_MARK),
         ord(MODIFIER_LETTER_REVERSED_COMMA): ord(GreekExtended.DASIA),
     }
