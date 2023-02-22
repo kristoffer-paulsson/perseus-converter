@@ -25,6 +25,8 @@ from typing import List
 
 from lxml.etree import Element, parse, ElementTree, QName
 
+from greektextify.beta.punctuation import BetaPunctuation
+from greektextify.beta.word import BetaWord
 from greektextify.nlp.contextual import ContextObject, NlpOperation
 from greektextify.text.bracket import Bracketing
 from greektextify.text.punctuation import GreekPunctuation
@@ -70,9 +72,9 @@ class AbstractTeiTraverser(AbstractXmlTraverser, ContextObject):
         root = tree.getroot()
 
         tokenizer = Tokenize([
-            GreekWord,
+            BetaWord,  # GreekWord,
             Bracketing,
-            GreekPunctuation,
+            BetaPunctuation,  # GreekPunctuation,
             GreekQuotation,
             Spacing,
         ])
