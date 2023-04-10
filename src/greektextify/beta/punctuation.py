@@ -20,10 +20,10 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Betacode latin->koine mapping."""
-from greektextify.text.immaterializer import TokenImmaterializableMixin
+from greektextify.text.punctuation import GreekPunctuation
 
 
-class BetaPunctuation(TokenImmaterializableMixin):
+class BetaPunctuation(GreekPunctuation):
 
     FULL_STOP = '\u002E'
     COMMA = '\u002C'

@@ -32,7 +32,7 @@ from greektextify.text.bracket import Bracketing
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.quotation import GreekQuotation
 from greektextify.text.spacing import Spacing
-from greektextify.text.standardize import Standardize
+from greektextify.beta.pdl_standard import PdlBetaStandard
 from greektextify.text.token import Tokenize
 from greektextify.text.word import GreekWord
 from perseusconverter.traverse.xml import AbstractXmlTraverser
@@ -77,7 +77,7 @@ class AbstractTeiTraverser(AbstractXmlTraverser, ContextObject):
             BetaPunctuation,  # GreekPunctuation,
             GreekQuotation,
             Spacing,
-        ])
+        ], PdlBetaStandard())
 
         tag = QName(root).localname
         if tag == "TEI.2":
@@ -104,7 +104,7 @@ class Tei1Traverser(AbstractTeiTraverser):
     @NlpOperation()
     def _tokenize(self, text: str, e: Element) -> List[str]:
         if text is not None:
-            std = Standardize.pdl(text.strip())
+            std = self._tokenizer.standardize(text.strip())
             if std != '':
                 # print(self._hierarchy)
                 tokens = self._tokenizer.tokenize(std)
@@ -154,7 +154,7 @@ class Tei2Traverser(AbstractTeiTraverser):
     @NlpOperation()
     def _tokenize(self, text: str, e: Element) -> List[str]:
         if text is not None:
-            std = Standardize.pdl(text.strip())
+            std = self._tokenizer.standardize(text.strip())
             if std != '':
                 # print(self._hierarchy)
                 tokens = self._tokenizer.tokenize(std)

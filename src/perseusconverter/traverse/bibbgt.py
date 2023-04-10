@@ -25,7 +25,7 @@ from typing import List, Tuple
 
 from regex import regex
 
-from greektextify.text.standardize import Standardize
+from greektextify.text.pdl_standard import PdlUtfStandard
 from perseusconverter.traverse.plain import AbstractPlainTraverser
 
 INDEX = {
@@ -69,7 +69,7 @@ class BgtTraverser(AbstractPlainTraverser):
 
     def _traverse(self, line: str):
         self._book, self._chapter, self._verse, text = regex.search(r"(.*) (\d+):(\d+)?(.*)$", line.strip()).groups()
-        std = Standardize.pdl(text.strip())
+        std = PdlUtfStandard.standardize(text.strip())
 
         for idx, line in self._sub_verses(std):
             self._verse = idx

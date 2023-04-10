@@ -24,12 +24,14 @@ from typing import List, Tuple, Type
 
 from greektextify.nlp.contextual import NlpWarning
 from greektextify.text.immaterializer import TokenImmaterializableMixin
+from greektextify.text.standardizer import TokenStandardizerMixin
 
 
 class Tokenize:
 
-    def __init__(self, token_types: List[Type[TokenImmaterializableMixin]]):
+    def __init__(self, token_types: List[Type[TokenImmaterializableMixin]], standardizer: TokenStandardizerMixin):
         self._token_type = token_types
+        self._standardizer = standardizer
 
     def span_tokenize(self, text: str) -> Tuple[int, int]:
         position = 0
@@ -56,3 +58,6 @@ class Tokenize:
                 tokens.append(token)
 
         return tokens
+
+    def standardize(self, text: str) -> str:
+        return self._standardizer.standardize(text)

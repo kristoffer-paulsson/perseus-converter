@@ -25,9 +25,10 @@ import regex
 from greektextify.text.extended import GreekExtended
 from greektextify.text.midway import GreekMidway
 from greektextify.text.punctuation import GreekPunctuation
+from greektextify.text.standardizer import TokenStandardizerMixin
 
 
-class Standardize:
+class PdlUtfStandard(TokenStandardizerMixin):
     MODIFIER_LETTER_APOSTROPHE = '\u02BC'
     MIDDLE_DOT = '\u00B7'
     SEMICOLON = '\u003B'
@@ -43,7 +44,7 @@ class Standardize:
     }
 
     @classmethod
-    def pdl(cls, text: str) -> str:
+    def standardize(cls, text: str) -> str:
         text = regex.sub(r'--', cls.EM_DASH, text)  # Translates two HYPHEN MINUS as EM DASH
         text = regex.sub(r'-(?!\S)|(?<!\S)-', cls.EM_DASH, text)  # Translates HYPHEN MINUS not between two words as EM DASH
         return text.translate(cls.PDL_TRANSFORM)  # Translates the rest
