@@ -29,6 +29,8 @@ from greektextify.beta.punctuation import BetaPunctuation
 from greektextify.beta.word import BetaWord
 from greektextify.nlp.contextual import ContextObject, NlpOperation
 from greektextify.text.bracket import Bracketing
+from greektextify.text.detoken import Detokenizer
+from greektextify.text.pdl_standard import PdlUtfStandard
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.quotation import GreekQuotation
 from greektextify.text.spacing import Spacing
@@ -64,6 +66,28 @@ class AbstractTeiTraverser(AbstractXmlTraverser, ContextObject):
                 self._hierarchy[2][unit] = num
 
     @staticmethod
+    def utf_tokenizer():
+        return Tokenize([
+            GreekWord,
+            Bracketing,
+            GreekPunctuation,
+            GreekQuotation,
+            Spacing,
+            # GreekHeard,
+            # GreekUnheard,
+        ], PdlUtfStandard())
+
+    @staticmethod
+    def beta_tokenizer():
+        return Tokenize([
+            BetaWord,  # GreekWord,
+            Bracketing,
+            BetaPunctuation,  # GreekPunctuation,
+            GreekQuotation,
+            Spacing,
+        ], PdlBetaStandard())
+
+    @staticmethod
     def open(filename: PurePath) -> "AbstractTeiTraverser":
         tree = None
         with open(str(filename)) as fd:
@@ -71,13 +95,7 @@ class AbstractTeiTraverser(AbstractXmlTraverser, ContextObject):
 
         root = tree.getroot()
 
-        tokenizer = Tokenize([
-            BetaWord,  # GreekWord,
-            Bracketing,
-            BetaPunctuation,  # GreekPunctuation,
-            GreekQuotation,
-            Spacing,
-        ], PdlBetaStandard())
+        tokenizer = AbstractTeiTraverser.beta_tokenizer()
 
         tag = QName(root).localname
         if tag == "TEI.2":
@@ -108,10 +126,10 @@ class Tei1Traverser(AbstractTeiTraverser):
             if std != '':
                 # print(self._hierarchy)
                 tokens = self._tokenizer.tokenize(std)
-                for token in tokens:
-                    if len(token) > 1:
-                        pass
-                        # print(GreekWord.glyphen(token))
+                print(tokens)
+                # for token in tokens:
+                #    if len(token) > 1:
+                #        print(token, Detokenizer.build_word(BetaWord.glyphen(token)))
                 # print(tokens)
 
 
@@ -158,8 +176,8 @@ class Tei2Traverser(AbstractTeiTraverser):
             if std != '':
                 # print(self._hierarchy)
                 tokens = self._tokenizer.tokenize(std)
-                for token in tokens:
-                    if len(token) > 1:
-                        pass
-                        # print(GreekWord.glyphen(token))
+                print(tokens)
+                # for token in tokens:
+                #    if len(token) > 1:
+                #        print(token, Detokenizer.build_word(BetaWord.glyphen(token)))
                 # print(tokens)

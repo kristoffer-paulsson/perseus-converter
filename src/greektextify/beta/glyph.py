@@ -23,7 +23,7 @@
 
 Following for standard: http://stephanus.tlg.uci.edu/encoding/BCM.pdf
 """
-from typing import Tuple
+from typing import Tuple, List
 
 from greektextify.beta.alphabet import BetaAlphabet
 from greektextify.beta.diacritic import BetaDiacritic
@@ -32,6 +32,36 @@ from greektextify.text.glyph import GreekGlyph
 
 
 class BetaGlyph(GreekGlyph):
+
+    @classmethod
+    def combine(cls, chs: List["GreekGlyph"]) -> "GreekGlyph":
+        ch = None
+        psili = False
+        dasia = False
+        ypogegrammeni = False
+        varia = False
+        oxia = False
+        perispomeni = False
+        dialytika = False
+        vrachy = False
+        macron = False
+
+        for gl in chs:
+            if ch and gl.ch:
+                raise NlpWarning(*NlpWarning.COMBINE_ERROR, {"chars": (ch, gl.ch)})
+
+            ch = gl.ch if gl.ch else ch
+            psili = True if gl.psili else psili
+            dasia = True if gl.dasia else dasia
+            ypogegrammeni = True if gl.ypogegrammeni else ypogegrammeni
+            varia = True if gl.varia else varia
+            oxia = True if gl.oxia else oxia
+            perispomeni = True if gl.perispomeni else perispomeni
+            dialytika = True if gl.dialytika else dialytika
+            vrachy = True if gl.vrachy else vrachy
+            macron = True if gl.macron else macron
+
+        return GreekGlyph(ch, psili, dasia, ypogegrammeni, varia, oxia, perispomeni, dialytika, vrachy, macron)
 
     @classmethod
     def glyphen(cls, chs: str) -> Tuple["GreekGlyph", int]:
@@ -44,12 +74,14 @@ class BetaGlyph(GreekGlyph):
             upper = True
             position += 1
 
-        for ch in chs[position:]:
-            if ch in BetaAlphabet.LATIN_CHARS:
-                letter += ch
+        if chs[position] in BetaAlphabet.LATIN_CHARS:
+            letter += chs[position]
+            position += 1
+
+        if position < len(chs):
+            if chs[position] in BetaAlphabet.LATIN_NUMBERS:
+                letter += chs[position]
                 position += 1
-            else:
-                break
 
         if letter in BetaAlphabet.BETA_LETTERS:
             combine.append(cls.diacritic(BetaAlphabet.BETA_LETTERS[letter][0 if upper else 1]))

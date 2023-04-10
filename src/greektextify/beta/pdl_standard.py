@@ -40,4 +40,4 @@ class PdlBetaStandard(TokenStandardizerMixin):
 
     @classmethod
     def standardize(cls, text: str) -> str:
-        return text.translate(cls.PDL_TRANSFORM)  # Translates the rest
+        return text.translate(cls.PDL_TRANSFORM).upper()  # Translates the rest

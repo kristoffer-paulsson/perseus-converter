@@ -64,6 +64,10 @@ class BetaAlphabet(GreekAlphabet):
         LATIN_X, LATIN_Y, LATIN_Z, NUMBER_1, NUMBER_2, NUMBER_3
     ])
 
+    LATIN_NUMBERS = frozenset([
+        NUMBER_1, NUMBER_2, NUMBER_3
+    ])
+
     HYPHEN_MINUS = '\u002D'
 
     ALPHABET = frozenset(LATIN_CHARS | {HYPHEN_MINUS})
