@@ -29,7 +29,7 @@ from greektextify.beta.punctuation import BetaPunctuation
 from greektextify.beta.word import BetaWord
 from greektextify.nlp.contextual import ContextObject, NlpOperation
 from greektextify.text.bracket import Bracketing
-from greektextify.text.detoken import Detokenizer
+from greektextify.nlp.detoken import Detokenizer
 from greektextify.text.pdl_standard import PdlUtfStandard
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.quotation import GreekQuotation
