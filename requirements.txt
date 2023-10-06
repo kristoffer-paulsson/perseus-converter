@@ -1,5 +1,5 @@
 pip
-setuptools~=65.5.1
+setuptools>=65.5
 wheel
 coverage
 sphinx~=5.3.0

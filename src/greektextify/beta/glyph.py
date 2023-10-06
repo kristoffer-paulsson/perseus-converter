@@ -70,9 +70,16 @@ class BetaGlyph(GreekGlyph):
         letter = ''
         upper = False
 
-        if chs[0] == BetaAlphabet.UPPER_CASE:
+        if chs[position] == BetaAlphabet.UPPER_CASE:
             upper = True
             position += 1
+
+            for ch in chs[position:]:
+                if ch in BetaDiacritic.DIACRITICS:
+                    combine.append(cls.diacritic(BetaDiacritic.BETA_DIACRITICS[ch]))
+                    position += 1
+                else:
+                    break
 
         if chs[position] in BetaAlphabet.LATIN_CHARS:
             letter += chs[position]

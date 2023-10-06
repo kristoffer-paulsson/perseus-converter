@@ -45,8 +45,8 @@ class CLI:
 
     def _download(self, subparser):
         load = subparser.add_parser(name="download", help="Downloads and updates the latest corpora")
-        load.add_argument('corpora', choices=['pdl', 'bib'])
+        load.add_argument('corpora', choices=['pdl', 'bib', 'lex'])
 
     def _koine(self, subparser):
         koine = subparser.add_parser(name="koine", help="Imports the corpora and caches them as \"parsings.\"")
-        koine.add_argument('corpora', choices=['pdl', 'bib'])
+        koine.add_argument('corpora', choices=['pdl', 'bib', 'lex'])

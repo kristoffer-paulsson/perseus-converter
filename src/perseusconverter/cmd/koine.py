@@ -30,6 +30,7 @@ from ..app import Config
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import AbstractTeiTraverser, Tei2Traverser
+from ..traverse.lsjlex import LsjTraverser
 
 BETACODE = (
     'tlg2003.tlg008.perseus-grc1.xml',
@@ -85,10 +86,29 @@ class KoineCommand(Command):
             txt = BgtTraverser(filename)
             txt.traverse()
 
+    def _lex_lsj(self):
+        counter = 0
+        error = 0
+        for number in range(1, 27+1):
+            filename = self.target.joinpath("lexica/CTS_XML_TEI/perseus/pdllex/grc/lsj/grc.lsj.perseus-eng{}.xml".format(number))
+            if not filename.is_file():
+                raise RuntimeError("Dictionaru file missing: {}".format(str(filename)))
+            try:
+                with NlpContext(LsjTraverser.open(filename), self.logger) as xml:
+                    xml.traverse()
+                    counter += xml.counter
+                    error += xml.error
+            except XMLSyntaxError as e:
+                self.logger.warn("{}: {}".format(e.__class__, str(e)))
+        print("Entries: {}".format(counter))
+        print("Failed: {}".format(error))
+
     def __call__(self):
         if self._args.corpora == 'bib':
             self._bib()
         elif self._args.corpora == 'pdl':
             self._pdl()
+        elif self._args.corpora == 'lex':
+            self._lex_lsj()
         else:
             pass

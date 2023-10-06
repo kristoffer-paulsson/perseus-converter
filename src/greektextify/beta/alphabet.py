@@ -48,7 +48,7 @@ class BetaAlphabet(GreekAlphabet):
     LATIN_S = '\u0053'
     LATIN_T = '\u0054'
     LATIN_U = '\u0055'
-    # LATIN_V = '\u0056'  # Skipping Digamma to begin with
+    LATIN_V = '\u0056'  # Skipping Digamma to begin with
     LATIN_W = '\u0057'
     LATIN_X = '\u0058'
     LATIN_Y = '\u0059'
@@ -61,7 +61,7 @@ class BetaAlphabet(GreekAlphabet):
     LATIN_CHARS = frozenset([
         UPPER_CASE, LATIN_A, LATIN_B, LATIN_C, LATIN_D, LATIN_E, LATIN_F, LATIN_G, LATIN_H, LATIN_I, LATIN_K,
         LATIN_L, LATIN_M, LATIN_N, LATIN_O, LATIN_P, LATIN_Q, LATIN_R, LATIN_S, LATIN_T, LATIN_U, LATIN_W,
-        LATIN_X, LATIN_Y, LATIN_Z, NUMBER_1, NUMBER_2, NUMBER_3
+        LATIN_X, LATIN_Y, LATIN_Z, NUMBER_1, NUMBER_2, NUMBER_3, LATIN_V
     ])
 
     LATIN_NUMBERS = frozenset([
@@ -98,7 +98,8 @@ class BetaAlphabet(GreekAlphabet):
         LATIN_W: (GreekAlphabet.UPPER_OMEGA, GreekAlphabet.LOWER_OMEGA),
         LATIN_X: (GreekAlphabet.UPPER_CHI, GreekAlphabet.LOWER_CHI),
         LATIN_Y: (GreekAlphabet.UPPER_PSI, GreekAlphabet.LOWER_PSI),
-        LATIN_Z: (GreekAlphabet.UPPER_ZETA, GreekAlphabet.LOWER_ZETA)
+        LATIN_Z: (GreekAlphabet.UPPER_ZETA, GreekAlphabet.LOWER_ZETA),
+        LATIN_V: (GreekAlphabet.UPPER_DIGAMMA, GreekAlphabet.LOWER_DIGAMMA)
     }
 
 

@@ -33,6 +33,7 @@ class DownloadCommand(Command):
     GIT = {
         'pdl': ("Perseus Digital Library", "https://github.com/PerseusDL/canonical-greekLit.git", "canonical-greekLit"),
         'bib': ("Bib", "https://github.com/kristoffer-paulsson/bible-analyzer-corpora.git", "bible-analyzer-corpora"),
+        'lex': ("LSJ & LS from PDL", "https://github.com/PerseusDL/lexica.git", "lexica"),
     }
 
     def __init__(self, config: Config, args: Namespace):
