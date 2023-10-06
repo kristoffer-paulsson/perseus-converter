@@ -55,14 +55,19 @@ class LsjTraverser(Tei2Traverser):
         tokens = self._tokenizer.tokenize(std)
         return Detokenizer.build_word(BetaWord.glyphen(tokens[0]))
 
-    def _etym(self, xml: Element):
-        pass
+    def _etym(self, xml: Element) -> tuple:
+        e = list()
+        for etym in xml.getiterator("etym"):
+            if etym.text:
+                e.append(self._decode(etym.text))
+        return tuple(e)
 
     def _orth(self, xml: Element) -> tuple:
         o = list()
         el = xml.findall("orth")
         for orth in el:
-            o.append(self._decode(el[0].text))
+            if orth.text:
+                o.append(self._decode(orth.text))
         return tuple(o)
 
     def _senses(self, xml: Element) -> tuple:
@@ -115,6 +120,7 @@ class LsjTraverser(Tei2Traverser):
             try:
                 print(self._e(entry.attrib["key"]))
                 print(self._orth(entry))
+                print(self._etym(entry))
                 print(self._senses(entry))
                 self._counter += 1
             except (NlpWarning, ValueError, TypeError, IndexError) as e:
