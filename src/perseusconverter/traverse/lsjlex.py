@@ -22,6 +22,7 @@
 """TEI2 Traverser and processor for Liddell & Scott."""
 import re
 from pathlib import PurePath
+from typing import NamedTuple, Tuple, List
 
 from greektextify.beta.word import BetaWord
 from greektextify.nlp.contextual import NlpWarning
@@ -29,6 +30,15 @@ from greektextify.nlp.detoken import Detokenizer
 from greektextify.text.token import Tokenize
 from perseusconverter.traverse.general import Tei2Traverser, AbstractTeiTraverser
 from lxml.etree import Element, parse, ElementTree, QName
+
+
+class Entry(NamedTuple):
+    entry: str
+    lexeme: Tuple[str, int]
+    orthography: Tuple[str, ...]
+    etymology: Tuple[str, ...]
+    senses: Tuple[List[str], ...]
+    refs: List[Tuple[str, str, str, str]]
 
 
 class LsjTraverser(Tei2Traverser):
@@ -144,13 +154,20 @@ class LsjTraverser(Tei2Traverser):
 
     def _traverse(self, xml: Element):
         for entry in xml.getiterator("entryFree"):
-            # text = entry.attrib["key"]
             try:
-                print(self._e(entry.attrib["key"]))
-                print(self._orth(entry))
-                print(self._etym(entry))
-                print(self._senses(entry))
-                print(self._bibl(entry))
+                print(Entry(
+                    entry.attrib["id"],
+                    self._e(entry.attrib["key"]),
+                    self._orth(entry),
+                    self._etym(entry),
+                    self._senses(entry),
+                    self._bibl(entry)
+                ))
+                # print(self._e(entry.attrib["key"]))
+                # print(self._orth(entry))
+                # print(self._etym(entry))
+                # print(self._senses(entry))
+                # print(self._bibl(entry))
                 self._counter += 1
             except (NlpWarning, ValueError, TypeError, IndexError) as e:
                 self._error += 1
