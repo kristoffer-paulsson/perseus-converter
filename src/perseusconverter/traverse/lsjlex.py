@@ -114,6 +114,34 @@ class LsjTraverser(Tei2Traverser):
 
         return word, idx
 
+    def _bibl(self, xml: Element) -> list:
+        refs = list()
+        for bibl in xml.getiterator("bibl"):
+            urn = None
+            if "n" in bibl.attrib:
+                urn = bibl.attrib["n"]
+            author = None
+            a = bibl.findall("author")
+            if len(a) > 0:
+                author = a[0].text.strip()
+
+            title = None
+            t = bibl.findall("title")
+            if len(t) > 0:
+                title = t[0].text.strip()
+
+            scope = None
+            s = bibl.findall("biblScope")
+            if len(s) > 0:
+                scope = s[0].text.strip()
+
+            if urn or (author and scope) or (title and scope):
+                refs.append((author, title, scope, urn))
+            else:
+                print("Invariant: {} {} {}".format(author, title, scope))
+
+            return refs
+
     def _traverse(self, xml: Element):
         for entry in xml.getiterator("entryFree"):
             # text = entry.attrib["key"]
@@ -122,6 +150,7 @@ class LsjTraverser(Tei2Traverser):
                 print(self._orth(entry))
                 print(self._etym(entry))
                 print(self._senses(entry))
+                print(self._bibl(entry))
                 self._counter += 1
             except (NlpWarning, ValueError, TypeError, IndexError) as e:
                 self._error += 1
