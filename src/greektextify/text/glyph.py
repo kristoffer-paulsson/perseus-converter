@@ -127,6 +127,8 @@ class GreekGlyph(NamedTuple):
 
 GREEK_GLYPH_COMBO = frozenset([
     GreekGlyph('-', False, False, False, False, False, False, False, False, False),
+    GreekGlyph(GreekMidway.APOSTROPHE, False, False, False, False, False, False, False, False, False),
+
 
     GreekGlyph('Α', False, False, False, False, False, False, False, False, False),
     GreekGlyph('Α', False, False, False, False, False, False, False, False, True),
