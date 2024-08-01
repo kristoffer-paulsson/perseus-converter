@@ -75,3 +75,4 @@ class GreekMidway:
     APOSTROPHE = '\u0027'
 
     MODIFIERS = frozenset([APOSTROPHE])
+

@@ -83,7 +83,7 @@ class BetaAlphabet(GreekAlphabet):
         LATIN_H: (GreekAlphabet.UPPER_ETA, GreekAlphabet.LOWER_ETA),
         LATIN_I: (GreekAlphabet.UPPER_IOTA, GreekAlphabet.LOWER_IOTA),
         LATIN_K: (GreekAlphabet.UPPER_KAPPA, GreekAlphabet.LOWER_KAPPA),
-        LATIN_L: (GreekAlphabet.UPPER_LAMBDA, GreekAlphabet.LOWER_LAMBDA),
+        LATIN_L: (GreekAlphabet.UPPER_LAMDA, GreekAlphabet.LOWER_LAMDA),
         LATIN_M: (GreekAlphabet.UPPER_MU, GreekAlphabet.LOWER_MU),
         LATIN_N: (GreekAlphabet.UPPER_NU, GreekAlphabet.LOWER_NU),
         LATIN_O: (GreekAlphabet.UPPER_OMICRON, GreekAlphabet.LOWER_OMICRON),
@@ -92,14 +92,14 @@ class BetaAlphabet(GreekAlphabet):
         LATIN_R: (GreekAlphabet.UPPER_RHO, GreekAlphabet.LOWER_RHO),
         LATIN_S: (GreekAlphabet.UPPER_SIGMA, GreekAlphabet.LOWER_SIGMA),
         LATIN_S + NUMBER_1: (None, GreekAlphabet.LOWER_SIGMA),
-        LATIN_S + NUMBER_2: (None, GreekAlphabet.LOWER_SIGMA_FINAL),
+        LATIN_S + NUMBER_2: (None, GreekAlphabet.LOWER_FINAL_SIGMA),
         LATIN_T: (GreekAlphabet.UPPER_TAU, GreekAlphabet.LOWER_TAU),
         LATIN_U: (GreekAlphabet.UPPER_UPSILON, GreekAlphabet.LOWER_UPSILON),
         LATIN_W: (GreekAlphabet.UPPER_OMEGA, GreekAlphabet.LOWER_OMEGA),
         LATIN_X: (GreekAlphabet.UPPER_CHI, GreekAlphabet.LOWER_CHI),
         LATIN_Y: (GreekAlphabet.UPPER_PSI, GreekAlphabet.LOWER_PSI),
         LATIN_Z: (GreekAlphabet.UPPER_ZETA, GreekAlphabet.LOWER_ZETA),
-        LATIN_V: (GreekAlphabet.UPPER_DIGAMMA, GreekAlphabet.LOWER_DIGAMMA)
+        LATIN_V: (GreekAlphabet.DIGAMMA, GreekAlphabet.LOWER_DIGAMMA)
     }
 
 

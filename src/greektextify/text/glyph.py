@@ -24,6 +24,7 @@ from typing import Tuple, NamedTuple, List
 
 from greektextify.nlp.contextual import NlpWarning
 from greektextify.text.alphabet import GreekAlphabet
+from greektextify.text.database import GreekDatabase
 from greektextify.text.diacritic import GreekDiacritic
 from greektextify.text.extended import GreekExtended
 from greektextify.text.midway import GreekMidway
@@ -126,7 +127,7 @@ class GreekGlyph(NamedTuple):
 
 
 GREEK_GLYPH_COMBO = frozenset([
-    GreekGlyph('-', False, False, False, False, False, False, False, False, False),
+    GreekGlyph(GreekAlphabet.HYPHEN_MINUS, False, False, False, False, False, False, False, False, False),
     GreekGlyph(GreekMidway.APOSTROPHE, False, False, False, False, False, False, False, False, False),
 
 
@@ -417,3 +418,4 @@ GREEK_GLYPH_COMBO = frozenset([
     GreekGlyph('ω', True, False, True, False, True, False, False, False, False),
     GreekGlyph('ω', True, False, True, True, False, False, False, False, False),
 ])
+

@@ -30,6 +30,7 @@ from greektextify.beta.diacritic import BetaDiacritic
 from greektextify.beta.glyph import BetaGlyph
 from greektextify.beta.midway import BetaMidway
 from greektextify.text.glyph import GreekGlyph
+from greektextify.text.midway import GreekMidway
 from greektextify.text.word import GreekWord
 
 
@@ -75,8 +76,9 @@ class BetaWord(GreekWord):
 
     @classmethod
     def glyphen(cls, word: str) -> Tuple[GreekGlyph]:
+        apostrophe = word[-1] == BetaMidway.APOSTROPHE
         position = 0
-        length = len(word)-1 if word[-1] == BetaMidway.APOSTROPHE else len(word)
+        length = len(word)-1 if apostrophe else len(word)
         glyphs = list()
 
         while position != length:
@@ -84,8 +86,7 @@ class BetaWord(GreekWord):
             glyphs.append(glyph)
             position += size
 
+        if apostrophe:
+            glyphs.append(GreekGlyph(GreekMidway.APOSTROPHE, False, False, False, False, False, False, False, False, False))
+
         return tuple(glyphs)
-
-
-
-

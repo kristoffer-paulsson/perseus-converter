@@ -23,13 +23,13 @@
 import regex
 
 from greektextify.text.extended import GreekExtended
+from greektextify.text.halfway import GreekHalfway
 from greektextify.text.midway import GreekMidway
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.standardizer import TokenStandardizerMixin
 
 
 class PdlUtfStandard(TokenStandardizerMixin):
-    MODIFIER_LETTER_APOSTROPHE = '\u02BC'
     MIDDLE_DOT = '\u00B7'
     SEMICOLON = '\u003B'
     MODIFIER_LETTER_REVERSED_COMMA = '\u02BD'
@@ -37,7 +37,7 @@ class PdlUtfStandard(TokenStandardizerMixin):
     EM_DASH = '\u2014'
 
     PDL_TRANSFORM = {
-        ord(MODIFIER_LETTER_APOSTROPHE): ord(GreekMidway.APOSTROPHE),
+        ord(GreekHalfway.MODIFIER_APOSTROPHE): ord(GreekMidway.APOSTROPHE),
         ord(MIDDLE_DOT): ord(GreekPunctuation.ANO_TELEIA),
         ord(SEMICOLON): ord(GreekPunctuation.QUESTION_MARK),
         ord(MODIFIER_LETTER_REVERSED_COMMA): ord(GreekExtended.DASIA),
