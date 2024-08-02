@@ -30,7 +30,7 @@ from greektextify.text.midway import GreekMidway
 class GreekDatabase:
     APOSTROPHE = (GreekMidway.APOSTROPHE,
                   GreekGlyph(ch=GreekMidway.APOSTROPHE, psili=False, dasia=False, ypogegrammeni=False, varia=False,
-                             oxia=False, perispomeni=False, dialytika=False, vrachy=False, macron=False)),
+                             oxia=False, perispomeni=False, dialytika=False, vrachy=False, macron=False))
     HYPHEN_MINUS = (GreekAlphabet.HYPHEN_MINUS,
                     GreekGlyph(ch=GreekAlphabet.HYPHEN_MINUS, psili=False, dasia=False, ypogegrammeni=False,
                                varia=False, oxia=False, perispomeni=False, dialytika=False, vrachy=False, macron=False))
@@ -1236,6 +1236,6 @@ class GreekDatabase:
     DEBUG_CIRCLE = (GreekDiacritic.DEBUG_CIRCLE,
                     GreekGlyph(ch=GreekDiacritic.DEBUG_CIRCLE, psili=False, dasia=False, ypogegrammeni=False,
                                varia=False, oxia=False, perispomeni=False, dialytika=False, vrachy=False,
-                               macron=False)),
+                               macron=False))
 
     LEGAL = frozenset(dict(ALL_UTF_LETTERS).values())

@@ -24,7 +24,6 @@ from typing import Tuple, NamedTuple, List
 
 from greektextify.nlp.contextual import NlpWarning
 from greektextify.text.alphabet import GreekAlphabet
-from greektextify.text.database import GreekDatabase
 from greektextify.text.diacritic import GreekDiacritic
 from greektextify.text.extended import GreekExtended
 from greektextify.text.midway import GreekMidway

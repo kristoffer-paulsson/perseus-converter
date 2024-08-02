@@ -1,4 +1,5 @@
 import unicodedata
+from types import MappingProxyType
 
 from greekparsify.modify import Articles
 from greekparsify.prepos import Prepositions
@@ -6,10 +7,11 @@ from greektextify.beta.word import BetaWord
 from greektextify.nlp.debug import Debugger
 from greektextify.nlp.detoken import Detokenizer
 from greektextify.text.alphabet import GreekAlphabet
-from greektextify.text.diacritic import GreekDiacritic
+from greektextify.text.database import GreekDatabase
 from greektextify.text.extended import GreekExtended
 from greektextify.text.glyph import GREEK_GLYPH_COMBO, GreekGlyph
 from greektextify.text.midway import GreekMidway
+from greektextify.text.prnt import PrintGreek
 from greektextify.text.word import GreekWord
 
 
@@ -34,6 +36,49 @@ def write_prog(letter: str) -> str:
 
 
 def main():
+    for l in sorted(list(set(Articles.STRUCTS.keys()))):
+        print(PrintGreek.format(l))
+    for l in sorted(list(set(Prepositions.PREPOS.keys()))):
+        print(PrintGreek.format(l))
+
+
+def main7():
+    db = MappingProxyType(dict(GreekDatabase.ALL_UTF_LETTERS))
+    da_set = set()
+    pdb = dict()
+
+    for l in list(GreekAlphabet.CASE_LOWER | GreekAlphabet.CASE_UPPER):
+        g = db[l]
+        da_set.add(g)
+
+        gl = str(g)
+        s = write_prog(gl[15])
+        gl = gl[:14] + s + gl[17:]
+
+        print(naming(l) + " = (" + gl + ", " + write_prog(l) + ")")
+
+    for l in GreekExtended.EXPANDABLE_LETTERS.keys():
+        g = db[l]
+        if g not in da_set:
+            da_set.add(g)
+            gl = str(g)
+            s = write_prog(gl[15])
+            gl = gl[:14] + s + gl[17:]
+
+            print(naming(l) + " = (" + gl + ", " + write_prog(l) + ")")
+
+    for l in GreekMidway.EXPANDABLE_LETTERS.keys():
+        g = db[l]
+        if g not in da_set:
+            da_set.add(g)
+            gl = str(g)
+            s = write_prog(gl[15])
+            gl = gl[:14] + s + gl[17:]
+
+            print(naming(l) + " = (" + gl + ", " + write_prog(l) + ")")
+
+
+def main6():
     all = GreekAlphabet.CASE_LOWER | GreekAlphabet.CASE_UPPER | GreekMidway.EXPANDABLE_LETTERS.keys() | GreekExtended.EXPANDABLE_LETTERS.keys()
     test = set([GreekGlyph.glyphen(l) for l in all])
     for letter in all:
