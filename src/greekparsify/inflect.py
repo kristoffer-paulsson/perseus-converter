@@ -33,11 +33,11 @@ class Inflect:
 
     CASE = MappingProxyType(dict(list(enumerate((
         '-',    # Implicit zero
-        'NOM',  # Nominative case
-        'GEN',  # genitive
-        'DAT',  # Dative
-        'ACC',  # accusative case
         'VOC',  # Vocative
+        'NOM',  # Nominative case
+        'ACC',  # accusative case
+        'DAT',  # Dative
+        'GEN',  # genitive
     )))))
 
     NUMBER = MappingProxyType(dict(list(enumerate((

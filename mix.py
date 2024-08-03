@@ -1,6 +1,7 @@
 import unicodedata
 from types import MappingProxyType
 
+from greekparsify.inflect import Inflect
 from greekparsify.modify import Articles
 from greekparsify.prepos import Prepositions
 from greektextify.beta.word import BetaWord
@@ -38,8 +39,8 @@ def write_prog(letter: str) -> str:
 def main():
     for l in sorted(list(set(Articles.STRUCTS.keys()))):
         print(PrintGreek.format(l))
-    for l in sorted(list(set(Prepositions.PREPOS.keys()))):
-        print(PrintGreek.format(l))
+    #for l in sorted(list(set(Prepositions.PREPOS.keys()))):
+    #    print(PrintGreek.format(l))
 
 
 def main7():
@@ -138,7 +139,7 @@ def main5():
 
 def main4():
     for w, t in Articles.STRUCTS.items():
-        print(w, t)
+        print(PrintGreek.format(w) + ',', ', '.join(["{}-{}-{}".format(Inflect.CASE[c], Inflect.GENDER[g], Inflect.NUMBER[n]) for c, g, n in t]))
 
 
 def mai3():
@@ -157,4 +158,4 @@ def main2():
 
 
 if __name__ == '__main__':
-    main()
+    main4()

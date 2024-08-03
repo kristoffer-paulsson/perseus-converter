@@ -1,0 +1,84 @@
+%! Author = kristofferpaulsson
+%! Date = 2024-08-03
+
+% Preamble
+\documentclass[10pt]{memoir}
+
+% Packages
+\usepackage{amsmath}
+\usepackage{float}
+% Please add the following required packages to your document preamble:
+\usepackage{multirow}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{fontspec}
+\fontspec{Tinos}[
+    Path = .,
+    Extension = .ttf ,
+    UprightFont = *-Regular ,
+    Scale=1,
+    Ligatures=TeX
+]
+\fontspec{Inter}[
+    Path = .,
+    Extension = .ttf ,
+    UprightFont = *-Regular ,
+    Scale=1,
+    Ligatures=TeX
+]
+
+%\setromanfont{Tinos}
+
+\newcommand{\tsc}[1]{\textsc{#1}}
+\newcommand{\grc}[1]{\fontspec{Inter}#1}
+
+\renewcommand{\arraystretch}{1.3}
+
+% Document
+\begin{document}
+
+    \section*{Koine Greek Articles}
+    Here is a complete unverified list of all accessible \em articles \normal of the Koine language.
+
+    \begin{table}[H]
+        \begin{tabular}{c|ccc}
+            \textbf{Article} & \textbf{Case} & \textbf{Gender} & \textbf{Number} \\
+            \hline
+            \grc{ὁ}                & \tsc{Nom}           & \tsc{Masc}            & \tsc{Sg}              \\
+            \grc{τόν}              & \tsc{Acc}           & \tsc{Masc}            & \tsc{Sg}              \\
+            \grc{τῷ}               & \tsc{Dat}           & \tsc{Masc}/\tsc{Neu}        & \tsc{Sg}              \\
+            \grc{τοῦ}              & \tsc{Gen}           & \tsc{Masc}/\tsc{Neu}        & \tsc{Sg}              \\
+            \grc{οἱ}               & \tsc{Nom}/\tsc{Voc}       & \tsc{Masc}            & \tsc{Pl}              \\
+            \grc{τούς}             & \tsc{Acc}           & \tsc{Masc}            & \tsc{Pl}              \\
+            \grc{τοῖς}             & \tsc{Dat}           & \tsc{Masc}/\tsc{Neu}        & \tsc{Pl}              \\
+            \grc{τῶν}              & \tsc{Gen}           & *             & \tsc{Pl}              \\
+            \grc{ἡ}                & \tsc{Nom}           & \tsc{Fem}             & \tsc{Sg}              \\
+            \grc{τήν}              & \tsc{Acc}           & \tsc{Fem}             & \tsc{Sg}              \\
+            \grc{τῇ}               & \tsc{Dat}           & \tsc{Fem}             & \tsc{Sg}              \\
+            \grc{τῆς}              & \tsc{Gen}           & \tsc{Fem}             & \tsc{Sg}              \\
+            \grc{αἱ}               & \tsc{Nom}/\tsc{Voc}       & \tsc{Fem}             & \tsc{Pl}              \\
+            \grc{τάς}              & \tsc{Acc}           & \tsc{Fem}             & \tsc{Pl}              \\
+            \grc{ταῖς}             & \tsc{Dat}           & \tsc{Fem}             & \tsc{Pl}              \\
+            \grc{τό}               & \tsc{Nom}/\tsc{Acc}       & \tsc{Neu}             & \tsc{Sg}              \\
+            \grc{τά}               & \tsc{Nom}/\tsc{Acc}/\tsc{Voc}   & \tsc{Neu}             & \tsc{Pl}              \\
+            \grc{τώ}               & \tsc{Nom}/\tsc{Acc}       & *             & \tsc{Du}              \\
+            \grc{τοῖν}             & \tsc{Dat}/\tsc{Gen}       & *             & \tsc{Du}
+        \end{tabular}
+        \caption{Articles according to their multiple functions.}
+    \end{table}
+    \nopagebreak
+    \begin{table}[H]
+        \begin{tabular}{c|ccccccc}
+            \multicolumn{1}{l}{} & \multicolumn{2}{c}{\tsc{Masc}} & \multicolumn{2}{c}{\tsc{Fem}} & \multicolumn{2}{c}{\tsc{Neu}} & *                        \\
+            \multicolumn{1}{l}{} & \tsc{Sg}         & \tsc{Pl}          & \tsc{Sg}         & \tsc{Pl}         & \tsc{Sg}         & \tsc{Pl}         & \tsc{Du}                       \\
+            \hline
+            \tsc{Nom}                  & \grc{ὁ}          & \grc{οἱ}          & \grc{ἡ}          & \grc{αἱ}         & \grc{τό}         & \grc{τά}         & \grc{τώ}                       \\
+            \tsc{Acc}                  & \grc{τόν}        & \grc{τούς}        & \grc{τήν}        & \grc{τάς}        & \grc{τό}         & \grc{τά}         & \grc{τώ}                       \\
+            \tsc{Voc}                  & -          & \grc{οἱ}          & -          & \grc{αἱ}         & -          & \grc{τά}         & -                        \\
+            \tsc{Gen}                  & \grc{τοῦ}        & \grc{τῶν}         & \grc{τῆς}        & \grc{τῶν}        & \grc{τοῦ}        & \grc{τῶν}        & \grc{τοῖν}                     \\
+            \tsc{Dat}                  & \grc{τῷ}         & \grc{τοῖς}        & \grc{τῇ}         & \grc{ταῖς}       & \grc{τῷ}         & \grc{τοῖς}       & \multicolumn{1}{l}{\grc{τοῖν}}
+        \end{tabular}
+        \caption{According to the category of \em case, \em gender and \em number.}
+    \end{table}
+
+\end{document}
