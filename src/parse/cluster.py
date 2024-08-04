@@ -19,11 +19,11 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek token im-materialization."""
-from typing import Tuple
+"""Cluster of noises from a hierarchical and organizational perspective."""
+from typing import List
 
 
-class TokenImmaterializableMixin:
-    @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str, ...]:
-        return NotImplemented
+class GlyphCluster:
+
+    def __init__(self, cluster: tuple['GlyphCluster']):
+        self._cluster = cluster

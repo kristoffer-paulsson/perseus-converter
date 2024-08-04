@@ -59,11 +59,13 @@ class GreekUnheard(TokenImmaterializableMixin):
         self._word = word
 
     @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str]:
+    def immaterialize(cls, text: str) -> Tuple[str, ...]:
         token = list()
+
         for ch in text:
             if ch in cls.UNHEARD:
                 token.append(ch)
             else:
                 break
+
         return tuple(token)

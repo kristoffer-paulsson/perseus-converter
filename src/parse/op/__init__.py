@@ -19,11 +19,4 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek token im-materialization."""
-from typing import Tuple
-
-
-class TokenImmaterializableMixin:
-    @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str, ...]:
-        return NotImplemented
+"""Operations that can be performed on a Greek word based on analyzis."""

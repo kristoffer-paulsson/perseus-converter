@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2023 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
@@ -19,11 +19,3 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek token im-materialization."""
-from typing import Tuple
-
-
-class TokenImmaterializableMixin:
-    @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str, ...]:
-        return NotImplemented

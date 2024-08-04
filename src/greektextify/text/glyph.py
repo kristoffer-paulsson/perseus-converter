@@ -36,15 +36,86 @@ class GlyphWarning(RuntimeWarning):
 
 class GreekGlyph(NamedTuple):
     ch: str
-    psili: bool
-    dasia: bool
-    ypogegrammeni: bool
-    varia: bool
-    oxia: bool
-    perispomeni: bool
-    dialytika: bool
-    vrachy: bool
-    macron: bool
+    psili: bool = False             # smooth breathing / spiritus lenis
+    dasia: bool = False             # rough breathing / spiritus asper / coronis
+    ypogegrammeni: bool = False     # iota subscript
+    varia: bool = False             # grave
+    oxia: bool = False              # acute
+    perispomeni: bool = False       # circumflex
+    dialytika: bool = False         # diaresis / trema
+    vrachy: bool = False            # breve
+    macron: bool = False            # macron
+
+    @property
+    def valid(self) -> bool:
+        return self in GREEK_GLYPH_COMBO
+
+    @property
+    def smooth(self) -> bool:
+        """Another name for psili."""
+        return self.psili
+
+    @property
+    def lenis(self) -> bool:
+        """Another name for psili."""
+        return self.psili
+
+    @property
+    def rough(self) -> bool:
+        """Another name for dasia."""
+        return self.dasia
+
+    @property
+    def asper(self) -> bool:
+        """Another name for dasia."""
+        return self.dasia
+
+    @property
+    def coronis(self) -> bool:
+        """Another name for dasia."""
+        return self.dasia
+
+    @property
+    def subscript(self) -> bool:
+        """Another name for ypogegrammeni."""
+        return self.ypogegrammeni
+
+    @property
+    def grave(self) -> bool:
+        """Another name for varia."""
+        return self.varia
+
+    @property
+    def acute(self) -> bool:
+        """Another name for oxia."""
+        return self.oxia
+
+    @property
+    def circumflex(self) -> bool:
+        """Another name for perispomeni."""
+        return self.perispomeni
+
+    @property
+    def diaeresis(self) -> bool:
+        """Another name for dialytika."""
+        return self.dialytika
+
+    @property
+    def trema(self) -> bool:
+        """Another name for dialytika."""
+        return self.dialytika
+
+    @property
+    def breve(self) -> bool:
+        """Another name for vrachy."""
+        return self.vrachy
+
+    @property
+    def lower(self) -> str:
+        return self.ch.lower()
+
+    def same(self, other: 'GreekGlyph') -> bool:
+        return self.lower == other.lower
 
     @property
     def valid(self) -> bool:

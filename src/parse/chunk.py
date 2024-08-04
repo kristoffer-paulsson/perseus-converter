@@ -19,11 +19,27 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek token im-materialization."""
-from typing import Tuple
+"""Chunk of glyphs from a technical perspective."""
+from greektextify.text.glyph import GreekGlyph
 
 
-class TokenImmaterializableMixin:
-    @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str, ...]:
-        return NotImplemented
+class GlyphChunk:
+
+    def __init__(self, chunk: tuple[GreekGlyph], initial: bool = False):
+        self._chunk = chunk
+        self._initial = initial
+
+    @property
+    def chunk(self) -> tuple[GreekGlyph]:
+        return self._chunk
+
+    @property
+    def initial(self) -> bool:
+        return self._initial
+
+    def is_upper(self) -> bool:
+        return self._chunk[0].ch.isupper()
+
+    def __repr__(self) -> str:
+        return str("".join(str(x) for x in self._chunk))
+

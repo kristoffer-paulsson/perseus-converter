@@ -19,11 +19,22 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek token im-materialization."""
-from typing import Tuple
+"""Greek standardization of Koine unicode variants of spelling in supposedly Academic Bible, from German Bible Society."""
+from greektextify.text.extended import GreekExtended
+from greektextify.text.midway import GreekMidway
+from greektextify.text.punctuation import GreekPunctuation
+from greektextify.text.standardizer import TokenStandardizerMixin
 
 
-class TokenImmaterializableMixin:
+class DbgUtfStandard(TokenStandardizerMixin):
+    MODIFIER_LETTER_APOSTROPHE = '\u2019'
+    SEMICOLON = '\u003B'
+
+    DBG_TRANSFORM = {
+        ord(GreekExtended.KORONIS): ord(GreekMidway.APOSTROPHE),
+        ord(SEMICOLON): ord(GreekPunctuation.QUESTION_MARK),
+    }
+
     @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str, ...]:
-        return NotImplemented
+    def standardize(cls, text: str) -> str:
+        return text.translate(cls.DBG_TRANSFORM)  # Translates the rest

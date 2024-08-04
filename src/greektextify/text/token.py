@@ -38,23 +38,25 @@ class Tokenize:
 
         while len(text) > position:
             current = start_i = position
+            tt = 0
             for immaterializer in self._token_type:
                 token = immaterializer.immaterialize(text[position:])
                 if len(token) > 0:
                     end_i = start_i + len(token)
-                    yield start_i, end_i
+                    yield tt, start_i, end_i
                     position = end_i
                     break
+                tt += 1
 
             if current == position:
                 raise NlpWarning(*NlpWarning.TOKENIZE_ERROR, {"pos": position, "line": text})
 
-    def tokenize(self, text: str) -> List[str]:
+    def tokenize(self, text: str) -> List[Tuple[int, str]]:
         tokens = list()
 
-        for start, end in self.span_tokenize(text):
-            token = text[start:end].strip()
-            if token:
+        for tt, start, end in self.span_tokenize(text):
+            token = (tt, text[start:end])
+            if len(token[1]) > 0:
                 tokens.append(token)
 
         return tokens

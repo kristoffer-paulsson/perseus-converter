@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2023 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+#
+# Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
 # permission notice appear in all copies.
 #
@@ -15,8 +19,17 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek syllable representing main letter plus diacritics."""
+from greektextify.glyph import GreekGlyph
+from greektextify.text.chunk import GlyphChunk
+from greektextify.text.perform import AbstractGlyphOperation
 
 
-class GreekSyllable:
-    pass
+class VowelDevelopment(AbstractGlyphOperation):
+    @classmethod
+    def do(cls, glyphs: tuple[GreekGlyph], pos: int) -> tuple[GlyphChunk, int] | tuple[None, int]:
+        pass
+
+    @classmethod
+    def find(cls, glyphs: tuple[GreekGlyph]) -> tuple[GlyphChunk, int] | tuple[None, int]:
+        pass
+

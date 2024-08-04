@@ -19,11 +19,29 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek token im-materialization."""
-from typing import Tuple
+"""Greek syllable representing main letter plus diacritics."""
+from __future__ import annotations
+
+from greektextify.text.glyph import GreekGlyph
+from parse.chunk import GlyphChunk
+from parse.cluster import GlyphCluster
+from parse.scan import AbstractGlyphSearch
 
 
-class TokenImmaterializableMixin:
+class GreekSyllable(GlyphCluster, AbstractGlyphSearch):
+
+    def __init__(self, onset: GlyphCluster = None, nucleus: GlyphCluster = None, coda: GlyphCluster = None):
+        GlyphCluster.__init__(self, tuple(filter(None, [onset, nucleus, coda])))  # Check if works!
+
+    # onset
+    # nucleus
+    # coda
+
+    # n
+    # on
+    # nc
+    # onc
+
     @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str, ...]:
-        return NotImplemented
+    def scan(cls, glyphs: tuple[GreekGlyph]) -> tuple[GlyphChunk, int] | tuple[None, int]:
+        pass

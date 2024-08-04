@@ -14,6 +14,7 @@ from greektextify.text.glyph import GREEK_GLYPH_COMBO, GreekGlyph
 from greektextify.text.midway import GreekMidway
 from greektextify.text.prnt import PrintGreek
 from greektextify.text.word import GreekWord
+from parse.prnt import PrintGreekRoman
 
 
 def naming(letter: str) -> str:
@@ -139,7 +140,7 @@ def main5():
 
 def main4():
     for w, t in Articles.STRUCTS.items():
-        print(PrintGreek.format(w) + ',', ', '.join(["{}-{}-{}".format(Inflect.CASE[c], Inflect.GENDER[g], Inflect.NUMBER[n]) for c, g, n in t]))
+        print(PrintGreek.format(w) + ' (' + PrintGreekRoman.format(w) + ') ' + ', '.join(["{}-{}-{}".format(Inflect.CASE[c], Inflect.GENDER[g], Inflect.NUMBER[n]) for c, g, n in t]))
 
 
 def mai3():

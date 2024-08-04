@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+# Copyright (c) 2023 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
@@ -19,28 +19,17 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek alphabet vowels distinct in lowercase."""
-from greektextify.text.alphabet import GreekAlphabet
+from greektextify.glyph import GreekGlyph
+from greektextify.text.chunk import GlyphChunk
+from greektextify.text.perform import AbstractGlyphOperation
 
 
-class GreekVowels:
-    """Koine vowels described as in Smyth grammar 1.1.2."""
+class VowelCrasis(AbstractGlyphOperation):
+    @classmethod
+    def do(cls, glyphs: tuple[GreekGlyph], pos: int) -> tuple[GlyphChunk, int] | tuple[None, int]:
+        pass
 
-    VOWELS_SHORT = frozenset((
-        GreekAlphabet.LOWER_EPSILON,
-        GreekAlphabet.LOWER_OMICRON
-    ))
-
-    VOWELS_LONG = frozenset((
-        GreekAlphabet.LOWER_ETA,
-        GreekAlphabet.LOWER_OMEGA
-    ))
-
-    VOWELS_VAR = frozenset((
-        GreekAlphabet.LOWER_ALPHA,
-        GreekAlphabet.LOWER_IOTA,
-        GreekAlphabet.LOWER_UPSILON
-    ))
-
-    VOWELS = frozenset(set(VOWELS_SHORT) + set(VOWELS_LONG) + set(VOWELS_VAR))
+    @classmethod
+    def find(cls, glyphs: tuple[GreekGlyph]) -> tuple[GlyphChunk, int] | tuple[None, int]:
+        pass
 

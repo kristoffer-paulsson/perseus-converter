@@ -20,6 +20,7 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """All legal or valid glyphs for printing and using instead of duplicates."""
+import unicodedata
 from types import MappingProxyType
 from typing import Tuple
 

@@ -41,7 +41,7 @@ class GreekHeard(TokenImmaterializableMixin):
         self._word = word
 
     @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str]:
+    def immaterialize(cls, text: str) -> Tuple[str, ...]:
         token = list()
         for ch in text:
             if ch in cls.HEARD_OF:

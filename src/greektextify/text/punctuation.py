@@ -39,7 +39,7 @@ class GreekPunctuation(TokenImmaterializableMixin):
     ])
 
     @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str]:
+    def immaterialize(cls, text: str) -> Tuple[str, ...]:
         if len(text) > 0:
             return tuple(text[0]) if text[0] in cls.PUNCT_MARKS else tuple()
         return tuple()

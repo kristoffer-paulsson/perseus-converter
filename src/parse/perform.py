@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2023 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+#
+# Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
 # permission notice appear in all copies.
 #
@@ -15,8 +19,23 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek diphthongs representing two vowels or more."""
+"""Performing utility to execute grammatical operations on chunks in Greek words."""
+from __future__ import annotations
+
+from abc import abstractmethod
+
+from greektextify.text.glyph import GreekGlyph
+from parse.chunk import GlyphChunk
 
 
-class GreekDiphthong:
-    pass
+class AbstractGlyphOperation:
+
+    @classmethod
+    @abstractmethod
+    def find(cls, glyphs: tuple[GreekGlyph]) -> tuple[GlyphChunk, int] | tuple[None, int]:
+        raise NotImplemented()
+
+    @classmethod
+    @abstractmethod
+    def do(cls, glyphs: tuple[GreekGlyph], pos: int) -> tuple[GlyphChunk, int] | tuple[None, int]:
+        raise NotImplemented()

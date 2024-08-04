@@ -19,11 +19,22 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek token im-materialization."""
-from typing import Tuple
+"""Greek standardization of Koine unicode variants of spelling in (U.S.) The Library of Congress."""
+from greektextify.text.alphabet import GreekAlphabet
+from greektextify.text.midway import GreekMidway
+from greektextify.text.punctuation import GreekPunctuation
+from greektextify.text.standardizer import TokenStandardizerMixin
 
 
-class TokenImmaterializableMixin:
+class LocUtfStandard(TokenStandardizerMixin):
+    MODIFIER_LETTER_APOSTROPHE = '\u2019'
+    SEMICOLON = '\u003B'
+
+    LOC_TRANSFORM = {
+        ord(MODIFIER_LETTER_APOSTROPHE): ord(GreekMidway.APOSTROPHE),
+        ord(SEMICOLON): ord(GreekPunctuation.QUESTION_MARK),
+    }
+
     @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str, ...]:
-        return NotImplemented
+    def standardize(cls, text: str) -> str:
+        return text.translate(cls.LOC_TRANSFORM)  # Translates the rest

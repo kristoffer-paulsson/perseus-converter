@@ -46,7 +46,7 @@ class GreekQuotation(TokenImmaterializableMixin):
         self._word = word
 
     @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str]:
+    def immaterialize(cls, text: str) -> Tuple[str, ...]:
         if len(text) > 0:
             return tuple(text[0]) if text[0] in cls.QUOTE_MARKS else tuple()
         return tuple()

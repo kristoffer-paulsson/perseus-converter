@@ -62,7 +62,7 @@ class GreekWord(TokenImmaterializableMixin):
     WORD_CHARS = frozenset(
         set(GreekExtended.LETTERS) | set(GreekExtended.DIACRITICS) | set(GreekMidway.LETTERS) |
         set(GreekAlphabet.ALPHABET) | set(GreekDiacritic.DIACRITICS) |
-        set(GreekMidway.MODIFIERS)
+        set(GreekMidway.MODIFIERS) # | set(GreekMidway.APOSTROPHE)
     )
 
     def __init__(self, word: str):
@@ -82,7 +82,7 @@ class GreekWord(TokenImmaterializableMixin):
         return self._word[-1] == GreekMidway.APOSTROPHE
 
     @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str]:
+    def immaterialize(cls, text: str) -> Tuple[str, ...]:
         token = list()
         for ch in text:
             if ch in cls.WORD_CHARS:

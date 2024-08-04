@@ -19,11 +19,21 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek token im-materialization."""
-from typing import Tuple
+"""Scanning utility for individual glyphs as chunks."""
+from __future__ import annotations
+
+from abc import abstractmethod
+
+from greektextify.text.glyph import GreekGlyph
+from parse.chunk import GlyphChunk
 
 
-class TokenImmaterializableMixin:
+class AbstractGlyphSearch:
+
+    def _at_least(self, glyphs: tuple[GreekGlyph], width: int) -> bool:
+        return len(glyphs) == width
+
     @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str, ...]:
-        return NotImplemented
+    @abstractmethod
+    def scan(cls, glyphs: tuple[GreekGlyph], initial: bool = False) -> tuple[GlyphChunk, int] | tuple[None, int]:
+        raise NotImplemented()

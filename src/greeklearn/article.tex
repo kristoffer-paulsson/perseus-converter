@@ -31,6 +31,7 @@
 
 \newcommand{\tsc}[1]{\textsc{#1}}
 \newcommand{\grc}[1]{\fontspec{Inter}#1}
+\newcommand{\trc}[1]{\textit{\fontspec{Tinos}#1}}
 
 \renewcommand{\arraystretch}{1.3}
 
@@ -40,29 +41,51 @@
     \section*{Koine Greek Articles}
     Here is a complete unverified list of all accessible \em articles \normal of the Koine language.
 
+    %
+    % τῇ (tēi) DAT-FEM-SG
+    % τούς (tous) ACC-MASC-PL
+    % τά (ta) VOC-NEU-PL, NOM-NEU-PL, ACC-NEU-PL
+    % τοῦ (tou) GEN-MASC-SG, GEN-NEU-SG
+    % τῶν (tōn) GEN-MASC-PL, GEN-FEM-PL, GEN-NEU-PL
+    % τῷ (tōi) DAT-MASC-SG, DAT-NEU-SG
+    % τήν (tēn) ACC-FEM-SG
+    % οἱ (hoi) VOC-MASC-PL, NOM-MASC-PL
+    % αἱ (hai) VOC-FEM-PL, NOM-FEM-PL
+    % τοῖν (toin) GEN-MASC-DU, DAT-MASC-DU, GEN-FEM-DU, DAT-FEM-DU, GEN-NEU-DU, DAT-NEU-DU
+    % ἡ (hē) NOM-FEM-SG
+    % τώ (tō) NOM-MASC-DU, ACC-MASC-DU, NOM-FEM-DU, ACC-FEM-DU, NOM-NEU-DU, ACC-NEU-DU
+    % τοῖς (tois) DAT-MASC-PL, DAT-NEU-PL
+    % τό (to) NOM-NEU-SG, ACC-NEU-SG
+    % τάς (tas) ACC-FEM-PL
+    % τῆς (tēs) GEN-FEM-SG
+    % ταῖς (tais) DAT-FEM-PL
+    % ὁ (ho) NOM-MASC-SG
+    % τόν (ton) ACC-MASC-SG
+    %
+
     \begin{table}[H]
         \begin{tabular}{c|ccc}
             \textbf{Article} & \textbf{Case} & \textbf{Gender} & \textbf{Number} \\
             \hline
-            \grc{ὁ}                & \tsc{Nom}           & \tsc{Masc}            & \tsc{Sg}              \\
-            \grc{τόν}              & \tsc{Acc}           & \tsc{Masc}            & \tsc{Sg}              \\
-            \grc{τῷ}               & \tsc{Dat}           & \tsc{Masc}/\tsc{Neu}        & \tsc{Sg}              \\
-            \grc{τοῦ}              & \tsc{Gen}           & \tsc{Masc}/\tsc{Neu}        & \tsc{Sg}              \\
-            \grc{οἱ}               & \tsc{Nom}/\tsc{Voc}       & \tsc{Masc}            & \tsc{Pl}              \\
-            \grc{τούς}             & \tsc{Acc}           & \tsc{Masc}            & \tsc{Pl}              \\
-            \grc{τοῖς}             & \tsc{Dat}           & \tsc{Masc}/\tsc{Neu}        & \tsc{Pl}              \\
-            \grc{τῶν}              & \tsc{Gen}           & *             & \tsc{Pl}              \\
-            \grc{ἡ}                & \tsc{Nom}           & \tsc{Fem}             & \tsc{Sg}              \\
-            \grc{τήν}              & \tsc{Acc}           & \tsc{Fem}             & \tsc{Sg}              \\
-            \grc{τῇ}               & \tsc{Dat}           & \tsc{Fem}             & \tsc{Sg}              \\
-            \grc{τῆς}              & \tsc{Gen}           & \tsc{Fem}             & \tsc{Sg}              \\
-            \grc{αἱ}               & \tsc{Nom}/\tsc{Voc}       & \tsc{Fem}             & \tsc{Pl}              \\
-            \grc{τάς}              & \tsc{Acc}           & \tsc{Fem}             & \tsc{Pl}              \\
-            \grc{ταῖς}             & \tsc{Dat}           & \tsc{Fem}             & \tsc{Pl}              \\
-            \grc{τό}               & \tsc{Nom}/\tsc{Acc}       & \tsc{Neu}             & \tsc{Sg}              \\
-            \grc{τά}               & \tsc{Nom}/\tsc{Acc}/\tsc{Voc}   & \tsc{Neu}             & \tsc{Pl}              \\
-            \grc{τώ}               & \tsc{Nom}/\tsc{Acc}       & *             & \tsc{Du}              \\
-            \grc{τοῖν}             & \tsc{Dat}/\tsc{Gen}       & *             & \tsc{Du}
+            \grc{ὁ} \trc{ho}           & \tsc{Nom}           & \tsc{Masc}            & \tsc{Sg}              \\
+            \grc{τόν} \trc{ton}        & \tsc{Acc}           & \tsc{Masc}            & \tsc{Sg}              \\
+            \grc{τῷ} \trc{tōi}         & \tsc{Dat}           & \tsc{Masc}/\tsc{Neu}        & \tsc{Sg}              \\
+            \grc{τοῦ} \trc{tou}        & \tsc{Gen}           & \tsc{Masc}/\tsc{Neu}        & \tsc{Sg}              \\
+            \grc{οἱ} \trc{hoi}         & \tsc{Nom}/\tsc{Voc}       & \tsc{Masc}            & \tsc{Pl}              \\
+            \grc{τούς} \trc{tous}      & \tsc{Acc}           & \tsc{Masc}            & \tsc{Pl}              \\
+            \grc{τοῖς} \trc{tois}      & \tsc{Dat}           & \tsc{Masc}/\tsc{Neu}        & \tsc{Pl}              \\
+            \grc{τῶν} \trc{tōn}        & \tsc{Gen}           & *             & \tsc{Pl}              \\
+            \grc{ἡ} \trc{hē}           & \tsc{Nom}           & \tsc{Fem}             & \tsc{Sg}              \\
+            \grc{τήν} \trc{tēn}        & \tsc{Acc}           & \tsc{Fem}             & \tsc{Sg}              \\
+            \grc{τῇ} \trc{tēi}         & \tsc{Dat}           & \tsc{Fem}             & \tsc{Sg}              \\
+            \grc{τῆς} \trc{tēs}        & \tsc{Gen}           & \tsc{Fem}             & \tsc{Sg}              \\
+            \grc{αἱ} \trc{hai}         & \tsc{Nom}/\tsc{Voc}       & \tsc{Fem}             & \tsc{Pl}              \\
+            \grc{τάς} \trc{tas}        & \tsc{Acc}           & \tsc{Fem}             & \tsc{Pl}              \\
+            \grc{ταῖς} \trc{tais}      & \tsc{Dat}           & \tsc{Fem}             & \tsc{Pl}              \\
+            \grc{τό} \trc{to}          & \tsc{Nom}/\tsc{Acc}       & \tsc{Neu}             & \tsc{Sg}              \\
+            \grc{τά} \trc{ta}          & \tsc{Nom}/\tsc{Acc}/\tsc{Voc}   & \tsc{Neu}             & \tsc{Pl}              \\
+            \grc{τώ} \trc{tō}          & \tsc{Nom}/\tsc{Acc}       & *             & \tsc{Du}              \\
+            \grc{τοῖν} \trc{toin}      & \tsc{Dat}/\tsc{Gen}       & *             & \tsc{Du}
         \end{tabular}
         \caption{Articles according to their multiple functions.}
     \end{table}
@@ -72,11 +95,11 @@
             \multicolumn{1}{l}{} & \multicolumn{2}{c}{\tsc{Masc}} & \multicolumn{2}{c}{\tsc{Fem}} & \multicolumn{2}{c}{\tsc{Neu}} & *                        \\
             \multicolumn{1}{l}{} & \tsc{Sg}         & \tsc{Pl}          & \tsc{Sg}         & \tsc{Pl}         & \tsc{Sg}         & \tsc{Pl}         & \tsc{Du}                       \\
             \hline
-            \tsc{Nom}                  & \grc{ὁ}          & \grc{οἱ}          & \grc{ἡ}          & \grc{αἱ}         & \grc{τό}         & \grc{τά}         & \grc{τώ}                       \\
-            \tsc{Acc}                  & \grc{τόν}        & \grc{τούς}        & \grc{τήν}        & \grc{τάς}        & \grc{τό}         & \grc{τά}         & \grc{τώ}                       \\
-            \tsc{Voc}                  & -          & \grc{οἱ}          & -          & \grc{αἱ}         & -          & \grc{τά}         & -                        \\
-            \tsc{Gen}                  & \grc{τοῦ}        & \grc{τῶν}         & \grc{τῆς}        & \grc{τῶν}        & \grc{τοῦ}        & \grc{τῶν}        & \grc{τοῖν}                     \\
-            \tsc{Dat}                  & \grc{τῷ}         & \grc{τοῖς}        & \grc{τῇ}         & \grc{ταῖς}       & \grc{τῷ}         & \grc{τοῖς}       & \multicolumn{1}{l}{\grc{τοῖν}}
+            \tsc{Nom}           & \grc{ὁ}          & \grc{οἱ}           & \grc{ἡ}          & \grc{αἱ}          & \grc{τό}          & \grc{τά}          & \grc{τώ}                       \\
+            \tsc{Acc}           & \grc{τόν}        & \grc{τούς}         & \grc{τήν}        & \grc{τάς}         & \grc{τό}          & \grc{τά}          & \grc{τώ}                        \\
+            \tsc{Voc}           & -                & \grc{οἱ}           & -                & \grc{αἱ}          & -                 & \grc{τά}          & -                        \\
+            \tsc{Gen}           & \grc{τοῦ}        & \grc{τῶν}          & \grc{τῆς}        & \grc{τῶν}         & \grc{τοῦ}         & \grc{τῶν}         & \grc{τοῖν}                     \\
+            \tsc{Dat}           & \grc{τῷ}         & \grc{τοῖς}         & \grc{τῇ}         & \grc{ταῖς}        & \grc{τῷ}          & \grc{τοῖς}        & \multicolumn{1}{l}{\grc{τοῖν}}
         \end{tabular}
         \caption{According to the category of \em case, \em gender and \em number.}
     \end{table}

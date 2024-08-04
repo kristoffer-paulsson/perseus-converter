@@ -19,11 +19,17 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek token im-materialization."""
-from typing import Tuple
+from greektextify.glyph import GreekGlyph
+from greektextify.text.chunk import GlyphChunk
+from greektextify.text.perform import AbstractGlyphOperation
 
 
-class TokenImmaterializableMixin:
+class VowelContraction(AbstractGlyphOperation):
     @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str, ...]:
-        return NotImplemented
+    def do(cls, glyphs: tuple[GreekGlyph], pos: int) -> tuple[GlyphChunk, int] | tuple[None, int]:
+        pass
+
+    @classmethod
+    def find(cls, glyphs: tuple[GreekGlyph]) -> tuple[GlyphChunk, int] | tuple[None, int]:
+        pass
+

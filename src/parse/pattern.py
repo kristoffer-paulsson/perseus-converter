@@ -19,11 +19,34 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Greek token im-materialization."""
-from typing import Tuple
+"""Glyph pattern classes."""
+from greektextify.text.glyph import GreekGlyph
+from greektextify.text.word import GreekWord as GW1
 
 
-class TokenImmaterializableMixin:
-    @classmethod
-    def immaterialize(cls, text: str) -> Tuple[str, ...]:
-        return NotImplemented
+class GlyphPattern:
+
+    def __init__(self, pattern: str):
+        self._raw = pattern
+        self._glyphs = GW1.glyphen(pattern)
+
+    @property
+    def raw(self) -> str:
+        return self._raw
+
+    @property
+    def glyphs(self) -> tuple[GreekGlyph]:
+        return self._glyphs
+
+    def same(self, glyphs: tuple[GreekGlyph]) -> bool:
+        return self._glyphs == glyphs
+
+    def same_lower(self, glyphs: tuple[GreekGlyph]) -> bool:
+        if len(self._glyphs) != len(glyphs):
+            return False
+
+        for s, g in zip(self._glyphs, glyphs):
+            if not s.same(g):
+                return False
+
+        return True
