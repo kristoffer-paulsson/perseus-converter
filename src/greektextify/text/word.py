@@ -116,6 +116,36 @@ class GreekWord(TokenImmaterializableMixin):
 
         return tuple(glyphs)
 
+    @classmethod
+    def cmp_all(cls, word: Tuple[GreekGlyph], other: Tuple[GreekGlyph], ignore_case: bool = False) -> bool:
+        if len(word) != len(other):
+            return False
+        else:
+            same = True
+            for w, o in zip(word, other):
+                same = same if w.cmp_all(o, ignore_case) else False
+            return same
+
+    @classmethod
+    def cmp_semi(cls, word: Tuple[GreekGlyph], other: Tuple[GreekGlyph], ignore_case: bool = False) -> bool:
+        if len(word) != len(other):
+            return False
+        else:
+            same = True
+            for w, o in zip(word, other):
+                same = same if w.cmp_semi(o, ignore_case) else False
+            return same
+
+    @classmethod
+    def cmp_case(cls, word: Tuple[GreekGlyph], other: Tuple[GreekGlyph], ignore_case: bool = False) -> bool:
+        if len(word) != len(other):
+            return False
+        else:
+            same = True
+            for w, o in zip(word, other):
+                same = same if w.cmp_case(o, ignore_case) else False
+            return same
+
 
 
 

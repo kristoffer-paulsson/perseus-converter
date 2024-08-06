@@ -25,6 +25,13 @@ from types import MappingProxyType
 
 class Inflect:
 
+    T_SPEECH = 0
+    T_CASE = 1
+    T_NUMBER = 2
+    T_GENDER = 3
+
+    V_UNUSED = 0
+
     SPEECH = MappingProxyType(dict(list(enumerate((
         '-',     # Implicit zero
         'ART',   # article
@@ -56,6 +63,7 @@ class Inflect:
 
     STRUCT = MappingProxyType(dict(list(
         map(lambda x: list(reversed(x)),
+            set(SPEECH.items()) |
             set(CASE.items()) |
             set(GENDER.items()) |
             set(NUMBER.items())
@@ -65,3 +73,39 @@ class Inflect:
     def analyze(cls, morph: str) -> tuple:
         return tuple([cls.STRUCT[t] if t in cls.STRUCT else 0 for t in morph.split('_')])
 
+    @classmethod
+    def empty_inf(cls) -> tuple:
+        return 0, 0, 0, 0
+
+    @classmethod
+    def modify_inf(cls, inf: tuple, t: int, v) -> tuple:
+        inf2 = list(inf)
+        if type(v) == int:
+            inf2[t] = v
+        elif len(v) == 1:
+            inf2[t] = v[0]
+        else:
+            inf2[t] = v
+        return tuple(inf2)
+
+    @classmethod
+    def get_inf(cls, inf: tuple, t: int) -> int:
+        return inf[t]
+
+    @classmethod
+    def read_inf(cls, inf: tuple, t: int) -> int:
+        if len(inf[t]) > 1:
+            for v in list(inf[t]):
+                yield v
+        else:
+            yield inf[t]
+
+    @classmethod
+    def format_inf(cls, inf: tuple) -> str:
+        return "({}, {}, {}, {})".format(
+            cls.SPEECH[inf[cls.T_SPEECH]],
+            cls.CASE[inf[cls.T_CASE]],
+            cls.NUMBER[inf[cls.T_NUMBER]],
+            cls.GENDER[inf[cls.T_GENDER]],
+
+        )

@@ -1,0 +1,84 @@
+%! Author = kristofferpaulsson
+%! Date = 2024-08-03
+
+% Preamble
+\documentclass[10pt]{memoir}
+
+% Packages
+\usepackage{amsmath}
+\usepackage{float}
+% Please add the following required packages to your document preamble:
+\usepackage{multirow}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{fontspec}
+\fontspec{Tinos}[
+    Path = .,
+    Extension = .ttf ,
+    UprightFont = *-Regular ,
+    Scale=1,
+    Ligatures=TeX
+]
+\fontspec{Inter}[
+    Path = .,
+    Extension = .ttf ,
+    UprightFont = *-Regular ,
+    Scale=1,
+    Ligatures=TeX
+]
+
+%\setromanfont{Tinos}
+
+\newcommand{\tsc}[1]{\textsc{#1}}
+\newcommand{\grc}[1]{\fontspec{Inter}#1}
+\newcommand{\trc}[1]{\textit{\fontspec{Tinos}#1}}
+
+\renewcommand{\arraystretch}{1.3}
+
+% Document
+\begin{document}
+
+    \section*{Koine Greek known Prepositions}
+    These are some known prepositions with their short version and case use.
+
+    \begin{table}[H]
+        \begin{tabular}{lll}
+            \textbf{Preposition} & \textbf{Short} & \textbf{Use Case} \\
+            \hline
+            \grc{ἀπό} \trc{apo} & \grc{ἀπ'}, \grc{ἀφ'} & \tsc{Gen} \\
+            \grc{διά} \trc{dia} & \grc{δι'} & \tsc{Gen}, \tsc{Acc} \\
+            \grc{εἰς} \trc{eis} &  & \tsc{Acc} \\
+            \grc{ἐκ} \trc{ek}, \grc{ἐξ} \trc{ex} &  & \tsc{Gen} \\
+            \grc{ἐν} \trc{en} &  & \tsc{Dat} \\
+            \grc{ἐπί} \trc{epi} & \grc{ἐπ'}, \grc{ἐφ'} & \tsc{Gen}, \tsc{Dat}, \tsc{Acc} \\
+            \grc{κατά} \trc{kata} & \grc{κατ'}, \grc{καθ'} & \tsc{Gen}, \tsc{Acc} \\
+            \grc{μετά} \trc{meta} & \grc{μετ'}, \grc{μεθ'} & \tsc{Gen}, \tsc{Acc} \\
+            \grc{παρά} \trc{para} &  & \tsc{Gen}, \tsc{Dat}, \tsc{Acc} \\
+            \grc{περί} \trc{peri} &  & \tsc{Gen}, \tsc{Acc} \\
+            \grc{πρός} \trc{pros} &  & \tsc{Acc} \\
+            \grc{ὑπέρ} \trc{hyper} &  & \tsc{Gen} \\
+            \grc{ὑπό} \trc{hypo} & \grc{ὑπ'}, \grc{ὑφ'} & \tsc{Gen}, \tsc{Acc} \\
+        \end{tabular}
+    \end{table}
+    \nopagebreak
+    \begin{table}[H]
+        \begin{tabular}{llll}
+            & \tsc{Gen} & \tsc{Dat} & \tsc{Acc} \\
+            \hline
+            \grc{ἀπό} & -- & -- & -- \\
+            \grc{διά} & -- & -- & -- \\
+            \grc{εἰς} & -- & -- & -- \\
+            \grc{ἐκ}, \grc{ἐξ} & -- & -- & -- \\
+            \grc{ἐν} & -- & -- & -- \\
+            \grc{ἐπί} & -- & -- & -- \\
+            \grc{κατά} & -- & -- & -- \\
+            \grc{μετά} & -- & -- & -- \\
+            \grc{παρά} & -- & -- & -- \\
+            \grc{περί} & -- & -- & -- \\
+            \grc{πρός} & -- & -- & -- \\
+            \grc{ὑπέρ} & -- & -- & -- \\
+            \grc{ὑπό} & -- & -- & -- \\
+        \end{tabular}
+    \end{table}
+
+\end{document}

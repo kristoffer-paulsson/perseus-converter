@@ -35,6 +35,7 @@ class Tokenize:
 
     def span_tokenize(self, text: str) -> Tuple[int, int]:
         position = 0
+        tt = -1
 
         while len(text) > position:
             current = start_i = position
@@ -49,6 +50,7 @@ class Tokenize:
                 tt += 1
 
             if current == position:
+                print(tt, position, text)
                 raise NlpWarning(*NlpWarning.TOKENIZE_ERROR, {"pos": position, "line": text})
 
     def tokenize(self, text: str) -> List[Tuple[int, str]]:

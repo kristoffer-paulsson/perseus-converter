@@ -21,13 +21,21 @@
 #
 """Ancient Greek prepositions."""
 from types import MappingProxyType
+from typing import Tuple, List
 
+from greekparsify.analyzer import GrammarAnalyzerMixin
+from greekparsify.grammar import GreekGrammar
 from greekparsify.inflect import Inflect
+from greektextify.nlp.contextual import NlpWarning
+from greektextify.text.glyph import GreekGlyph
 from greektextify.text.midway import GreekMidway
+from greektextify.text.prnt import PrintGreek
+from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.word import GreekWord
 
 
-class Prepositions:
+class Prepositions(GrammarAnalyzerMixin):
+    PART = 'PREP'
 
     # """ἀπό (ἀπ᾿, ἀφ᾿), gen: (away) from"""
     APO = (
@@ -124,6 +132,44 @@ class Prepositions:
         HUPO
     ])
 
-    _build = lambda x: MappingProxyType(dict([(GreekWord.glyphen(v), Inflect.analyze(t)) for w, t in list(x) for v in w]))
+    _build = lambda x: MappingProxyType(
+        dict([(GreekWord.glyphen(v), Inflect.analyze(t)) for w, t in list(x) for v in w]))
 
     PREPOS = _build(PREP)
+
+    STRUCT = frozenset(PREPOS.keys())
+
+    _scan = lambda x: True if x[0] == 2 and x[1] in (
+        GreekPunctuation.FULL_STOP, GreekPunctuation.QUESTION_MARK) else False
+
+    @classmethod
+    def parse(cls, tokens: List[Tuple[int, ...]]):
+        for idx, data in enumerate(tokens):
+            if data[0] == 0:
+                tt, token, inf = data
+                if cls.is_preposition(token):
+                    if Inflect.get_inf(inf, Inflect.T_SPEECH) != Inflect.V_UNUSED:
+                        raise NlpWarning(*NlpWarning.MISSING, 'n/a')
+
+                    sub_tokens = tokens[idx:cls.scan_ahead(tokens, idx, cls._scan)]
+
+                    inf = Inflect.modify_inf(inf, Inflect.T_SPEECH, Inflect.analyze(cls.PART))
+                    for case in Prepositions.have_case(token):
+                        sub_copy = sub_tokens.copy()
+                        sub_copy[0] = (tt, token, Inflect.modify_inf(inf, Inflect.T_CASE, case))
+                        GreekGrammar.print_tok_list(sub_copy, "Prepositions: {}, {}".format(Inflect.CASE[case], idx))
+
+    @classmethod
+    def is_preposition(cls, word: Tuple[GreekGlyph]) -> bool:
+        for prep in cls.STRUCT:
+            if GreekWord.cmp_semi(word, prep):
+                return True
+        return False
+
+    @classmethod
+    def have_case(cls, word: Tuple[GreekGlyph]) -> tuple:
+        for prep in cls.STRUCT:
+            if GreekWord.cmp_semi(word, prep):
+                return cls.PREPOS[prep]
+        else:
+            return tuple()

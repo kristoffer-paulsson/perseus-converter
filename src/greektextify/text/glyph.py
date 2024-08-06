@@ -195,6 +195,31 @@ class GreekGlyph(NamedTuple):
             True if GreekDiacritic.COMBINING_MACRON in ch else False,
         )
 
+    def cmp_all(self, other: "GreekGlyph", ignore_case: bool = False) -> bool:
+        same = self.cmp_semi(other, ignore_case)
+        same = same if w.varia == other.varia else False
+        same = same if w.oxia == other.oxia else False
+        same = same if w.perispomeni == other.perispomeni else False
+        same = same if w.vrachy == other.vrachy else False
+        same = same if w.macron == other.macron else False
+
+        return same
+
+    def cmp_semi(self, other: "GreekGlyph", ignore_case: bool = False) -> bool:
+        same = self.cmp_case(other, ignore_case)
+        same = same if self.psili == other.psili else False
+        same = same if self.dasia == other.dasia else False
+        same = same if self.ypogegrammeni == other.ypogegrammeni else False
+        same = same if self.dialytika == other.dialytika else False
+
+        return same
+
+    def cmp_case(self, other: "GreekGlyph", ignore_case: bool = False) -> bool:
+        if ignore_case:
+            return self.ch.lower() == other.ch.lower()
+        else:
+            return self.ch == other.ch
+
 
 GREEK_GLYPH_COMBO = frozenset([
     GreekGlyph(GreekAlphabet.HYPHEN_MINUS, False, False, False, False, False, False, False, False, False),

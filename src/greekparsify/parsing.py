@@ -20,13 +20,14 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Parsify parses tokenized Koine Greek for advanced processing."""
+from pathlib import PosixPath
 from typing import Tuple
 
 from regex import regex
 
 from greektextify.nlp.contextual import ContextObject, NlpOperation
 from greektextify.text.bracket import Bracketing
-from greektextify.text.dbg_standard import DbgUtfStandard
+from greektextify.text.pdl_standard import PdlUtfStandard
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.quotation import GreekQuotation
 from greektextify.text.spacing import Spacing
@@ -36,8 +37,8 @@ from greektextify.text.word import GreekWord
 
 class GreekParsing(ContextObject):
 
-    def location(self) -> Tuple:
-        return tuple()
+    def location(self) -> PosixPath:
+        return PosixPath(__file__).parent.joinpath('src')
 
     def __init__(self, text: str):
         ContextObject.__init__(self)
@@ -50,7 +51,7 @@ class GreekParsing(ContextObject):
             Spacing,
             # GreekHeard,
             # GreekUnheard,
-        ], DbgUtfStandard())
+        ], PdlUtfStandard())
 
     def _parse(self):
         for line in self._text.split('\n'):
@@ -67,3 +68,13 @@ class GreekParsing(ContextObject):
                 else:
                     tokens.append((tt,token))
         return tokens
+
+    def load_tmpl(self, text: str) -> str:
+        base = self.location()
+        begin_tmpl = base.joinpath('start.tex.tmpl').read_text()
+        end_tmpl = base.joinpath('end.tex.tmpl').read_text()
+        return begin_tmpl + text + end_tmpl
+
+    def save_tex(self, text: str, name: str):
+        base = self.location()
+        base.joinpath(name + '.tex').write_text(text)

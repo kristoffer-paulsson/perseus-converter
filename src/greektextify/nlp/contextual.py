@@ -51,7 +51,8 @@ class NlpWarning(UserWarning):
     """Warning about a problem while processing an NLP operation."""
     TOKENIZE_ERROR = ("Failed to tokenize", 100)
     NON_GREEK_GLYPH = ("Not a greek glyph", 101)
-    COMBINE_ERROR = ("Betacode invalid due to multiple combination in glypening.", 102)
+    COMBINE_ERROR = ("Betacode invalid due to multiple combination in glyphening.", 102)
+    MISSING = ("Not yet defined invalid happening.", 103)
 
     code: int
     info: dict

@@ -38,6 +38,25 @@ def write_prog(letter: str) -> str:
 
 
 def main():
+    for w, t in Prepositions.PREP:
+        w1 = GreekWord.glyphen(w[0])
+        print('\\grc{' + PrintGreek.format(w1) + '} \\trc{' + PrintGreekRoman.format(w1) + '} & ', end='', sep='')
+        short = list()
+        for w2 in w[1:]:
+            w2a = GreekWord.glyphen(w2)
+            short.append('\\grc{' + PrintGreek.format(w2a) + '}')
+        if short:
+            print(', '.join(short), end='', sep='')
+        print(' & ', end='', sep='')
+        case = list()
+        for t2 in t.split('_'):
+            case.append('\\tsc{' + t2.capitalize() + '}')
+        if case:
+            print(', '.join(case), end='', sep='')
+        print(' \\\\')
+
+
+def main8():
     for l in sorted(list(set(Articles.STRUCTS.keys()))):
         print(PrintGreek.format(l))
     #for l in sorted(list(set(Prepositions.PREPOS.keys()))):
@@ -159,4 +178,4 @@ def main2():
 
 
 if __name__ == '__main__':
-    main4()
+    main()
