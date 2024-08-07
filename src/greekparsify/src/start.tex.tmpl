@@ -17,7 +17,7 @@
     Ligatures=TeX
 ]
 \fontspec{Inter}[
-    Path = .,
+    Path = font/,
     Extension = .ttf ,
     UprightFont = *-Regular ,
     Scale=1,
@@ -29,6 +29,18 @@
 \newcommand{\tsc}[1]{\textsc{#1}}
 \newcommand{\grc}[1]{\fontspec{Inter}#1}
 \newcommand{\trc}[1]{\textit{\fontspec{Tinos}#1}}
+
+\newcommand\gunderset[2]{%
+  \leavevmode
+  \vtop{\offinterlineskip
+    \halign{%
+      \hfil##\hfil\cr % center
+      \strut#2\cr
+      \noalign{\kern-.3ex}
+      \dynscriptsize\strut#1\cr
+    }%
+  }%
+}
 
 % Document
 \begin{document}

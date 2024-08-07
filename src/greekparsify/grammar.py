@@ -32,14 +32,14 @@ class GreekGrammar:
     def __init__(self, tokens: List[Tuple[int, ...]]):
         self._tokens = tokens
         for i, t in enumerate(tokens):
-            if(t[0] == 0):
+            if t[0] == 0:
                 self._tokens[i] = t + (Inflect.empty_inf(),)
 
     def analyze(self, analyzer: GrammarAnalyzerMixin):
         analyzer.parse(self._tokens)
 
     @classmethod
-    def print_tok_list(cls, tokens: List[Tuple[int, ...]], header = ''):
+    def print_tok_list(cls, tokens: List[Tuple[int, ...]], header: str = ''):
         print("==== start ({}) ====".format(header))
         for idx, data in enumerate(tokens):
             if data[0] == 0:
@@ -49,3 +49,17 @@ class GreekGrammar:
                 tt, token = data
                 print(idx, tt, token)
         print("==== end   ({}) ====".format(header))
+
+    @classmethod
+    def print_tok_list(cls, tokens: List[Tuple[int, ...]], header: str = ''):
+        print("==== start ({}) ====".format(header))
+        for idx, data in enumerate(tokens):
+            if data[0] == 0:
+                tt, token, inf = data
+                print(idx, tt, PrintGreek.format(token), Inflect.format_inf(inf))
+            elif data[0] == 2:
+                tt, token = data
+                print(idx, tt, token)
+        print("==== end   ({}) ====".format(header))
+
+#\underset{i=1}{max}}

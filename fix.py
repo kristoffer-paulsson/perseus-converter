@@ -7,8 +7,7 @@ from greekparsify.grammar import GreekGrammar
 from greekparsify.parsing import GreekParsing
 from greekparsify.prepos import Prepositions
 from greektextify.text.prnt import PrintGreek
-from greektextify.text.word import GreekWord
-from parse.prnt import PrintGreekRoman
+
 
 CORE = r"(([0-9A-F]{4}) \S ([A-Z \n]+)\n≡ ([0-9A-F]{4}) \S  ([0-9A-F]{4}))+"
 NOT_CORE = r"(([0-9A-F]{4}) \S ([A-Z \n]+)\n≈ ([0-9A-F]{4}) \S  ([0-9A-F]{4}))+"

@@ -28,8 +28,16 @@ class GrammarAnalyzerMixin:
 
     @classmethod
     def scan_ahead(cls, tokens: List[Tuple[int, ...]], start: int, scan: FunctionType) -> int:
-        for idx in range(start, len(tokens)):
+        for idx in range(start+1, len(tokens)):
             if scan(tokens[idx]):
+                return idx
+
+    @classmethod
+    def scan_next(cls, tokens: List[Tuple[int, ...]], start: int, tt) -> int:
+        if type(tt) == int:
+            tt = (tt,)
+        for idx in range(start, len(tokens)):
+            if tokens[idx][0] in tt:
                 return idx
 
     @classmethod

@@ -21,6 +21,7 @@
 #
 """Ancient Greek inflections."""
 from types import MappingProxyType
+from typing import Tuple
 
 
 class Inflect:
@@ -105,7 +106,15 @@ class Inflect:
         return "({}, {}, {}, {})".format(
             cls.SPEECH[inf[cls.T_SPEECH]],
             cls.CASE[inf[cls.T_CASE]],
-            cls.NUMBER[inf[cls.T_NUMBER]],
             cls.GENDER[inf[cls.T_GENDER]],
-
+            cls.NUMBER[inf[cls.T_NUMBER]],
         )
+
+    @classmethod
+    def tex_format_inf(cls, inf: tuple) -> Tuple[str, ...]:
+        inflex = list()
+        if inf[cls.T_SPEECH] != cls.V_UNUSED: inflex.append(cls.SPEECH[inf[cls.T_SPEECH]])
+        if inf[cls.T_CASE] != cls.V_UNUSED: inflex.append(cls.CASE[inf[cls.T_CASE]])
+        if inf[cls.T_GENDER] != cls.V_UNUSED: inflex.append(cls.GENDER[inf[cls.T_GENDER]])
+        if inf[cls.T_NUMBER] != cls.V_UNUSED: inflex.append(cls.NUMBER[inf[cls.T_NUMBER]])
+        return tuple(inflex)

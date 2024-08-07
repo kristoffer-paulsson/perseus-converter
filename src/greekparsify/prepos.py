@@ -26,10 +26,11 @@ from typing import Tuple, List
 from greekparsify.analyzer import GrammarAnalyzerMixin
 from greekparsify.grammar import GreekGrammar
 from greekparsify.inflect import Inflect
+from greekparsify.modify import Articles
+from greekparsify.prnt import PrintGrammar
 from greektextify.nlp.contextual import NlpWarning
 from greektextify.text.glyph import GreekGlyph
 from greektextify.text.midway import GreekMidway
-from greektextify.text.prnt import PrintGreek
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.word import GreekWord
 
@@ -143,7 +144,42 @@ class Prepositions(GrammarAnalyzerMixin):
         GreekPunctuation.FULL_STOP, GreekPunctuation.QUESTION_MARK) else False
 
     @classmethod
+    def scan_phrase(cls, x) -> bool:
+        if x[0] == 0:
+            return cls.is_preposition(x[1])
+        elif x[0] == 2:
+            return True
+        else:
+            return False
+
+    @classmethod
+    def sub_parse(cls, tokens: List[Tuple[int, ...]], offset: int = 0):
+        cnt = 0
+        tt, token, inf = tokens[0]
+        if Inflect.get_inf(inf, Inflect.T_SPEECH) != Inflect.analyze(cls.PART)[0]:
+            return 0
+        case = Inflect.get_inf(inf, Inflect.T_CASE)
+
+        idx = cls.scan_next(tokens, 1, 0)
+        if idx:
+            tt, token, inf = tokens[idx]
+            if Articles.is_article(token):
+                inf = Inflect.modify_inf(inf, Inflect.T_SPEECH, Inflect.analyze(Articles.PART))
+                for agr in Articles.have_grammar(token):
+                    if agr[0] == case:
+                        sub_tokens = tokens.copy()
+                        inf = Inflect.modify_inf(inf, Inflect.T_CASE, agr[0])
+                        inf = Inflect.modify_inf(inf, Inflect.T_GENDER, agr[1])
+                        inf = Inflect.modify_inf(inf, Inflect.T_NUMBER, agr[2])
+                        sub_tokens[idx] = (tt, token, inf)
+                        yield sub_tokens
+                        # GreekGrammar.print_tok_list(sub_tokens, "Prepositions: {}, {}".format(Inflect.CASE[case], offset))
+                        cnt +=1
+        # return cnt
+
+    @classmethod
     def parse(cls, tokens: List[Tuple[int, ...]]):
+        printable = list()
         for idx, data in enumerate(tokens):
             if data[0] == 0:
                 tt, token, inf = data
@@ -151,13 +187,22 @@ class Prepositions(GrammarAnalyzerMixin):
                     if Inflect.get_inf(inf, Inflect.T_SPEECH) != Inflect.V_UNUSED:
                         raise NlpWarning(*NlpWarning.MISSING, 'n/a')
 
-                    sub_tokens = tokens[idx:cls.scan_ahead(tokens, idx, cls._scan)]
+                    sub_tokens = tokens[idx:cls.scan_ahead(tokens, idx, cls.scan_phrase)]
 
                     inf = Inflect.modify_inf(inf, Inflect.T_SPEECH, Inflect.analyze(cls.PART))
+                    prnt_cnt = 0
                     for case in Prepositions.have_case(token):
                         sub_copy = sub_tokens.copy()
                         sub_copy[0] = (tt, token, Inflect.modify_inf(inf, Inflect.T_CASE, case))
-                        GreekGrammar.print_tok_list(sub_copy, "Prepositions: {}, {}".format(Inflect.CASE[case], idx))
+                        for ttl in cls.sub_parse(sub_copy, idx):
+                            printable.append(PrintGrammar.tex_token_list(ttl))
+                            prnt_cnt += 1
+                    if prnt_cnt < 1:
+                        printable.append(PrintGrammar.tex_token_list(sub_tokens))
+                        # GreekGrammar.print_tok_list(sub_copy, "No hit preposition with article: {}, {}".format(Inflect.CASE[case], idx))
+        if len(printable):
+            pg = PrintGrammar()
+            pg.save_tex(pg.load_tmpl('\n'.join(printable)), 'grammar')
 
     @classmethod
     def is_preposition(cls, word: Tuple[GreekGlyph]) -> bool:

@@ -30,6 +30,7 @@ from greektextify.text.word import GreekWord
 
 class Articles:
     """"""
+    PART = 'ART'
 
     # Case - Gender - Number
 
@@ -154,3 +155,18 @@ class Articles:
     @classmethod
     def analyze(cls, word: Tuple[GreekGlyph]) -> tuple:
         return cls.STRUCTS[word] if word in cls.WORDS else tuple()
+
+    @classmethod
+    def is_article(cls, word: Tuple[GreekGlyph]) -> bool:
+        for prep in cls.WORDS:
+            if GreekWord.cmp_semi(word, prep):
+                return True
+        return False
+
+    @classmethod
+    def have_grammar(cls, word: Tuple[GreekGlyph]) -> tuple:
+        for art in cls.STRUCTS:
+            if GreekWord.cmp_semi(word, art):
+                return cls.STRUCTS[art]
+        else:
+            return tuple()

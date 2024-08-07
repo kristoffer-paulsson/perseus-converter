@@ -68,13 +68,3 @@ class GreekParsing(ContextObject):
                 else:
                     tokens.append((tt,token))
         return tokens
-
-    def load_tmpl(self, text: str) -> str:
-        base = self.location()
-        begin_tmpl = base.joinpath('start.tex.tmpl').read_text()
-        end_tmpl = base.joinpath('end.tex.tmpl').read_text()
-        return begin_tmpl + text + end_tmpl
-
-    def save_tex(self, text: str, name: str):
-        base = self.location()
-        base.joinpath(name + '.tex').write_text(text)
