@@ -24,7 +24,7 @@ import sys
 from pathlib import Path, PurePath
 
 from setuptools import setup
-from sphinx.setup_command import BuildDoc
+#from sphinx.setup_command import BuildDoc
 
 here = PurePath(__file__)
 sys.path.append(str(here.parents[0].joinpath("src")))
@@ -45,15 +45,19 @@ setup(
     author_email=EMAIL,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    entry_points={"console_scripts": ["perseus-converter = perseusconverter.main:main"]},
-    cmdclass={
-        "build_sphinx": BuildDoc,
-    },
+    entry_points={"console_scripts": [
+        "perseus-converter = perseusconverter.main:main",
+        "bible-builder = biblebuilder.main:main",
+
+    ]},
+    #cmdclass={
+    #    "build_sphinx": BuildDoc,
+    #},
     classifiers=[
         "Intended Audience :: Religion",
         "License :: OSI Approved :: ISC License (ISCL)"
     ],
     package_dir={"": "src"},
-    packages=["perseusconverter", "greektextify"],
+    packages=["perseusconverter", "greektextify", "biblebuilder"],
     python_requires=">=3.8, <4"
 )
