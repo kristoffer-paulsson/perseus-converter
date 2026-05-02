@@ -92,6 +92,9 @@ class OGNT2BGMComparator(LexemeComparator):
         chosen = None
         for token in self.bgmScanner:
             ogntToken = next(ognt)
+            if not (token.book == ogntToken.book and token.chapter == ogntToken.chapter and token.verse == ogntToken.verse and token.index == ogntToken.index):
+                print(f"Reference mismatch: BGM {token.book} {token.chapter}:{token.verse} [{token.index}] vs OGNT {ogntToken.book} {ogntToken.chapter}:{ogntToken.verse} [{ogntToken.index}] {token} {ogntToken}")
+                exit(1)
             token1 = unicodedata.normalize('NFD', token.token)
             token2 = unicodedata.normalize('NFD', ogntToken.token)
             if token1 > token2:
