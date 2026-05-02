@@ -19,3 +19,37 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
+from . import Command
+from perseusconverter.app import Config
+
+from ..scan.comparator import OGNT2BGMComparator
+from ..scan.ognt import OGNTScanner
+from ..scan.bgm import BGMScanner
+from ..scan.scanner import Reference
+
+class LexemeCommand(Command):
+
+    def __init__(self, config: Config, args: Namespace):
+        Command.__init__(self, config, args)
+        self.target = self._config.get("data")
+
+    def __call__(self):
+        print(self.target)
+        self.logger.info("{} found".format("test"))
+        self._cmp()
+
+
+    def _cmp(self):
+        print()
+        comparator = OGNT2BGMComparator(
+            BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt"),
+            OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv"),
+            Reference("Matthew", 1, 1)
+        )
+
+        for token in comparator.iter():
+            print(token)
+
+        # comparator.get_errors(3)
+        comparator.get_error_cnt()
+

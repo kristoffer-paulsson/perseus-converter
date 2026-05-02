@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
@@ -19,10 +19,26 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-"""Program entry point for command line interface."""
-from .argparser import CLI
-from .cmd import Command
+from argparse import ArgumentParser, Namespace
 
 
-def main() -> int:
-    return Command.execute(CLI.parse_args())
+class CLI:
+
+    def __init__(self):
+        self._parser = ArgumentParser(description="Use to convert the corpora.")
+
+        parsers = self._parser.add_subparsers(
+            title="Commands",
+            description="Extracting a corpus from Perseus for NLP use with nlp.",
+            dest="command",
+            help="Use koine or latin for corpora.",
+        )
+        self._lexeme(parsers)
+
+    @classmethod
+    def parse_args(cls) -> Namespace:
+        return cls()._parser.parse_args()
+
+    def _lexeme(self, subparser):
+        load = subparser.add_parser(name="lexeme", help="Performs lexeme analyzis")
+        # load.add_argument('corpora', choices=['pdl', 'bib', 'lex'])
