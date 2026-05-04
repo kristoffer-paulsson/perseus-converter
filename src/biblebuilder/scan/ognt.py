@@ -19,10 +19,10 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-from .scanner import LexemeScanner, Token
+from .scanner import Scanner, Token
 from pathlib import Path
 
-class OGNTScanner(LexemeScanner):
+class OGNTScanner(Scanner):
 
     def __init__(self, filepath: str):
         """Initialize the scanner with a path to bgm.txt file."""
@@ -67,8 +67,12 @@ class OGNTScanner(LexemeScanner):
                         else:
                             current_index += 1
 
-                        # Extract lexeme from: 〔βιβλοϲ｜Βιβλος｜Βίβλος｜βίβλος｜N-NSF｜G976〕
-                        lexeme_info = parts[7].strip('〔〕')
+                        #lexeme_info = parts[7].strip('〔〕')
+                        #lexeme_parts = lexeme_info.split('｜')
+
+                        #yield Token(book, chapter, verse, current_index, lexeme_parts[3])
+
+                        lexeme_info = parts[8].strip('〔〕')
                         lexeme_parts = lexeme_info.split('｜')
 
-                        yield Token(book, chapter, verse, current_index, lexeme_parts[3])  # Yielding raw data for debugging
+                        yield Token(book, chapter, verse, current_index, lexeme_parts[0])

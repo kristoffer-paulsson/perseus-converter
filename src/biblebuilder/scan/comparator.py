@@ -19,7 +19,9 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-from .scanner import ScanIter, Token
+from .bgm import BGMScanner
+from .ognt import OGNTScanner
+from .scanner import ScanIter, Token, Reference
 import unicodedata
 
 class LexemeComparator:
@@ -39,7 +41,8 @@ class OGNT2BGMComparator(LexemeComparator):
 
     def iter(self):
 
-        choices = {
+        choices = {}
+        """choices = {
             ('οὕτως', 'οὕτω, οὕτως'): (1, "Left exists inside right side"),
             ('τέ', 'τε'): (1, "Same word, use left accentuation"),
             ('καί+ἐγώ', 'κἀγώ'): (2, "Left is weird data, use right side"),
@@ -84,7 +87,7 @@ class OGNT2BGMComparator(LexemeComparator):
             ('σιδηροῦς', 'σιδήρεος'): (-1, "Different nuance, fix later"),
             ('ἐμπίπλημι', 'ἐμπίμπλημι'): (-1, "Different nuance, fix later"),
             ('συσταυρόω', 'συσταυρόομαι'): (-1, "Different nuance, fix later"),
-        }
+        }"""
 
         ognt = iter(self.ogntScanner)
         crash = 0
@@ -92,9 +95,9 @@ class OGNT2BGMComparator(LexemeComparator):
         chosen = None
         for token in self.bgmScanner:
             ogntToken = next(ognt)
-            if not (token.book == ogntToken.book and token.chapter == ogntToken.chapter and token.verse == ogntToken.verse and token.index == ogntToken.index):
-                print(f"Reference mismatch: BGM {token.book} {token.chapter}:{token.verse} [{token.index}] vs OGNT {ogntToken.book} {ogntToken.chapter}:{ogntToken.verse} [{ogntToken.index}] {token} {ogntToken}")
-                exit(1)
+            #if not (token.book == ogntToken.book and token.chapter == ogntToken.chapter and token.verse == ogntToken.verse and token.index == ogntToken.index):
+            #    print(f"Reference mismatch: BGM {token.book} {token.chapter}:{token.verse} [{token.index}] vs OGNT {ogntToken.book} {ogntToken.chapter}:{ogntToken.verse} [{ogntToken.index}] {token} {ogntToken}")
+            #    exit(1)
             token1 = unicodedata.normalize('NFD', token.token)
             token2 = unicodedata.normalize('NFD', ogntToken.token)
             if token1 > token2:
@@ -120,6 +123,12 @@ class OGNT2BGMComparator(LexemeComparator):
             yield chosen
             if crash > 10:
                 break
+        try:
+            next(ognt)
+        except StopIteration:
+            pass
+        else:
+            raise RuntimeError("OGNT scanner has more tokens than BGM scanner")
 
     def get_errors(self, threshold: int):
         for key in self.errors:
@@ -131,3 +140,5 @@ class OGNT2BGMComparator(LexemeComparator):
     def get_error_cnt(self):
         for key in self.errors:
             print(f"{key}: {len(self.errors[key])}")
+        print(f"Total unique errors: {len(self.errors)}")
+        print(f"Total error occurrences: {sum(len(refs) for refs in self.errors.values())}")

@@ -24,14 +24,16 @@ from argparse import Namespace
 from . import Command
 from perseusconverter.app import Config
 from ..gen.bgm import BGMLexemeGenerator
+from ..gen.bgt import BGTCorpusGenerator
 from ..gen.ognt import OGNTLexemeGenerator
+from ..scan.bgt import BGTScanner
 
 from ..scan.comparator import OGNT2BGMComparator
 from ..scan.ognt import OGNTScanner
 from ..scan.bgm import BGMScanner
 from ..scan.scanner import Reference
 
-class LexemeCommand(Command):
+class TextCommand(Command):
 
     def __init__(self, config: Config, args: Namespace):
         Command.__init__(self, config, args)
@@ -44,8 +46,9 @@ class LexemeCommand(Command):
 
     def _gen(self):
         nt_start = Reference("Matthew", 1, 1)
-        OGNTLexemeGenerator(OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv"), nt_start).generate()
-        BGMLexemeGenerator(BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt"), nt_start).generate()
+        BGTCorpusGenerator(BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False), nt_start).generate()
+        #OGNTLexemeGenerator(OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv"), nt_start).generate()
+        #BGMLexemeGenerator(BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt"), nt_start).generate()
 
     def _cmp(self):
         print()

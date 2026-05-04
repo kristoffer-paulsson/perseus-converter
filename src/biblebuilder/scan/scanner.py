@@ -38,7 +38,7 @@ class Token(NamedTuple):
     token: str
 
 
-class LexemeScanner:
+class Scanner:
     """Scanner for Lexemes corpus files."""
 
     def iter(self):
@@ -50,7 +50,7 @@ class LexemeScanner:
 
 class ScanIter:
 
-    def __init__(self, scanner: LexemeScanner, startRef: Reference = None):
+    def __init__(self, scanner: Scanner, startRef: Reference = None):
         """Initialize the scanner with a path to bgm.txt file."""
         self.scanner = scanner
         self.startRef = startRef

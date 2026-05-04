@@ -34,6 +34,7 @@ class CLI:
             help="Use koine or latin for corpora.",
         )
         self._lexeme(parsers)
+        self._text(parsers)
 
     @classmethod
     def parse_args(cls) -> Namespace:
@@ -41,4 +42,9 @@ class CLI:
 
     def _lexeme(self, subparser):
         load = subparser.add_parser(name="lexeme", help="Performs lexeme analyzis")
+        # load.add_argument('corpora', choices=['pdl', 'bib', 'lex'])
+
+
+    def _text(self, subparser):
+        load = subparser.add_parser(name="text", help="Performs corpus compiling")
         # load.add_argument('corpora', choices=['pdl', 'bib', 'lex'])
