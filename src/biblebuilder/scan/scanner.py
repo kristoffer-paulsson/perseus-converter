@@ -23,6 +23,9 @@ import unicodedata
 from pathlib import Path
 from typing import NamedTuple, List
 
+from greektextify.text.word import GreekWord
+
+
 class Reference(NamedTuple):
     book: str
     chapter: int
@@ -36,6 +39,8 @@ class Token(NamedTuple):
     verse: int
     index: int
     token: str
+    # word: GreekWord
+    # lexeme: GreekWord
 
 
 class Scanner:

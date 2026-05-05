@@ -42,7 +42,7 @@ class ContextObject(metaclass=ABCMeta):
     def err(self) -> List:
         return self.__err
 
-    @abstractmethod
+    #@abstractmethod
     def location(self) -> Tuple:
         return NotImplemented
 
@@ -61,6 +61,9 @@ class NlpWarning(UserWarning):
         super(UserWarning, self).__init__(msg)
         self.code = code
         self.info = info
+
+    def __str__(self):
+        return super(NlpWarning, self).__str__() + " (info {})".format(self.info)
 
 
 class NlpOperation(contextlib.ContextDecorator):
@@ -104,8 +107,8 @@ class NlpContext(contextlib.AbstractContextManager):
         return nlp_ctx.get()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type is not None:
-            raise exc_type
+        #if exc_type is not None:
+        #    raise exc_type(exc_val).with_traceback(exc_tb)
 
         context = nlp_ctx.get()
         self.__analyze(context)

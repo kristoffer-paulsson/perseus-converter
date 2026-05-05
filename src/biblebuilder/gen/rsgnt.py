@@ -21,27 +21,24 @@
 #
 import unicodedata, csv
 
-from biblebuilder.gen.generator import LexemeGenerator
-from biblebuilder.scan.bgm import BGMScanner
+from biblebuilder.gen.generator import CorpusGenerator
+from biblebuilder.scan.rsgnt import RSGNTScanner
 from biblebuilder.scan.scanner import Reference, ScanIter
 
 
-class BGMLexemeGenerator(LexemeGenerator):
+class RSGNTCorpusGenerator(CorpusGenerator):
 
-    def __init__(self, bgmScanner: BGMScanner, start: Reference):
+    def __init__(self, rsgntScanner: RSGNTScanner, start: Reference):
         """Initialize the comparator with scanners for both corpora."""
-        self.bgmScanner = ScanIter(bgmScanner, start)
+        self.rsgntScanner = ScanIter(rsgntScanner, start)
         self.errors = dict()
 
     def generate(self, refOnly: bool = False):
-        with open('bgm_nt_tokens.csv', 'w', newline='\n', encoding='utf-8') as csvfile:
+        with open('rsgnt_corpus.csv', 'w', newline='\n', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(['book', 'chapter', 'verse', 'index', 'token'])
-            for token in self.bgmScanner:
+            for token in self.rsgntScanner:
                 if refOnly:
                     writer.writerow([token.book, token.chapter, token.verse, token.index, ''])
                 else:
-                    word = unicodedata.normalize('NFD', token.token)
-                    word = word.replace('+', ', ')
-                    writer.writerow([token.book, token.chapter, token.verse, token.index, word.lower()])
-
+                    writer.writerow([token.book, token.chapter, token.verse, token.index, unicodedata.normalize('NFD', token.token)])

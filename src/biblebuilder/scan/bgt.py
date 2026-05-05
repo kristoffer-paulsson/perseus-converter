@@ -141,14 +141,10 @@ class BGTScanner(Scanner):
         tokens = []
         counter = 1
         for part in parts:
-            tokens.append(Token(
-                reference[0],
-                reference[1],
-                reference[2],
-                counter,
-                part.strip(',.·;') if not self.include_punctuation else part)
-            )
-            counter += 1
+            word = part.strip(',.·;') if not self.include_punctuation else part
+            if not word == '':
+                tokens.append(Token(reference[0], reference[1], reference[2], counter,  word) )
+                counter += 1
 
         return tokens
 

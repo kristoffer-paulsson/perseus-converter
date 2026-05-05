@@ -21,16 +21,21 @@
 #
 from argparse import Namespace
 
+import unicodedata
+from lxml.builder import unicode
+
 from . import Command
 from perseusconverter.app import Config
 from ..gen.bgm import BGMLexemeGenerator
 from ..gen.bgt import BGTCorpusGenerator
-from ..gen.ognt import OGNTLexemeGenerator
+from ..gen.ognt import OGNTLexemeGenerator, OGNTCorpusGenerator
+from ..gen.rsgnt import RSGNTCorpusGenerator
 from ..scan.bgt import BGTScanner
 
-from ..scan.comparator import OGNT2BGMComparator
+from ..scan.comparator import OGNT2BGMComparator, MultiComparator, BookChapterComparator
 from ..scan.ognt import OGNTScanner
 from ..scan.bgm import BGMScanner
+from ..scan.rsgnt import RSGNTScanner
 from ..scan.scanner import Reference
 
 class TextCommand(Command):
@@ -45,10 +50,27 @@ class TextCommand(Command):
         self._gen()
 
     def _gen(self):
-        nt_start = Reference("Matthew", 1, 1)
-        BGTCorpusGenerator(BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False), nt_start).generate()
-        #OGNTLexemeGenerator(OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv"), nt_start).generate()
-        #BGMLexemeGenerator(BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt"), nt_start).generate()
+        #BGTCorpusGenerator(BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False), nt_start).generate()
+        #RSGNTCorpusGenerator(RSGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/rock-solid-gnt.txt", False), nt_start).generate()
+        #OGNTCorpusGenerator(OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", False), nt_start).generate()
+
+        scanners = iter(MultiComparator(
+            ref = Reference("Matthew", 1, 1),
+            bgt = BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False),
+            rsgnt = RSGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/rock-solid-gnt.txt", False),
+            ognt = OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", False)
+        ))
+
+        missing = 0
+        for tokens in filter.compare(scanners):
+            words = [unicodedata.normalize('NFD', v.token.lower()) for k, v in tokens.items()]
+            variants = len(set(words))
+            if variants>1:
+                missing += 1
+            print(str(variants) + ': ' + ', '.join(words))
+            if missing > 2:
+                print("Too many missing variants, stopping.")
+                break
 
     def _cmp(self):
         print()
@@ -64,3 +86,29 @@ class TextCommand(Command):
         comparator.get_error_cnt()
         comparator.get_errors(0)
 
+    def _merge_streams(self):
+        nt_start = Reference("Revelation", 22, 20)
+        scanners = MultiComparator(
+            ref=nt_start,
+            bgt=BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False),
+            rsgnt=RSGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/rock-solid-gnt.txt", False),
+            ognt=OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", False)
+        )
+
+        merged_tokens = []
+        for tokens in scanners:
+            token_counts = {}
+            for name, token in tokens.items():
+                if token is not None:
+                    normalized_token = unicodedata.normalize('NFD', token.token.lower())
+                    token_counts[normalized_token] = token_counts.get(normalized_token, 0) + 1
+                else:
+                    token_counts["null"] = token_counts.get("null", 0) + 1
+
+            if token_counts:
+                # Choose the most elected token
+                most_elected = max(token_counts, key=token_counts.get)
+                merged_tokens.append(most_elected)
+
+        print("Merged Tokens:")
+        print(merged_tokens)

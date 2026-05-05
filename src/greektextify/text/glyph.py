@@ -150,7 +150,7 @@ class GreekGlyph(NamedTuple):
 
         position = len(combine)
         if position == 0:
-            raise NlpWarning(*NlpWarning.NON_GREEK_GLYPH, {"char": chs})
+            raise NlpWarning(*NlpWarning.NON_GREEK_GLYPH, info = {"char": chs})
         return cls.combine(combine), position
 
     @classmethod
@@ -197,11 +197,11 @@ class GreekGlyph(NamedTuple):
 
     def cmp_all(self, other: "GreekGlyph", ignore_case: bool = False) -> bool:
         same = self.cmp_semi(other, ignore_case)
-        same = same if w.varia == other.varia else False
-        same = same if w.oxia == other.oxia else False
-        same = same if w.perispomeni == other.perispomeni else False
-        same = same if w.vrachy == other.vrachy else False
-        same = same if w.macron == other.macron else False
+        same = same if self.varia == other.varia else False
+        same = same if self.oxia == other.oxia else False
+        same = same if self.perispomeni == other.perispomeni else False
+        same = same if self.vrachy == other.vrachy else False
+        same = same if self.macron == other.macron else False
 
         return same
 

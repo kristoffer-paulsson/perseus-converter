@@ -21,15 +21,29 @@
 #
 import unicodedata, csv
 
+from biblebuilder.gen.generator import LexemeGenerator, CorpusGenerator
 from biblebuilder.scan.ognt import OGNTScanner
 from biblebuilder.scan.scanner import Reference, ScanIter
 
 
-class LexemeGenerator:
-    pass
 
-    def generate(self):
-        pass
+class OGNTCorpusGenerator(CorpusGenerator):
+
+    def __init__(self, rsgntScanner: OGNTScanner, start: Reference):
+        """Initialize the comparator with scanners for both corpora."""
+        self.rsgntScanner = ScanIter(rsgntScanner, start)
+        self.errors = dict()
+
+    def generate(self, refOnly: bool = False):
+        with open('ognt_corpus.csv', 'w', newline='\n', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['book', 'chapter', 'verse', 'index', 'token'])
+            for token in self.rsgntScanner:
+                if refOnly:
+                    writer.writerow([token.book, token.chapter, token.verse, token.index, ''])
+                else:
+                    writer.writerow([token.book, token.chapter, token.verse, token.index, unicodedata.normalize('NFD', token.token)])
+
 
 
 class OGNTLexemeGenerator(LexemeGenerator):
@@ -39,9 +53,14 @@ class OGNTLexemeGenerator(LexemeGenerator):
         self.ogntScanner = ScanIter(ogntScanner, start)
         self.errors = dict()
 
-    def generate(self):
+    def generate(self, refOnly: bool = False):
         with open('ognt_tokens.csv', 'w', newline='\n', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(['book', 'chapter', 'verse', 'index', 'token'])
             for token in self.ogntScanner:
-                writer.writerow([token.book, token.chapter, token.verse, token.index, unicodedata.normalize('NFD', token.token)])
+                if refOnly:
+                    writer.writerow([token.book, token.chapter, token.verse, token.index, ''])
+                else:
+                    word = unicodedata.normalize('NFD', token.token)
+                    word = word.replace('(', '').replace(')', '')  # Remove acute accent
+                    writer.writerow([token.book, token.chapter, token.verse, token.index, word.lower()])

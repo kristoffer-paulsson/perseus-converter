@@ -21,15 +21,9 @@
 #
 import unicodedata, csv
 
+from biblebuilder.gen.generator import CorpusGenerator
 from biblebuilder.scan.bgt import BGTScanner
 from biblebuilder.scan.scanner import Reference, ScanIter
-
-
-class CorpusGenerator:
-    pass
-
-    def generate(self):
-        pass
 
 
 class BGTCorpusGenerator(CorpusGenerator):
@@ -39,9 +33,12 @@ class BGTCorpusGenerator(CorpusGenerator):
         self.bgtScanner = ScanIter(bgtScanner, start)
         self.errors = dict()
 
-    def generate(self):
+    def generate(self, refOnly: bool = False):
         with open('bgt_nt_corpus.csv', 'w', newline='\n', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(['book', 'chapter', 'verse', 'index', 'token'])
             for token in self.bgtScanner:
-                writer.writerow([token.book, token.chapter, token.verse, token.index, unicodedata.normalize('NFD', token.token)])
+                if refOnly:
+                    writer.writerow([token.book, token.chapter, token.verse, token.index, ''])
+                else:
+                    writer.writerow([token.book, token.chapter, token.verse, token.index, unicodedata.normalize('NFD', token.token)])

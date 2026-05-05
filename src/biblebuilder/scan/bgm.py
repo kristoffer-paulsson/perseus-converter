@@ -108,6 +108,9 @@ class BGMScanner(Scanner):
         for part in parts:
             if '@' in part:
                 lexeme, morpheme = part.split('@', 1)
+                lexeme = lexeme.replace('+', '-')
+                if lexeme.endswith('-2'):
+                    lexeme = lexeme[:-2]
                 tokens.append(Token(reference[0], reference[1], reference[2], counter, lexeme))
                 counter += 1
 

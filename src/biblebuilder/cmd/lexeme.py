@@ -21,6 +21,7 @@
 #
 from argparse import Namespace
 
+from greektextify.nlp.contextual import NlpContext
 from . import Command
 from perseusconverter.app import Config
 from ..gen.bgm import BGMLexemeGenerator
@@ -40,24 +41,23 @@ class LexemeCommand(Command):
     def __call__(self):
         print(self.target)
         self.logger.info("{} found".format("test"))
-        self._gen()
+        self._cmp()
 
     def _gen(self):
-        nt_start = Reference("Matthew", 1, 1)
-        OGNTLexemeGenerator(OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv"), nt_start).generate()
+        nt_start = Reference("Revelation", 21, 1)
+        OGNTLexemeGenerator(OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", True), nt_start).generate()
         BGMLexemeGenerator(BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt"), nt_start).generate()
 
     def _cmp(self):
-        print()
         comparator = OGNT2BGMComparator(
             BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt"),
-            OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv"),
+            OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", True),
             Reference("Matthew", 1, 1)
         )
+        with NlpContext(comparator) as ctx:
+            for token in comparator.iter():
+                print(token)
 
-        for token in comparator.iter():
-            print(token)
-
-        comparator.get_error_cnt()
-        comparator.get_errors(0)
+            comparator.get_error_cnt()
+            #comparator.get_errors(0)
 

@@ -19,19 +19,53 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
+from typing import Tuple
+
+from greektextify.nlp.contextual import NlpContext, NlpOperation, ContextObject
+from greektextify.nlp.debug import Debugger
+from greektextify.nlp.detoken import Tokenizer, Detokenizer
+from greektextify.text.pdl_standard import PdlUtfStandard
+from greektextify.text.word import GreekWord
 from .bgm import BGMScanner
 from .ognt import OGNTScanner
-from .scanner import ScanIter, Token, Reference
+from .scanner import ScanIter, Token, Reference, Scanner
 import unicodedata
 
-class LexemeComparator:
+class Comparator:
     pass
 
 
-class OGNT2BGMComparator(LexemeComparator):
+class MultiComparator(Comparator):
+
+    def __init__(self, ref: Reference = None, **scanners: Scanner):
+        self.ref = ref
+        self.scanners = dict()
+        for name, scanner in scanners.items():
+            self.scanners[name] = ScanIter(scanner, ref)
+
+    def __iter__(self):
+        iterators = {name: iter(scanner) for name, scanner in self.scanners.items()}
+        original = set(iterators.keys())
+        depleted = set()
+        while depleted != original:
+            tokens = {}
+            for name, iterator in iterators.items():
+                try:
+                    if name in depleted:
+                        tokens[name] = None
+                    else:
+                        tokens[name] = next(iterator)
+                except StopIteration:
+                    depleted.add(name)
+
+            yield tokens  # Placeholder to yield the collected tokens for this iteration
+
+
+class OGNT2BGMComparator(Comparator, ContextObject):
 
     def __init__(self, bgmScanner: BGMScanner, ogntScanner: OGNTScanner, start: Reference):
         """Initialize the comparator with scanners for both corpora."""
+        super().__init__()
         self.ogntScanner = ScanIter(ogntScanner, start)
         self.bgmScanner = ScanIter(bgmScanner, start)
         self.errors = dict()
@@ -39,6 +73,7 @@ class OGNT2BGMComparator(LexemeComparator):
     def error_token(self, token: Token, msg: str) -> Token:
         return Token(token.book, token.chapter, token.verse, token.index, 'error-' + msg)
 
+    @NlpOperation()
     def iter(self):
 
         choices = {}
@@ -62,32 +97,32 @@ class OGNT2BGMComparator(LexemeComparator):
             ('ᾅδης', 'ᾍδης'): (1, "Different capitalization, use left accentuation"),
             ('καί+ἐκεῖ', 'κἀκεῖ'): (2, "Left is weird data, use right side"),
             ('Ἁλφαῖος', 'Ἀλφαῖος'): (1, "Same word, use left accentuation"),
-
-            ('λέγω', 'ἔπω, ἐρῶ, εἶπον'): (-1, "Different word, decide later"),
-            ('δεῖ', 'δέω'): (-1, "Different word, must be fixed"),
-            ('εὐαγγελίζω', 'εὐαγγελίζομαι'): (-1, "Different nuance, fix later"),
-            ('εὐθύς', 'εὐθέως'): (-1, "Different nuance, fix later"),
-            ('ὁράω', 'ἴδε'): (-1, "Different nuance, must be fixed"),
-            ('πολύς', 'πλείων, πλεῖον'): (-1, "Different word, fix later"),
-            ('χρυσοῦς', 'χρύσεος'): (-1, "Different nuance, fix later"),
-            ('λοιπός', 'λοιπόν'): (-1, "Different nuance, fix later"),
-            ('ἑκατοντάρχης', 'ἑκατόνταρχος'): (-1, "Different nuance, fix later"),
-            ('Καφαρναούμ', 'Καπερναούμ'): (-1, "Different nuance, fix later"),
-            ('Καφαρναούμ', 'Καπερναούμ'): (-1, "Different nuance, fix later"),
-            ('ἐλαχύς', 'ἐλάχιστος'): (-1, "Different nuance, fix later"),
-            ('ταχύς', 'ταχύ'): (-1, "Different nuance, fix later"),
-            ('προλέγω', 'προερέω'): (-1, "Different nuance, fix later"),
-            ('μεταμέλομαι', 'μεταμέλλομαι'): (-1, "Different nuance, fix later"),
-            ('στρωννύω', 'στρώννυμι'): (-1, "Different nuance, fix later"),
-            ('σέβω', 'σέβομαι'): (-1, "Different nuance, fix later"),
-            ('ἀποκαθιστάνω', 'ἀποκαθίστημι'): (-1, "Different nuance, fix later"),
-            ('Σαμαρίτης', 'Σαμαρείτης'): (-1, "Different nuance, fix later"),
-            ('τεσσεράκοντα', 'τεσσαράκοντα'): (-1, "Different nuance, fix later"),
-            ('ἐξομολογέω', 'ἐξομολογέομαι'): (-1, "Different nuance, fix later"),
-            ('σιδηροῦς', 'σιδήρεος'): (-1, "Different nuance, fix later"),
-            ('ἐμπίπλημι', 'ἐμπίμπλημι'): (-1, "Different nuance, fix later"),
-            ('συσταυρόω', 'συσταυρόομαι'): (-1, "Different nuance, fix later"),
         }"""
+
+        """('λέγω', 'ἔπω, ἐρῶ, εἶπον'): (-1, "Different word, decide later"),
+        ('δεῖ', 'δέω'): (-1, "Different word, must be fixed"),
+        ('εὐαγγελίζω', 'εὐαγγελίζομαι'): (-1, "Different nuance, fix later"),
+        ('εὐθύς', 'εὐθέως'): (-1, "Different nuance, fix later"),
+        ('ὁράω', 'ἴδε'): (-1, "Different nuance, must be fixed"),
+        ('πολύς', 'πλείων, πλεῖον'): (-1, "Different word, fix later"),
+        ('χρυσοῦς', 'χρύσεος'): (-1, "Different nuance, fix later"),
+        ('λοιπός', 'λοιπόν'): (-1, "Different nuance, fix later"),
+        ('ἑκατοντάρχης', 'ἑκατόνταρχος'): (-1, "Different nuance, fix later"),
+        ('Καφαρναούμ', 'Καπερναούμ'): (-1, "Different nuance, fix later"),
+        ('Καφαρναούμ', 'Καπερναούμ'): (-1, "Different nuance, fix later"),
+        ('ἐλαχύς', 'ἐλάχιστος'): (-1, "Different nuance, fix later"),
+        ('ταχύς', 'ταχύ'): (-1, "Different nuance, fix later"),
+        ('προλέγω', 'προερέω'): (-1, "Different nuance, fix later"),
+        ('μεταμέλομαι', 'μεταμέλλομαι'): (-1, "Different nuance, fix later"),
+        ('στρωννύω', 'στρώννυμι'): (-1, "Different nuance, fix later"),
+        ('σέβω', 'σέβομαι'): (-1, "Different nuance, fix later"),
+        ('ἀποκαθιστάνω', 'ἀποκαθίστημι'): (-1, "Different nuance, fix later"),
+        ('Σαμαρίτης', 'Σαμαρείτης'): (-1, "Different nuance, fix later"),
+        ('τεσσεράκοντα', 'τεσσαράκοντα'): (-1, "Different nuance, fix later"),
+        ('ἐξομολογέω', 'ἐξομολογέομαι'): (-1, "Different nuance, fix later"),
+        ('σιδηροῦς', 'σιδήρεος'): (-1, "Different nuance, fix later"),
+        ('ἐμπίπλημι', 'ἐμπίμπλημι'): (-1, "Different nuance, fix later"),
+        ('συσταυρόω', 'συσταυρόομαι'): (-1, "Different nuance, fix later"),"""
 
         ognt = iter(self.ogntScanner)
         crash = 0
@@ -98,10 +133,17 @@ class OGNT2BGMComparator(LexemeComparator):
             #if not (token.book == ogntToken.book and token.chapter == ogntToken.chapter and token.verse == ogntToken.verse and token.index == ogntToken.index):
             #    print(f"Reference mismatch: BGM {token.book} {token.chapter}:{token.verse} [{token.index}] vs OGNT {ogntToken.book} {ogntToken.chapter}:{ogntToken.verse} [{ogntToken.index}] {token} {ogntToken}")
             #    exit(1)
-            token1 = unicodedata.normalize('NFD', token.token)
-            token2 = unicodedata.normalize('NFD', ogntToken.token)
-            if token1 > token2:
-                key = (str(token1), str(token2))
+
+            #token1 = unicodedata.normalize('NFD', token.token)
+            #token2 = unicodedata.normalize('NFD', ogntToken.token)
+            print(token.token, ogntToken.token)
+            token1 = GreekWord.glyphen(PdlUtfStandard.standardize(token.token.lower()))
+            token2 = GreekWord.glyphen(PdlUtfStandard.standardize(ogntToken.token.lower()))
+            if not GreekWord.cmp_semi(token1, token2, True):
+                key = (
+                    Detokenizer.build_word(token1),
+                    Detokenizer.build_word(token2),
+                )
                 if key in choices.keys():
                     select = choices[key][0]
                     if select == 1:
@@ -116,13 +158,13 @@ class OGNT2BGMComparator(LexemeComparator):
                     self.errors[key].append((token.book, token.chapter, token.verse, token.index))
                     crash += 1
                     diff_cnt += 1
-                    chosen = self.error_token(token, 'unhandled')
+                    chosen = self.error_token(token, 'unhandled' + ' ' + token.token + '/' + ogntToken.token)
             else:
                 crash = 0
                 chosen = token
             yield chosen
-            if crash > 10:
-                break
+            #if crash > 10:
+            #    break
         try:
             next(ognt)
         except StopIteration:
