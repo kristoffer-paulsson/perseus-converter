@@ -27,10 +27,11 @@ from perseusconverter.app import Config
 from ..gen.bgm import BGMLexemeGenerator
 from ..gen.ognt import OGNTLexemeGenerator
 
+from ..scan.scanner import JointScanner, Reference
 from ..scan.comparator import OGNT2BGMComparator
 from ..scan.ognt import OGNTScanner
 from ..scan.bgm import BGMScanner
-from ..scan.scanner import Reference
+from ..scan.bgt import BGTScanner
 
 class LexemeCommand(Command):
 
@@ -50,7 +51,10 @@ class LexemeCommand(Command):
 
     def _cmp(self):
         comparator = OGNT2BGMComparator(
-            BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt"),
+            JointScanner(
+                BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt"),
+                BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt")
+            ),
             OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", True),
             Reference("Matthew", 1, 1)
         )

@@ -113,6 +113,9 @@ class BGMScanner(Scanner):
                     lexeme = lexeme[:-2]
                 tokens.append(Token(reference[0], reference[1], reference[2], counter, lexeme))
                 counter += 1
+            elif part.endswith('am---n'): # Some tokens in bgm.txt misses out on @ and ends with am---n
+                tokens.append(Token(reference[0], reference[1], reference[2], counter, None))
+                counter += 1
 
         return tokens
 

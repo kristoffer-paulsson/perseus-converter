@@ -28,7 +28,7 @@ from greektextify.text.pdl_standard import PdlUtfStandard
 from greektextify.text.word import GreekWord
 from .bgm import BGMScanner
 from .ognt import OGNTScanner
-from .scanner import ScanIter, Token, Reference, Scanner
+from .scanner import ScanIter, Token, Reference, Scanner, JointScanner
 import unicodedata
 
 class Comparator:
@@ -63,11 +63,11 @@ class MultiComparator(Comparator):
 
 class OGNT2BGMComparator(Comparator, ContextObject):
 
-    def __init__(self, bgmScanner: BGMScanner, ogntScanner: OGNTScanner, start: Reference):
+    def __init__(self, bwScanner: JointScanner, ogntScanner: OGNTScanner, start: Reference):
         """Initialize the comparator with scanners for both corpora."""
         super().__init__()
         self.ogntScanner = ScanIter(ogntScanner, start)
-        self.bgmScanner = ScanIter(bgmScanner, start)
+        self.bgmScanner = ScanIter(bwScanner, start)
         self.errors = dict()
 
     def error_token(self, token: Token, msg: str) -> Token:
@@ -136,9 +136,9 @@ class OGNT2BGMComparator(Comparator, ContextObject):
 
             #token1 = unicodedata.normalize('NFD', token.token)
             #token2 = unicodedata.normalize('NFD', ogntToken.token)
-            print(token.token, ogntToken.token)
-            token1 = GreekWord.glyphen(PdlUtfStandard.standardize(token.token.lower()))
-            token2 = GreekWord.glyphen(PdlUtfStandard.standardize(ogntToken.token.lower()))
+            print(token.word, token.lexeme + " " + ogntToken.word, token.lexeme)
+            token1 = GreekWord.glyphen(PdlUtfStandard.standardize(token.lexeme.lower()))
+            token2 = GreekWord.glyphen(PdlUtfStandard.standardize(ogntToken.lexeme.lower()))
             if not GreekWord.cmp_semi(token1, token2, True):
                 key = (
                     Detokenizer.build_word(token1),
@@ -158,7 +158,7 @@ class OGNT2BGMComparator(Comparator, ContextObject):
                     self.errors[key].append((token.book, token.chapter, token.verse, token.index))
                     crash += 1
                     diff_cnt += 1
-                    chosen = self.error_token(token, 'unhandled' + ' ' + token.token + '/' + ogntToken.token)
+                    chosen = self.error_token(token, 'unhandled' + ' ' + token.lexeme + '/' + ogntToken.lexeme)
             else:
                 crash = 0
                 chosen = token

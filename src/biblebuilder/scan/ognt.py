@@ -25,7 +25,7 @@ from greektextify.text.alphabet import GreekAlphabet
 from greektextify.text.dbg_standard import DbgUtfStandard
 from greektextify.text.midway import GreekMidway
 from greektextify.text.word import GreekWord
-from .scanner import Scanner, Token
+from .scanner import Scanner, Token, WideToken
 from pathlib import Path
 
 class OGNTScanner(Scanner):
@@ -77,46 +77,41 @@ class OGNTScanner(Scanner):
                         else:
                             current_index += 1
 
-                        #lexeme_info = parts[7].strip('〔〕')
-                        #lexeme_parts = lexeme_info.split('｜')
-
-                        #yield Token(book, chapter, verse, current_index, lexeme_parts[3])
-                        if self._lexeme:
-                            lexeme_info = parts[8].strip('〔〕')
-                            lexeme_parts = lexeme_info.split('｜')
-                            if ' ' in lexeme_parts[0] and not ', ' in lexeme_parts[0]:
-                                lexeme = DbgUtfStandard.standardize(lexeme_parts[0].split(' ')[0])
-                            elif ' ' in lexeme_parts[1] and not ', ' in lexeme_parts[1]:
-                                lexeme = DbgUtfStandard.standardize(lexeme_parts[1].split(' ')[0])
-                            elif ' ' in lexeme_parts[2] and not ', ' in lexeme_parts[2]:
-                                lexeme = DbgUtfStandard.standardize(lexeme_parts[2].split(' ')[0])
-                            else:
-                                lexeme = DbgUtfStandard.standardize(lexeme_parts[0])
-
-                            if lexeme == 'καί，ἐγώ':
-                                lexeme = 'καί-ἐγώ'
-                            elif lexeme == 'καί，ἐκεῖ':
-                                lexeme = 'καί-ἐκεῖ'
-                            elif lexeme == 'καί，ἐκεῖνος':
-                                lexeme = 'καί-ἐκεῖνος'
-                            elif lexeme == 'καί，ἐάν':
-                                lexeme = 'καί-ἐάν'
-                            elif lexeme == 'ὁ，ὄνομα':
-                                lexeme = 'ὁ-ὄνομα'
-                            elif lexeme == 'καί，ἐκεῖθεν':
-                                lexeme = 'καί-ἐκεῖθεν'
-                            elif lexeme == 'ὁ，ἐναντίον':
-                                lexeme = 'ὁ-ἐναντίον'
-
-                            if '(' in lexeme:
-                                lexeme = lexeme.replace('(', '')
-                            if ')' in lexeme:
-                                lexeme = lexeme.replace(')', '')
-
-                            yield Token(book, chapter, verse, current_index, lexeme)
+                        lexeme_info = parts[8].strip('〔〕')
+                        lexeme_parts = lexeme_info.split('｜')
+                        if ' ' in lexeme_parts[0] and not ', ' in lexeme_parts[0]:
+                            lexeme = DbgUtfStandard.standardize(lexeme_parts[0].split(' ')[0])
+                        elif ' ' in lexeme_parts[1] and not ', ' in lexeme_parts[1]:
+                            lexeme = DbgUtfStandard.standardize(lexeme_parts[1].split(' ')[0])
+                        elif ' ' in lexeme_parts[2] and not ', ' in lexeme_parts[2]:
+                            lexeme = DbgUtfStandard.standardize(lexeme_parts[2].split(' ')[0])
                         else:
-                            word_info = parts[7].strip('〔〕')
-                            word_parts = word_info.split('｜')
-                            word = DbgUtfStandard.standardize(word_parts[2])
+                            lexeme = DbgUtfStandard.standardize(lexeme_parts[0])
 
-                            yield Token(book, chapter, verse, current_index, word)
+                        if lexeme == 'καί，ἐγώ':
+                            lexeme = 'καί-ἐγώ'
+                        elif lexeme == 'καί，ἐκεῖ':
+                            lexeme = 'καί-ἐκεῖ'
+                        elif lexeme == 'καί，ἐκεῖνος':
+                            lexeme = 'καί-ἐκεῖνος'
+                        elif lexeme == 'καί，ἐάν':
+                            lexeme = 'καί-ἐάν'
+                        elif lexeme == 'ὁ，ὄνομα':
+                            lexeme = 'ὁ-ὄνομα'
+                        elif lexeme == 'καί，ἐκεῖθεν':
+                            lexeme = 'καί-ἐκεῖθεν'
+                        elif lexeme == 'ὁ，ἐναντίον':
+                            lexeme = 'ὁ-ἐναντίον'
+
+                        if '(' in lexeme:
+                            lexeme = lexeme.replace('(', '')
+                        if ')' in lexeme:
+                            lexeme = lexeme.replace(')', '')
+
+                        #yield Token(book, chapter, verse, current_index, lexeme)
+
+                        word_info = parts[7].strip('〔〕')
+                        word_parts = word_info.split('｜')
+                        word = DbgUtfStandard.standardize(word_parts[2])
+
+                        yield WideToken(book, chapter, verse, current_index, word, lexeme)

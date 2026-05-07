@@ -39,8 +39,15 @@ class Token(NamedTuple):
     verse: int
     index: int
     token: str
-    # word: GreekWord
-    # lexeme: GreekWord
+
+
+class WideToken(NamedTuple):
+    book: str
+    chapter: int
+    verse: int
+    index: int
+    word: str
+    lexeme: str
 
 
 class Scanner:
@@ -51,6 +58,28 @@ class Scanner:
         # Placeholder for actual implementation
         # This should read the Lexemes corpus file and yield Token instances
         pass
+
+
+class JointScanner(Scanner):
+
+    def __init__(self, word_scanner: Scanner, lexeme_scanner: Scanner):
+        """Initialize the scanner with a path to bgm.txt file."""
+        self.scanner1 = word_scanner
+        self.scanner2 = lexeme_scanner
+
+    def iter(self):
+
+        right = self.scanner2.iter()
+
+        for token in self.scanner1.iter():
+            rightToken = next(right)
+            if token.book == rightToken.book and token.chapter == rightToken.chapter and token.verse == rightToken.verse and token.index == rightToken.index:
+                yield WideToken(token.book, token.chapter, token.verse, token.index, token.token, rightToken.token)
+            else:
+                raise StopIteration("JointScanner: Tokens do not match at "
+                    + token.book + " " + str(token.chapter) + ":" + str(token.verse) + " index " + str(token.index)  + " != "
+                    + rightToken.book + " " + str(rightToken.chapter) + ":" + str(rightToken.verse) + " index " + str(rightToken.index)
+                )
 
 
 class ScanIter:

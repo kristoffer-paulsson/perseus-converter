@@ -23,7 +23,6 @@ from typing import List, Dict
 
 from .scanner import Scanner, Token
 from pathlib import Path
-import string
 
 
 class BGTScanner(Scanner):
@@ -42,17 +41,24 @@ class BGTScanner(Scanner):
 
     @property
     def book_names(self) -> List[str]:
-        return {
-            40: 'Matthew', 41: 'Mark', 42: 'Luke', 43: 'John', 44: 'Acts', 45: 'Romans', 46: '1 Corinthians',
-            47: '2 Corinthians', 48: 'Galatians', 49: 'Ephesians', 50: 'Philippians', 51: 'Colossians',
-            52: '1 Thessalonians', 53: '2 Thessalonians', 54: '1 Timothy', 55: '2 Timothy', 56: 'Titus',
-            57: 'Philemon', 58: 'Hebrews', 59: 'James', 60: '1 Peter', 61: '2 Peter', 62: '1 John', 63: '2 John',
-            64: '3 John', 65: 'Jude', 66: 'Revelation'
-        }.values()
+        return [
+            'Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua (A)', 'Joshua', 'Judges (A)', 'Judges',
+            'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', '1 Esdras', 'Ezra',
+            'Nehemiah', 'Esther', 'Judith', 'Tobit', 'Tobit (S)', '1 Maccabees', '2 Maccabees', '3 Maccabees',
+            '4 Maccabees', 'Psalm', 'Odes', 'Proverbs', 'Ecclesiastes', 'Song of Solomon', 'Job', 'Wisdom',
+            'Sirach Prolog', 'Sirach', 'Psalms of Solomon', 'Hosea', 'Amos', 'Micah', 'Joel', 'Obadiah', 'Jonah',
+            'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi', 'Isaiah', 'Jeremiah', 'Baruch',
+            'Lamentations', 'Epistle of Jeremiah', 'Ezekiel', 'Susanna', 'Susanna (TH)', 'Daniel', 'Daniel (TH)', 'Bel',
+            'Bel (TH)', 'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
+            'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians', '1 Timothy',
+            '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1 Peter', '2 Peter', '1 John', '2 John', '3 John',
+            'Jude', 'Revelation'
+        ]
 
     @property
     def bookMap(self) -> Dict[str, str]:
-        return dict(zip(self.book_abbr[61:88], self.book_names))
+        #return dict(zip(self.book_abbr[61:88], self.book_names))
+        return dict(zip(self.book_abbr, self.book_names))
 
     def __init__(self, filepath: str, include_punctuation: bool = False):
         """Initialize the scanner with a path to bgt.txt file.
