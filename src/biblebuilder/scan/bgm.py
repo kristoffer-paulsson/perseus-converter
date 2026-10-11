@@ -21,6 +21,7 @@
 #
 from typing import List
 
+from greektextify.text.dbg_standard import DbgUtfStandard
 from .scanner import Scanner, Token
 from pathlib import Path
 
@@ -111,6 +112,7 @@ class BGMScanner(Scanner):
                 lexeme = lexeme.replace('+', '-')
                 if lexeme.endswith('-2'):
                     lexeme = lexeme[:-2]
+                lexeme = DbgUtfStandard.standardize(lexeme)
                 tokens.append(Token(reference[0], reference[1], reference[2], counter, lexeme))
                 counter += 1
             elif part.endswith('am---n'): # Some tokens in bgm.txt misses out on @ and ends with am---n

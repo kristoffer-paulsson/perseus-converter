@@ -9,6 +9,9 @@ sphinx_rtd_theme
 spacy
 grecy
 
+collatex
+Levenshtein
+
 GitPython
 lxml
 nltk

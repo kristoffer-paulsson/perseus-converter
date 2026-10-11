@@ -22,17 +22,18 @@
 from argparse import Namespace
 
 import unicodedata
+from typing import List
+
+from collatex import Collation, collate
 from lxml.builder import unicode
 
+from ..scan.scanner import ChapterExtractor
+from ..scan.scanner import WideToken, ScanIter
 from . import Command
 from perseusconverter.app import Config
-from ..gen.bgm import BGMLexemeGenerator
-from ..gen.bgt import BGTCorpusGenerator
-from ..gen.ognt import OGNTLexemeGenerator, OGNTCorpusGenerator
-from ..gen.rsgnt import RSGNTCorpusGenerator
 from ..scan.bgt import BGTScanner
 
-from ..scan.comparator import OGNT2BGMComparator, MultiComparator, BookChapterComparator
+from ..scan.comparator import OGNT2BGMComparator, MultiComparator#, BookChapterComparator
 from ..scan.ognt import OGNTScanner
 from ..scan.bgm import BGMScanner
 from ..scan.rsgnt import RSGNTScanner
@@ -49,28 +50,40 @@ class TextCommand(Command):
         self.logger.info("{} found".format("test"))
         self._gen()
 
+    def _build(self, token_list: List):
+        words = list()
+        for token in token_list:
+            if token is not None:
+                if type(token) is WideToken:
+                    w = token.word
+                else:
+                    w = token.token
+                normalized_token = unicodedata.normalize('NFD', w.lower())
+                words.append(normalized_token.strip())
+        return ' '.join(words)
+
     def _gen(self):
-        #BGTCorpusGenerator(BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False), nt_start).generate()
-        #RSGNTCorpusGenerator(RSGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/rock-solid-gnt.txt", False), nt_start).generate()
-        #OGNTCorpusGenerator(OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", False), nt_start).generate()
+        nt_start = Reference("Revelation", 1, 1)
+        bgt = ChapterExtractor(ScanIter(
+            BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False),
+            nt_start,
+        )).get_chapter()
+        rsgnt = ChapterExtractor(ScanIter(
+            RSGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/rock-solid-gnt.txt", False),
+            nt_start
+        )).get_chapter()
+        ognt = ChapterExtractor(ScanIter(
+            OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", False),
+            nt_start
+        )).get_chapter()
 
-        scanners = iter(MultiComparator(
-            ref = Reference("Matthew", 1, 1),
-            bgt = BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False),
-            rsgnt = RSGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/rock-solid-gnt.txt", False),
-            ognt = OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", False)
-        ))
+        c = Collation()
+        c.add_plain_witness('bgt', self._build(bgt))
+        c.add_plain_witness('rsgnt', self._build(rsgnt))
+        c.add_plain_witness('ognt', self._build(ognt))
+        xml = collate(c, output="xml", segmentation=True)
 
-        missing = 0
-        for tokens in filter.compare(scanners):
-            words = [unicodedata.normalize('NFD', v.token.lower()) for k, v in tokens.items()]
-            variants = len(set(words))
-            if variants>1:
-                missing += 1
-            print(str(variants) + ': ' + ', '.join(words))
-            if missing > 2:
-                print("Too many missing variants, stopping.")
-                break
+        print(xml)
 
     def _cmp(self):
         print()

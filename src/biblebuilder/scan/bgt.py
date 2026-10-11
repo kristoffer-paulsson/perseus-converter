@@ -21,6 +21,7 @@
 #
 from typing import List, Dict
 
+from greektextify.text.dbg_standard import DbgUtfStandard
 from .scanner import Scanner, Token
 from pathlib import Path
 
@@ -149,6 +150,7 @@ class BGTScanner(Scanner):
         for part in parts:
             word = part.strip(',.·;') if not self.include_punctuation else part
             if not word == '':
+                word = DbgUtfStandard.standardize(word)
                 tokens.append(Token(reference[0], reference[1], reference[2], counter,  word) )
                 counter += 1
 

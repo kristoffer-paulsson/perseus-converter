@@ -21,15 +21,12 @@
 #
 from typing import Tuple
 
-from greektextify.nlp.contextual import NlpContext, NlpOperation, ContextObject
-from greektextify.nlp.debug import Debugger
-from greektextify.nlp.detoken import Tokenizer, Detokenizer
+from greektextify.nlp.contextual import NlpOperation, ContextObject
+from greektextify.nlp.detoken import Detokenizer
 from greektextify.text.pdl_standard import PdlUtfStandard
 from greektextify.text.word import GreekWord
-from .bgm import BGMScanner
 from .ognt import OGNTScanner
 from .scanner import ScanIter, Token, Reference, Scanner, JointScanner
-import unicodedata
 
 class Comparator:
     pass

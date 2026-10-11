@@ -21,11 +21,8 @@
 #
 from typing import Dict
 
-from greektextify.text.alphabet import GreekAlphabet
 from greektextify.text.dbg_standard import DbgUtfStandard
-from greektextify.text.midway import GreekMidway
-from greektextify.text.word import GreekWord
-from .scanner import Scanner, Token, WideToken
+from .scanner import Scanner, WideToken
 from pathlib import Path
 
 class OGNTScanner(Scanner):
@@ -113,5 +110,6 @@ class OGNTScanner(Scanner):
                         word_info = parts[7].strip('〔〕')
                         word_parts = word_info.split('｜')
                         word = DbgUtfStandard.standardize(word_parts[2])
+                        lexeme = DbgUtfStandard.standardize(lexeme)
 
                         yield WideToken(book, chapter, verse, current_index, word, lexeme)

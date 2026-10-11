@@ -19,8 +19,6 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-import unicodedata
-from pathlib import Path
 from typing import NamedTuple, List
 
 from greektextify.text.word import GreekWord
@@ -82,7 +80,7 @@ class JointScanner(Scanner):
                 )
 
 
-class ScanIter:
+class ScanIter(Scanner):
 
     def __init__(self, scanner: Scanner, startRef: Reference = None):
         """Initialize the scanner with a path to bgm.txt file."""
@@ -105,3 +103,31 @@ class ScanIter:
     def token_printer(self):
         for token in self.scanner.iter():
             print(token)
+
+
+class ChapterExtractor:
+    """Extracts one chapter at a time from a scanner, remembering where it left off."""
+
+    def __init__(self, scanner: ScanIter):
+        self.scanner = scanner
+        self._iter = scanner.__iter__()
+        self._last = None  # First token of the coming chapter, read ahead by the previous call.
+
+    def get_chapter(self) -> List[WideToken]:
+        """Return all tokens of the coming chapter, or an empty list when the scanner is exhausted."""
+        if self._last is None:
+            self._last = next(self._iter)
+            if self._last is None:
+                return []
+
+        chapter = [self._last]
+        book, number = self._last.book, self._last.chapter
+        self._last = None
+
+        for token in self._iter:
+            if token.book != book or token.chapter != number:
+                self._last = token
+                break
+            chapter.append(token)
+
+        return chapter
