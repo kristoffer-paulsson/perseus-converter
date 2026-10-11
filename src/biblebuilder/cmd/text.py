@@ -25,7 +25,6 @@ import unicodedata
 from typing import List
 
 from collatex import Collation, collate
-from lxml.builder import unicode
 
 from ..scan.scanner import ChapterExtractor
 from ..scan.scanner import WideToken, ScanIter

@@ -23,7 +23,9 @@
 from pathlib import PurePath
 
 from greektextify.text.bracket import Bracketing
+from greektextify.text.dbg_standard import DbgUtfStandard
 from greektextify.text.heard import GreekHeard
+from greektextify.text.pdl_standard import PdlUtfStandard
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.quotation import GreekQuotation
 from greektextify.text.spacing import Spacing
@@ -43,7 +45,7 @@ class AbstractPlainTraverser(AbstractTraverser):
             Spacing,
             GreekHeard,
             GreekUnheard,
-        ])
+        ], DbgUtfStandard())
         AbstractTraverser.__init__(self, tokenizer, path)
         self._states = set()
 
@@ -51,7 +53,7 @@ class AbstractPlainTraverser(AbstractTraverser):
         tokens = self._tokenizer.tokenize(text)
         print(tokens)
         for token in tokens:
-            if len(token) > 1:
+            if len(token) >= 1:
                 print(GreekWord(token).glyphs)
 
     def _traverse(self, line: str):
@@ -60,4 +62,5 @@ class AbstractPlainTraverser(AbstractTraverser):
     def traverse(self):
         with open(self._filename) as fd:
             for line in fd:
-                self._traverse(line)
+                for token in self._traverse(line):
+                    yield token

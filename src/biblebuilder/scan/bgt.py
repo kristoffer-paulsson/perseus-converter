@@ -21,7 +21,11 @@
 #
 from typing import List, Dict
 
+from spacy.lang.lex_attrs import is_alpha
+
 from greektextify.text.dbg_standard import DbgUtfStandard
+from greektextify.text.word import GreekWord
+from perseusconverter.traverse.bibbgt import BgtTraverser
 from .scanner import Scanner, Token
 from pathlib import Path
 
@@ -91,41 +95,21 @@ class BGTScanner(Scanner):
                 ("Judges (A)", 16, 6)
                 ("1 John", 1, 1)
         """
-        line = line.strip()
-        if not line:
-            return None
-
-        parts = line.split()
-        #print("Parsing line:", line)
-
-        # Skip "BGM" prefix at parts[0]
-        # Find the chapter:verse part (contains ':' and is numeric)
-        chapter_verse_idx = None
-        for i in range(0, len(parts)):
-            if ':' in parts[i]:
-                # Check if it matches Chapter:Verse pattern
-                cv_parts = parts[i].split(':')
-                if len(cv_parts) == 2:
-                    try:
-                        int(cv_parts[0])
-                        int(cv_parts[1])
-                        chapter_verse_idx = i
-                        break
-                    except ValueError:
-                        continue
-
-        if chapter_verse_idx is None:
-            return None
-
+        parts = line.split(' ')
         # Everything between "BGM" and chapter:verse is the book name
-        book = ' '.join(parts[0:chapter_verse_idx])
+        book = parts[0]
 
         # Extract chapter and verse
-        chapter_verse = parts[chapter_verse_idx].split(':')
+        chapter_verse = parts[1].split(':')
         chapter = int(chapter_verse[0])
-        verse = int(chapter_verse[1]) if len(chapter_verse) > 1 else 0
+        if is_alpha(chapter_verse[1][-1]):
+            sub_verse = chapter_verse[1][-1]
+            verse = int(chapter_verse[1][:-1]) if len(chapter_verse) > 1 else 0
+        else:
+            sub_verse = None
+            verse = int(chapter_verse[1]) if len(chapter_verse) > 1 else 0
 
-        return (self.bookMap.get(book, book), chapter, verse)
+        return (self.bookMap.get(book, book), chapter, verse, sub_verse)
 
     def read_line(self, line: str) -> List[Token]:
         """
@@ -151,15 +135,26 @@ class BGTScanner(Scanner):
             word = part.strip(',.·;') if not self.include_punctuation else part
             if not word == '':
                 word = DbgUtfStandard.standardize(word)
-                tokens.append(Token(reference[0], reference[1], reference[2], counter,  word) )
+                print(word)
+                word_gl = GreekWord.glyphen(word)
+                tokens.append(Token(reference[0], reference[1], reference[2], counter,  word, word_gl))
                 counter += 1
 
         return tokens
 
     def iter(self):
-        f = self.filepath.open()
-        for line in f:
-            tokens = self.read_line(line)
-            if tokens:
-                for token in tokens:
-                    yield token
+        txt = BgtTraverser(self.filepath)
+        ref = None
+        counter = 0
+        for token in iter(txt.traverse()):
+            if token[0] == 5:
+                ref = self.parse_reference(token[1])
+                counter = 1
+            elif token[0] == 2 and self.include_punctuation:
+                # yield token
+                pass
+            elif token[0] == 0:
+                yield Token(ref[0], ref[1], ref[2], counter, token[1], GreekWord.glyphen(token[1]))
+                counter += 1
+            else:
+                pass

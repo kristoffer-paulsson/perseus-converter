@@ -22,6 +22,7 @@
 from typing import List, Dict
 
 from greektextify.text.dbg_standard import DbgUtfStandard
+from greektextify.text.word import GreekWord
 from .scanner import Scanner, Token
 from pathlib import Path
 import re
@@ -102,5 +103,6 @@ class RSGNTScanner(Scanner):
                     token_str = part if self.include_punctuation else re.sub(r'^\W+|\W+$', '', part)
                     token_str = DbgUtfStandard.standardize(token_str)
                     token_index += 1
+                    word_gl = GreekWord.glyphen(token_str)
                     # print(f"Yielding token: {book} {chapter}:{verse} [{token_index}] '{token_str}'")
-                    yield Token(book, chapter, verse, token_index, token_str)
+                    yield Token(book, chapter, verse, token_index, token_str, word_gl)

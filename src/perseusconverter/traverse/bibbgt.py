@@ -23,9 +23,10 @@
 from pathlib import PurePath
 from typing import List, Tuple
 
-from regex import regex
+import regex
 
 from greektextify.text.pdl_standard import PdlUtfStandard
+from greektextify.text.word import GreekWord
 from perseusconverter.traverse.plain import AbstractPlainTraverser
 
 INDEX = {
@@ -60,6 +61,9 @@ INDEX = {
 
 class BgtTraverser(AbstractPlainTraverser):
 
+    def hierarchy(self):
+        pass
+
     def __init__(self, path: PurePath):
         AbstractPlainTraverser.__init__(self, path)
         self._hierarchy = 'book-chapter-verse'
@@ -73,8 +77,10 @@ class BgtTraverser(AbstractPlainTraverser):
 
         for idx, line in self._sub_verses(std):
             self._verse = idx
-            print("{} {}:{}".format(self._book, self._chapter, self._verse))
-            self.general(line)
+            yield (5, "{} {}:{}".format(self._book, self._chapter, self._verse))
+            # print("(5, " +  + ")")
+            for token in  self.general(line):
+                yield token
 
     def _sub_verses(self, line: str) -> List[Tuple[str, str]]:
         indicies = regex.findall(r"(\[\d+\]|\d+[a-z])", line)
@@ -89,3 +95,12 @@ class BgtTraverser(AbstractPlainTraverser):
                 text.append((idx, verse))
 
         return text
+
+    def general(self, text: str):
+        tokens = self._tokenizer.tokenize(text)
+        # print(tokens)
+        for token in tokens:
+            if token[0] != 4:
+                yield token
+                #print(token)
+                #print(GreekWord(token[1]).glyphs)

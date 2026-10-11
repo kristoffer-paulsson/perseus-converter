@@ -21,7 +21,7 @@
 #
 from typing import NamedTuple, List
 
-from greektextify.text.word import GreekWord
+from greektextify.text.glyph import GreekGlyph
 
 
 class Reference(NamedTuple):
@@ -37,6 +37,7 @@ class Token(NamedTuple):
     verse: int
     index: int
     token: str
+    word_gl: tuple[GreekGlyph]
 
 
 class WideToken(NamedTuple):
@@ -46,6 +47,7 @@ class WideToken(NamedTuple):
     index: int
     word: str
     lexeme: str
+    word_gl: tuple[GreekGlyph]
 
 
 class Scanner:
@@ -72,7 +74,7 @@ class JointScanner(Scanner):
         for token in self.scanner1.iter():
             rightToken = next(right)
             if token.book == rightToken.book and token.chapter == rightToken.chapter and token.verse == rightToken.verse and token.index == rightToken.index:
-                yield WideToken(token.book, token.chapter, token.verse, token.index, token.token, rightToken.token)
+                yield WideToken(token.book, token.chapter, token.verse, token.index, token.token, rightToken.token, token.word_gl)
             else:
                 raise StopIteration("JointScanner: Tokens do not match at "
                     + token.book + " " + str(token.chapter) + ":" + str(token.verse) + " index " + str(token.index)  + " != "
