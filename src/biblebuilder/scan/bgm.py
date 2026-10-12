@@ -19,10 +19,13 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
-from typing import List
+from typing import List, Tuple
+
+import regex
 
 from greektextify.text.dbg_standard import DbgUtfStandard
 from greektextify.text.word import GreekWord
+from perseusconverter.traverse.bibbgt import INDEX
 from .scanner import Scanner, Token
 from pathlib import Path
 
@@ -87,6 +90,20 @@ class BGMScanner(Scanner):
 
         return (book, chapter, verse)
 
+    def _sub_verses(self, line: str, verse: str) -> List[Tuple[str, str]]:
+        indicies = regex.findall(r"(\[\d+\]@\[\d+\]|\d+[a-z])", line)
+        verses = regex.split(r"\[\d+\]@[\d+\]|\d+[a-z]", line)
+        text = [(verse, verses[0])]
+
+        if len(verses) > 1:
+            for cnt in range(0, len(indicies)):
+                idx = indicies[cnt]
+                verse1 = verses[cnt + 1]
+                idx = verse + INDEX[idx[1:].split(']')[0]] if idx[0] == '[' else idx
+                text.append((idx, verse1))
+
+        return text
+
     def read_line(self, line: str) -> List[Token]:
         """
         Reads a single line from bgm.txt.
@@ -95,31 +112,36 @@ class BGMScanner(Scanner):
         if not line:
             return None
 
-        reference = self.parse_reference(line)
+        # reference = self.parse_reference(line)
 
         # Split the line into parts
-        parts = line.split(str(reference[1]) + ":" + str(reference[2]))[1].strip().split(' ')
+        # parts = line.split(str(reference[1]) + ":" + str(reference[2]))[1].strip().split(' ')
         #book = parts[1]
         #chapter_verse = parts[2].split(':')
         #chapter = int(chapter_verse[0])
         #verse = int(chapter_verse[1]) if len(chapter_verse) > 1 else 0
 
-        # Extract and parse tokens
+        book, chapter, verse, text = regex.search(r"(.*) (\d+):(\d+)?(.*)$", line[4:].strip()).groups()
+
         tokens = []
-        counter = 1
-        for part in parts:
-            if '@' in part:
-                lexeme, morpheme = part.split('@', 1)
-                lexeme = lexeme.replace('+', '-')
-                if lexeme.endswith('-2'):
-                    lexeme = lexeme[:-2]
-                lexeme = DbgUtfStandard.standardize(lexeme)
-                word_gl = GreekWord.glyphen(lexeme)
-                tokens.append(Token(reference[0], reference[1], reference[2], counter, lexeme, word_gl))
-                counter += 1
-            elif part.endswith('am---n'): # Some tokens in bgm.txt misses out on @ and ends with am---n
-                tokens.append(Token(reference[0], reference[1], reference[2], counter, None, None))
-                counter += 1
+        for idx, line in self._sub_verses(text.strip(), verse):
+            parts = line.split(' ')
+
+            # Extract and parse tokens
+            counter = 1
+            for part in parts:
+                if '@' in part:
+                    lexeme, morpheme = part.split('@', 1)
+                    lexeme = lexeme.replace('+', '-')
+                    if lexeme.endswith('-2'):
+                        lexeme = lexeme[:-2]
+                    lexeme = DbgUtfStandard.standardize(lexeme)
+                    word_gl = GreekWord.glyphen(lexeme)
+                    tokens.append(Token(book, int(chapter), int(verse), counter, lexeme, word_gl))
+                    counter += 1
+                elif part.endswith('am---n'): # Some tokens in bgm.txt misses out on @ and ends with am---n
+                    tokens.append(Token(book, int(chapter), int(verse), counter, None, None))
+                    counter += 1
 
         return tokens
 

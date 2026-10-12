@@ -151,10 +151,11 @@ class BGTScanner(Scanner):
                 ref = self.parse_reference(token[1])
                 counter = 1
             elif token[0] == 2 and self.include_punctuation:
-                # yield token
                 pass
+                # yield Token(ref[0], ref[1], ref[2], -1, token[1], None)
             elif token[0] == 0:
                 yield Token(ref[0], ref[1], ref[2], counter, token[1], GreekWord.glyphen(token[1]))
                 counter += 1
             else:
                 pass
+                # yield Token(ref[0], ref[1], ref[2], -1, token[1], None)

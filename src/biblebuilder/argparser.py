@@ -35,6 +35,7 @@ class CLI:
         )
         self._lexeme(parsers)
         self._text(parsers)
+        self._check(parsers)
 
     @classmethod
     def parse_args(cls) -> Namespace:
@@ -44,7 +45,10 @@ class CLI:
         load = subparser.add_parser(name="lexeme", help="Performs lexeme analyzis")
         # load.add_argument('corpora', choices=['pdl', 'bib', 'lex'])
 
-
     def _text(self, subparser):
         load = subparser.add_parser(name="text", help="Performs corpus compiling")
+        # load.add_argument('corpora', choices=['pdl', 'bib', 'lex'])
+
+    def _check(self, subparser):
+        load = subparser.add_parser(name="check", help="Performs corpus check")
         # load.add_argument('corpora', choices=['pdl', 'bib', 'lex'])

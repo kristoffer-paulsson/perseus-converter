@@ -26,13 +26,14 @@ from typing import List
 
 from collatex import Collation, collate
 
+from greektextify.text.word import GreekWord
 from ..scan.scanner import ChapterExtractor
 from ..scan.scanner import WideToken, ScanIter
 from . import Command
 from perseusconverter.app import Config
 from ..scan.bgt import BGTScanner
 
-from ..scan.comparator import OGNT2BGMComparator, MultiComparator#, BookChapterComparator
+from ..scan.comparator import MultiComparator
 from ..scan.ognt import OGNTScanner
 from ..scan.bgm import BGMScanner
 from ..scan.rsgnt import RSGNTScanner
@@ -77,26 +78,35 @@ class TextCommand(Command):
         )).get_chapter()
 
         c = Collation()
-        c.add_plain_witness('bgt', self._build(bgt))
-        c.add_plain_witness('rsgnt', self._build(rsgnt))
-        c.add_plain_witness('ognt', self._build(ognt))
-        xml = collate(c, output="xml", segmentation=True)
+        c.add_witness({"id": 'bgt', "tokens": [{"t": x.token, "data": x} for x in bgt]})
+        c.add_witness({"id": 'rsgnt', "tokens": [{"t": x.token, "data": x} for x in rsgnt]})
+        c.add_witness({"id": 'ognt', "tokens": [{"t": x.word, "data": x} for x in ognt]})
+        table = collate(c, segmentation=False, properties_filter=lambda t1, t2: TextCommand._cmp(t1['t'], t2['t']))
 
-        print(xml)
+        all_sigla = [row.header for row in table.rows]
+        sigla_len = len(all_sigla)
+        for col_idx, column in enumerate(table.columns):
+            print("col: " + str(col_idx))
+            # Grouping of witnesses
+            grouping = dict()
+            for sigil, tokens in column.tokens_per_witness.items():
+                t = tokens[0].token_data['t']
+                data = tokens[0].token_data['data']
+                for k in grouping.keys():
+                    print(sigil, t, type(t), k, type(k))
+                    if TextCommand._cmp(t, k):
+                        grouping[k].append((sigil, data))
+                        break
+                else:
+                    grouping[t] = list()
+                    grouping[t].append((sigil, data))
+            # Majority consideration
+            #for v in sorted(grouping.values()):
+            #    print(len(v))
 
-    def _cmp(self):
-        print()
-        comparator = OGNT2BGMComparator(
-            BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt"),
-            OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv"),
-            Reference("Matthew", 1, 1)
-        )
-
-        for token in comparator.iter():
-            print(token)
-
-        comparator.get_error_cnt()
-        comparator.get_errors(0)
+    @classmethod
+    def _cmp(cls, token1, token2) -> bool:
+        return GreekWord.cmp_semi(GreekWord.glyphen(token1), GreekWord.glyphen(token2), True)
 
     def _merge_streams(self):
         nt_start = Reference("Revelation", 22, 20)

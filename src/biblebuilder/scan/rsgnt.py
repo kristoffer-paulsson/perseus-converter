@@ -23,7 +23,7 @@ from typing import List, Dict
 
 from greektextify.text.dbg_standard import DbgUtfStandard
 from greektextify.text.word import GreekWord
-from .scanner import Scanner, Token
+from .scanner import Scanner, WideToken
 from pathlib import Path
 import re
 
@@ -105,4 +105,4 @@ class RSGNTScanner(Scanner):
                     token_index += 1
                     word_gl = GreekWord.glyphen(token_str)
                     # print(f"Yielding token: {book} {chapter}:{verse} [{token_index}] '{token_str}'")
-                    yield Token(book, chapter, verse, token_index, token_str, word_gl)
+                    yield WideToken(book, chapter, verse, token_index, token_str, None, word_gl)
