@@ -35,6 +35,7 @@ class Token(NamedTuple):
     book: str
     chapter: int
     verse: int
+    sub_verse: int
     index: int
     token: str
     word_gl: tuple[GreekGlyph]
@@ -44,6 +45,7 @@ class WideToken(NamedTuple):
     book: str
     chapter: int
     verse: int
+    sub_verse: int
     index: int
     word: str
     lexeme: str
@@ -67,18 +69,29 @@ class JointScanner(Scanner):
         self.scanner1 = word_scanner
         self.scanner2 = lexeme_scanner
 
+    def _cmp(self, t1, t2) -> bool:
+        same = True if t1.book == t2.book else False
+        same = same if t1.chapter == t2.chapter else False
+        same = same if t1.verse == t2.verse else False
+        same = same if t1.sub_verse == t2.sub_verse else False
+        same = same if t1.index == t2.index else False
+        return same #t1.book == t2.book and t1.chapter == t2.chapter and t1.verse == t2.verse and t1.sub_verse == t2.sub_verse and t1.index == t2.index
+
     def iter(self):
 
         right = self.scanner2.iter()
 
         for token in self.scanner1.iter():
             rightToken = next(right)
-            if token.book == rightToken.book and token.chapter == rightToken.chapter and token.verse == rightToken.verse and token.index == rightToken.index:
-                yield WideToken(token.book, token.chapter, token.verse, token.index, token.token, rightToken.token, token.word_gl)
+            if self._cmp(token, rightToken): # token.book == rightToken.book and token.chapter == rightToken.chapter and token.verse == rightToken.verse and token.sub_verse == rightToken.sub_verse and token.index == rightToken.index:
+                yield WideToken(
+                    token.book, token.chapter, token.verse, token.sub_verse,
+                    token.index, token.token, rightToken.token, token.word_gl
+                )
             else:
                 raise StopIteration("JointScanner: Tokens do not match at "
-                    + token.book + " " + str(token.chapter) + ":" + str(token.verse) + " index " + str(token.index)  + " != "
-                    + rightToken.book + " " + str(rightToken.chapter) + ":" + str(rightToken.verse) + " index " + str(rightToken.index)
+                    + token.book + " " + str(token.chapter) + ":" + str(token.verse) + "(" + str(token.sub_verse) + ")w" + str(token.index)  + " != "
+                    + rightToken.book + " " + str(rightToken.chapter) + ":" + str(rightToken.verse) + "(" + str(token.sub_verse) + ")w" + str(rightToken.index)
                 )
 
 

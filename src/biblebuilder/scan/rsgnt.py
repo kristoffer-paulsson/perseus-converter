@@ -105,4 +105,4 @@ class RSGNTScanner(Scanner):
                     token_index += 1
                     word_gl = GreekWord.glyphen(token_str)
                     # print(f"Yielding token: {book} {chapter}:{verse} [{token_index}] '{token_str}'")
-                    yield WideToken(book, chapter, verse, token_index, token_str, None, word_gl)
+                    yield WideToken(book, chapter, verse, 0, token_index, token_str, None, word_gl)

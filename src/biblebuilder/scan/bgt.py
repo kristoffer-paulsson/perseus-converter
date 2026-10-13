@@ -103,10 +103,10 @@ class BGTScanner(Scanner):
         chapter_verse = parts[1].split(':')
         chapter = int(chapter_verse[0])
         if is_alpha(chapter_verse[1][-1]):
-            sub_verse = chapter_verse[1][-1]
+            sub_verse = ord(chapter_verse[1][-1]) - 96
             verse = int(chapter_verse[1][:-1]) if len(chapter_verse) > 1 else 0
         else:
-            sub_verse = None
+            sub_verse = 0
             verse = int(chapter_verse[1]) if len(chapter_verse) > 1 else 0
 
         return (self.bookMap.get(book, book), chapter, verse, sub_verse)
@@ -154,7 +154,7 @@ class BGTScanner(Scanner):
                 pass
                 # yield Token(ref[0], ref[1], ref[2], -1, token[1], None)
             elif token[0] == 0:
-                yield Token(ref[0], ref[1], ref[2], counter, token[1], GreekWord.glyphen(token[1]))
+                yield Token(ref[0], ref[1], ref[2], ref[3], counter, token[1], GreekWord.glyphen(token[1]))
                 counter += 1
             else:
                 pass

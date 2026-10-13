@@ -29,6 +29,7 @@ from . import Command
 from ..app import Config
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
+from ..traverse.bibvt import VetusTraverser
 from ..traverse.general import AbstractTeiTraverser, Tei2Traverser
 from ..traverse.lsjlex import LsjTraverser
 
@@ -110,5 +111,21 @@ class KoineCommand(Command):
             self._pdl()
         elif self._args.corpora == 'lex':
             self._lex_lsj()
+        elif self._args.corpora == 'vetus':
+            self._vt()
         else:
             pass
+
+    # =========== TEMP =================
+
+    def _vt(self):
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3/gen-1-1.html")
+        xml = VetusTraverser(filename)
+        xml.traverse()
+        #for filename in RecursiveIterator(self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3/gen-1-1.html")):
+        #    if not filename.is_file():
+        #        self.logger.warn("Registered but missing file: {}".format(filename))
+        #        continue
+        #    self.logger.info("Processing file: {}".format(filename))
+        #    txt = BgtTraverser(filename)
+        #    txt.traverse()

@@ -114,4 +114,4 @@ class OGNTScanner(Scanner):
 
                         word_gl = GreekWord.glyphen(word)
 
-                        yield WideToken(book, chapter, verse, current_index, word, lexeme, word_gl)
+                        yield WideToken(book, chapter, verse, 0, current_index, word, lexeme, word_gl)

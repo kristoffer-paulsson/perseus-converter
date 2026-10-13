@@ -45,15 +45,19 @@ class CheckCommand(Command):
         self._gen()
 
     def _gen(self):
+        self.logger.info("Checking BGT/BGM")
         bgt = ScanIter(JointScanner(
             BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False),
             BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt")
         ))
         self._check(bgt)
+        self.logger.info("Finished BGT/BGM")
+
         self.logger.info("Checking OpenGNT")
         ognt = ScanIter(OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", True))
         self._check(ognt)
         self.logger.info("Finished OpenGNT")
+
         self.logger.info("Checking Rock Solid GNT")
         rsgnt = ScanIter(RSGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/rock-solid-gnt.txt", False))
         self._check(rsgnt)
@@ -61,8 +65,9 @@ class CheckCommand(Command):
 
     def _check(self, scanner):
         for token in scanner:
+            print(token.word)
             for glyph in token.word_gl:
                 if glyph.ch is None:
-                    print(token.book, token.chapter, token.verse, token.index, token.word, unicodedata.name(token.word[-1]))
+                    print(token.book, token.chapter, token.verse, token.sub_verse, token.index, token.word, unicodedata.name(token.word[-1]))
                     break
 

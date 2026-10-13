@@ -90,7 +90,7 @@ class BGMScanner(Scanner):
 
         return (book, chapter, verse)
 
-    def _sub_verses(self, line: str, verse: str) -> List[Tuple[str, str]]:
+    def _sub_verses(self, line: str, verse: int) -> List[Tuple[int, str]]:
         indicies = regex.findall(r"(\[\d+\]@\[\d+\]|\d+[a-z])", line)
         verses = regex.split(r"\[\d+\]@[\d+\]|\d+[a-z]", line)
         text = [(verse, verses[0])]
@@ -99,7 +99,7 @@ class BGMScanner(Scanner):
             for cnt in range(0, len(indicies)):
                 idx = indicies[cnt]
                 verse1 = verses[cnt + 1]
-                idx = verse + INDEX[idx[1:].split(']')[0]] if idx[0] == '[' else idx
+                idx = int(INDEX[idx[1:].split(']')[0]]) if idx[0] == '[' else int(idx)
                 text.append((idx, verse1))
 
         return text
@@ -124,7 +124,7 @@ class BGMScanner(Scanner):
         book, chapter, verse, text = regex.search(r"(.*) (\d+):(\d+)?(.*)$", line[4:].strip()).groups()
 
         tokens = []
-        for idx, line in self._sub_verses(text.strip(), verse):
+        for idx, line in self._sub_verses(text.strip(), int(verse)):
             parts = line.split(' ')
 
             # Extract and parse tokens
@@ -137,10 +137,10 @@ class BGMScanner(Scanner):
                         lexeme = lexeme[:-2]
                     lexeme = DbgUtfStandard.standardize(lexeme)
                     word_gl = GreekWord.glyphen(lexeme)
-                    tokens.append(Token(book, int(chapter), int(verse), counter, lexeme, word_gl))
+                    tokens.append(Token(book, int(chapter), int(verse), idx, counter, lexeme, word_gl))
                     counter += 1
                 elif part.endswith('am---n'): # Some tokens in bgm.txt misses out on @ and ends with am---n
-                    tokens.append(Token(book, int(chapter), int(verse), counter, None, None))
+                    tokens.append(Token(book, int(chapter), int(verse), idx, counter, None, None))
                     counter += 1
 
         return tokens
