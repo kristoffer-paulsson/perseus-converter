@@ -21,15 +21,11 @@
 #
 """Common traverser interface.
 The purpose of a traverser is to traverse a Greek PDL TEI2 file in an ordered manner."""
-import re
-from abc import ABC
 from pathlib import PurePath
-from typing import Tuple, Dict
+from typing import Dict
 
 from bs4 import BeautifulSoup
-from lxml.etree import Element, ElementTree, QName, parse
 
-from greektextify.nlp.contextual import ContextObject
 from greektextify.text.bracket import Bracketing
 from greektextify.text.pdl_standard import PdlUtfStandard
 from greektextify.text.punctuation import GreekPunctuation

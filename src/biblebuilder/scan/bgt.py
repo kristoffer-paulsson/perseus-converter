@@ -21,8 +21,6 @@
 #
 from typing import List, Dict
 
-from spacy.lang.lex_attrs import is_alpha
-
 from greektextify.text.dbg_standard import DbgUtfStandard
 from greektextify.text.word import GreekWord
 from perseusconverter.traverse.bibbgt import BgtTraverser
@@ -102,7 +100,7 @@ class BGTScanner(Scanner):
         # Extract chapter and verse
         chapter_verse = parts[1].split(':')
         chapter = int(chapter_verse[0])
-        if is_alpha(chapter_verse[1][-1]):
+        if chapter_verse[1][-1].isalpha():
             sub_verse = ord(chapter_verse[1][-1]) - 96
             verse = int(chapter_verse[1][:-1]) if len(chapter_verse) > 1 else 0
         else:
