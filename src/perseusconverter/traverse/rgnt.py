@@ -1,0 +1,125 @@
+#
+# Copyright (c) 2026 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+#
+# Permission to use, copy, modify, and/or distribute this software for any purpose with
+# or without fee is hereby granted, provided that the above copyright notice and this
+# permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO
+# THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO
+# EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+# DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
+# IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+# CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+#
+#     https://opensource.org/licenses/ISC
+#
+# SPDX-License-Identifier: ISC
+#
+# Contributors:
+#     Kristoffer Paulsson - initial implementation
+#
+"""Plain text BGT traverser."""
+import re
+from pathlib import PurePath
+from typing import List, Tuple
+
+import regex
+
+from greektextify.text.dbg_standard import DbgUtfStandard
+from perseusconverter.traverse.plain import AbstractPlainTraverser
+
+INDEX = {
+    '1': 'a',
+    '2': 'b',
+    '3': 'c',
+    '4': 'd',
+    '5': 'e',
+    '6': 'f',
+    '7': 'g',
+    '8': 'h',
+    '9': 'i',
+    '10': 'j',
+    '11': 'k',
+    '12': 'l',
+    '13': 'm',
+    '14': 'n',
+    '15': 'o',
+    '16': 'p',
+    '17': 'q',
+    '18': 'r',
+    '19': 's',
+    '20': 't',
+    '21': 'u',
+    '22': 'v',
+    '23': 'w',
+    '24': 'x',
+    '25': 'y',
+    '26': 'z',
+}
+
+
+class RockTraverser(AbstractPlainTraverser):
+
+    BOOKS = [
+        'Mt', 'Mk', 'Lk', 'Jn', 'Ac', 'Ro', '1Co', '2Co', 'Ga', 'Eph', 'Php', 'Col', '1Th', '2Th', '1Ti', '2Ti',
+        'Tit', 'Phm', 'Heb', 'Jas', '1Pe', '2Pe', '1Jn', '2Jn', '3Jn', 'Jud', 'Re'
+    ]
+
+    OFFICIAL = [
+        'Mat', 'Mar', 'Luk', 'Joh', 'Act', 'Rom', '1Co', '2Co', 'Gal', 'Eph', 'Phi', 'Col', '1Th', '2Th',
+        '1Ti', '2Ti', 'Tit', 'Phm', 'Heb', 'Jam', '1Pe', '2Pe', '1Jo', '2Jo', '3Jo', 'Jud', 'Rev'
+    ]
+
+    def hierarchy(self):
+        pass
+
+    def __init__(self, path: PurePath):
+        AbstractPlainTraverser.__init__(self, path)
+        self._hierarchy = 'book-chapter-verse'
+        self._book = None
+        self._chapter = None
+        self._verse = None
+        self._book_map = dict(zip(self.BOOKS, self.OFFICIAL))
+
+    def _traverse(self, line: str):
+        if line.strip() in self.BOOKS:
+            self._book = self._book_map[line.strip()]
+            yield # -1, ''
+        else:
+            pattern = r"(\b\d+(?::\d+)?\b)"
+            parts = list(filter(None, re.split(pattern, line)))
+
+            for text in parts:
+                if text[0].isdigit():
+                    v_parts = text.split(':')
+                    if len(v_parts) == 2:
+                        self._chapter = int(v_parts[0])
+                        self._verse = int(v_parts[1])
+                    else:
+                        self._verse = int(v_parts[0])
+                    yield 5, "{} {}:{}".format(self._book, self._chapter, self._verse)
+                else:
+                    verse = DbgUtfStandard.standardize(text.strip())
+                    for token in self.general(verse):
+                        yield token
+
+    def _sub_verses(self, line: str) -> List[Tuple[str, str]]:
+        indicies = regex.findall(r"(\[\d+\]|\d+[a-z])", line)
+        verses = regex.split(r"\[\d+\]|\d+[a-z]", line)
+        text = [(self._verse, verses[0])]
+
+        if len(verses) > 1:
+            for cnt in range(0, len(indicies)):
+                idx = indicies[cnt]
+                verse = verses[cnt + 1]
+                idx = self._verse + INDEX[idx[1:-1]] if idx[0] == '[' else idx
+                text.append((idx, verse))
+
+        return text
+
+    def general(self, text: str):
+        tokens = self._tokenizer.tokenize(text)
+        for token in tokens:
+            if token[0] != 4:
+                yield token

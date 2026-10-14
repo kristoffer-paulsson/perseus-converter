@@ -32,6 +32,7 @@ from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import AbstractTeiTraverser
 from ..traverse.lsjlex import LsjTraverser
+from ..traverse.rgnt import RockTraverser
 
 BETACODE = (
     'tlg2003.tlg008.perseus-grc1.xml',
@@ -177,5 +178,12 @@ class KoineCommand(Command):
             self._pdl()
         elif self._args.corpora == 'lex':
             self._lex_lsj()
+        elif self._args.corpora == 'rock':
+            self._rgnt()
         else:
             pass
+
+    def _rgnt(self):
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
+        for token in RockTraverser(filename).traverse():
+            print(token)

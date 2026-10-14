@@ -168,7 +168,6 @@ class JGVTScanner(Scanner):
         """
         Extract Matthew lexemes from OpenGNT corpus.
         """
-
         files = [filename for filename in RecursiveIterator(self.filepath)]
 
         book_order = dict()
@@ -182,42 +181,33 @@ class JGVTScanner(Scanner):
             book_order[book][chapter] = filename
             num_order[int(parts[2])] = filename
 
-        ref = ('', 0, 0, 0)
-        token_cnt = 0
         for key, data in VETUSJG.items():
             if data[0]:
                 for chapter, filename in book_order[data[1]].items():
-                    for token in VetusTraverser(filename, key, chapter).traverse():
-                        if token[0] == 5:
-                            ref = self.parse_reference(token[1])
-                            token_cnt = 0
-                        elif token[0] == 2 and self.include_punctuation:
-                            pass
-                        elif token[0] == 0:
-                            token_cnt += 1
-                            word = token[1]
-                            yield WideToken(
-                                str(ref[0]), int(ref[1]), int(ref[2]), int(ref[3]), token_cnt, word,
-                                None, GreekWord.glyphen(word)
-                            )
-                        else:
-                            pass
+                    for token in self.token_iter(VetusTraverser(filename, key, chapter)):
+                        yield token
             else:
                 chapter_cnt = 0
                 for num in range(int(data[2]), int(data[3] + 1)):
                     chapter_cnt += 1
-                    for token in VetusTraverser(num_order[num], key, chapter_cnt).traverse():
-                        if token[0] == 5:
-                            ref = self.parse_reference(token[1])
-                            token_cnt = 0
-                        elif token[0] == 2 and self.include_punctuation:
-                            pass
-                        elif token[0] == 0:
-                            token_cnt += 1
-                            word = token[1]
-                            yield WideToken(
-                                str(ref[0]), int(ref[1]), int(ref[2]), int(ref[3]), token_cnt, word,
-                                None, GreekWord.glyphen(word)
-                            )
-                        else:
-                            pass
+                    for token in self.token_iter(VetusTraverser(num_order[num], key, chapter_cnt)):
+                        yield token
+
+    def token_iter(self, traverser: VetusTraverser):
+        ref = ('', 0, 0, 0)
+        token_cnt = 0
+        for token in traverser.traverse():
+            if token[0] == 5:
+                ref = self.parse_reference(token[1])
+                token_cnt = 0
+            elif token[0] == 2 and self.include_punctuation:
+                pass
+            elif token[0] == 0:
+                token_cnt += 1
+                word = token[1]
+                yield WideToken(
+                    str(ref[0]), int(ref[1]), int(ref[2]), int(ref[3]), token_cnt, word,
+                    None, GreekWord.glyphen(word)
+                )
+            else:
+                pass

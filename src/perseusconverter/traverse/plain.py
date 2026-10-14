@@ -63,4 +63,6 @@ class AbstractPlainTraverser(AbstractTraverser):
         with open(self._filename) as fd:
             for line in fd:
                 for token in self._traverse(line):
+                    if token is None:
+                        continue
                     yield token
