@@ -23,6 +23,7 @@
 from argparse import Namespace
 
 from lxml.etree import XMLSyntaxError
+from numpy.matlib import empty
 
 from greektextify.nlp.contextual import NlpContext
 from . import Command
@@ -48,6 +49,71 @@ BETACODE = (
     'tlg2003.tlg007.perseus-grc1.xml',
     'tlg2040.tlg002.perseus-grc1.xml',
 )
+
+
+VETUS = {
+    'Gen': (True, 'gen', 1, 50),
+    'Exo': (True, 'ex', 1, 40),
+    'Lev': (True, 'lev', 1, 27),
+    'Num': (True, 'num', 1, 36),
+    'Deu': (True, 'deut', 1, 34),
+    'Jsa': (False, 'jos', 212, 214),
+    'Jos': (False, 'jos', 188, 211),
+    'Jda': (False, 'ju', 236, 256),
+    'Jdg': (False, 'ju', 215, 235),
+    'Rut': (True, 'ru', 1, 4),
+    '1Sa': (True, 'regi', 1, 31),
+    '2Sa': (True, 'regii', 1, 24),
+    '1Ki': (True, 'regiii', 1, 22),
+    '2Ki': (True, 'regiv', 1, 25),
+    '1Ch': (True, 'chri', 1, 29),
+    '2Ch': (True, 'chrii', 1, 36),
+    '1Es': (True, 'esri', 1, 9),
+    'Ezr': (False, 'esrii', 437, 446),
+    'Neh': (False, 'esrii', 447, 459),
+    'Est': (True, 'esth', 1, 10),
+    'Jdt': (True, 'jud', 1, 16),
+    'Tob': (True, 'tob', 1, 14),
+    'Tbs': (True, 'tobs', 1, 14),
+    '1Ma': (True, 'macci', 1, 16),
+    '2Ma': (True, 'maccii', 1, 15),
+    '3Ma': (True, 'macciii', 1, 7),
+    '4Ma': (True, 'macciv', 1, 18),
+    'Psa': (True, 'ps', 1, 151),
+    'Ode': (True, 'od', 1, 15),
+    'Pro': (True, 'prov', 1, 34),
+    'Ecc': (True, 'eccl', 1, 12),
+    'Sol': (True, 'cant', 1, 8),
+    'Job': (True, 'hiob', 1, 42),
+    'Wis': (False, 'sapsal', 832, 850),
+    'Sip': (False, 'sapsal', 851, 851),
+    'Sir': (False, 'sapsal', 852, 902),
+    'Pss': (True, 'pssal', 1, 18),
+    'Hos': (True, 'hos', 1, 14),
+    'Amo': (True, 'am', 1, 9),
+    'Mic': (True, 'mich', 1, 7),
+    'Joe': (False, 'joel', 951, 954),
+    'Oba': (False, 'joel', 955, 955),
+    'Jon': (True, 'jon', 1, 4),
+    'Nah': (True, 'nah', 1, 3),
+    'Hab': (True, 'hab', 1, 3),
+    'Zep': (True, 'soph', 1, 3),
+    'Hag': (False, 'agg', 1, 2),
+    'Zec': (True, 'zach', 1, 14),
+    'Mal': (True, 'mal', 1, 3),
+    'Isa': (True, 'is', 1, 66),
+    'Jer': (True, 'jer', 1, 52),
+    'Bar': (True, 'bar', 1, 5),
+    'Lam': (False, 'lamjer', 1111, 1115),
+    'Epj': (False, 'lamjer', 1116, 1116),
+    'Eze': (False, 'ez', 1117, 1164),
+    'Sus': (False, 'ez', 1165, 1165),
+    'Sut': (False, 'ez', 1166, 1166),
+    'Dan': (True, 'dans', 1, 12),
+    'Dat': (False, 'danth', 1179, 1190),
+    'Bel': (False, 'danth', 1191, 1191),
+    'Bet': (False, 'danth', 1192, 1192)
+}
 
 
 class KoineCommand(Command):
@@ -119,10 +185,70 @@ class KoineCommand(Command):
     # =========== TEMP =================
 
     def _vt(self):
-        filename = self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3/gen-1-1.html")
-        xml = VetusTraverser(filename)
-        xml.traverse()
-        #for filename in RecursiveIterator(self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3/gen-1-1.html")):
+        #filename = self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3/gen-1-1.html")
+        #xml = VetusTraverser(filename)
+        #xml.traverse()
+
+        files = [filename for filename in RecursiveIterator(self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3/"))]
+
+        book_order = dict()
+        num_order = dict()
+        for filename in sorted(files, key=lambda x: int(x.stem.split('-')[2])):
+            parts = filename.stem.split('-')
+            book = parts[0]
+            chapter = int(parts[1])
+            if book not in book_order:
+                book_order[book] = dict()
+            book_order[book][chapter] = filename
+            num_order[int(parts[2])] = filename
+
+        for key, data in VETUS.items():
+            if data[0]:
+                for chapter, filename in book_order[data[1]].items():
+                    for token in VetusTraverser(filename, key, chapter).traverse():
+                        print(token)
+            else:
+                chapter_cnt = 0
+                for num in range(int(data[2]), int(data[3]+1)):
+                    chapter_cnt += 1
+                    for token in VetusTraverser(num_order[num], key, chapter_cnt).traverse():
+                        print(token)
+
+        #for book, value in book_order.items():
+        #    #chapter = list(value.keys())[-1]
+        #    #print(book, '---')
+        #    end_num = ''
+        #    for chapter, filename in value.items():
+        #        if len(end_num) == 0:
+        #            print('start', book, filename.stem.split('-')[2], '----')
+        #        end_num = filename.stem.split('-')[2]
+        #        for token in VetusTraverser(filename, book, chapter).traverse():
+        #            print(token)
+        #    print('end', len(book_order[book]), end_num, '---')
+            # print('tot', len(book_order[book]), '---')
+
+
+        bible_order = {
+            'Gen': ('gen', 1, 50), 'Exo': ('ex', 1, 40), 'Lev': ('lev', 1, 27), 'Num': ('num', 1, 36),
+            'Deu': ('deut', 1, 34),
+        }
+        # 'Gen', 'Exo', 'Lev', 'Num', 'Deu'
+
+        print(list(book_order.keys()), len(book_order))
+
+        order = [
+            'Gen', 'Exo', 'Lev', 'Num', 'Deu', 'Jsa', 'Jos', 'Jda', 'Jdg', 'Rut', '1Sa', '2Sa', '1Ki', '2Ki', '1Ch',
+            '2Ch', '1Es', 'Ezr', 'Neh', 'Est', 'Jdt', 'Tob', 'Tbs', '1Ma', '2Ma', '3Ma', '4Ma', 'Psa', 'Ode', 'Pro',
+            'Ecc', 'Sol', 'Job', 'Wis', 'Sip', 'Sir', 'Pss', 'Hos', 'Amo', 'Mic', 'Joe', 'Oba', 'Jon', 'Nah', 'Hab',
+            'Zep', 'Hag', 'Zec', 'Mal', 'Isa', 'Jer', 'Bar', 'Lam', 'Epj', 'Eze', 'Sus', 'Sut', 'Dan', 'Dat', 'Bel',
+            'Bet'
+        ] #+ [ 'Mat', 'Mar', 'Luk', 'Joh', 'Act', 'Rom', '1Co', '2Co', 'Gal', 'Eph', 'Phi', 'Col', '1Th', '2Th',  '1Ti', '2Ti', 'Tit', 'Phm', 'Heb', 'Jam', '1Pe', '2Pe', '1Jo', '2Jo', '3Jo', 'Jud', 'Rev' ]
+
+        print(order, len(order))
+
+
+        #for filename in sorted(files, key=lambda x: int(x.stem.split("-")[2])):
+        #    print(filename)
         #    if not filename.is_file():
         #        self.logger.warn("Registered but missing file: {}".format(filename))
         #        continue

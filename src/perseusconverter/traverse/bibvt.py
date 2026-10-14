@@ -40,12 +40,14 @@ from greektextify.text.word import GreekWord
 from perseusconverter.traverse.traverser import AbstractTraverser
 
 
-class VetusTraverser(AbstractTraverser, ABC):
+class VetusTraverser(AbstractTraverser):
 
     SKIP_TAGS = tuple()
 
-    def __init__(self, path: PurePath):
+    def __init__(self, path: PurePath, book: str = None, chapter: int = None):
         AbstractTraverser.__init__(self, self.utf_tokenizer(), path)
+        self._book = book
+        self._chapter = chapter
 
     @property
     def hierarchy(self) -> Dict[str, str]:
@@ -54,8 +56,24 @@ class VetusTraverser(AbstractTraverser, ABC):
     def traverse(self):
         tokenizer = self.utf_tokenizer()
         html = self.get_lxml()
-        book = html.find("span", attrs={"id": "h2"}).text.split(' ')[1].strip()[:-1]
-        chapter = html.find("span", attrs={"id": "h3"}).text.split(' ')[1].strip()
+
+        #book_ = html.find("span", attrs={"id": "h2"})
+        #if book_ is not None:
+            #chapter: = html.find("span", attrs={"id": "h3"}).text.split(' ')[1].strip()
+        #    print(book_.text.split(' ')[1].strip())
+        #    print(self._chapter)
+        #return
+
+        if self._book is not None:
+            book = self._book
+        else:
+            book = html.find("span", attrs={"id": "h2"}).text.split(' ')[1].strip()[:-1]
+
+        if self._chapter is not None:
+            chapter = self._chapter
+        else:
+            chapter = html.find("span", attrs={"id": "h3"}).text.split(' ')[1].strip()
+
         verses = list()
         for child in html.find_all("span", attrs={"id": "h4"}):
             verses.append(child.text.split(' ')[1].strip())
@@ -66,8 +84,8 @@ class VetusTraverser(AbstractTraverser, ABC):
 
         for verse, text in zip(verses, texts):
             yield 5, f"{book} {chapter}:{verse}"
-            for token in tokenizer.tokenize(tokenizer.standardize(text)):
-                yield token
+            #for token in tokenizer.tokenize(tokenizer.standardize(text)):
+            #    yield token
 
     def general(self):
         return NotImplemented
