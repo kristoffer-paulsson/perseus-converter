@@ -31,6 +31,7 @@ from ..scan.ognt import OGNTScanner
 from ..scan.bgm import BGMScanner
 from ..scan.bgt import BGTScanner
 from ..scan.rsgnt import RSGNTScanner
+from ..scan.jgvt import JGVTScanner
 
 
 class CheckCommand(Command):
@@ -45,14 +46,6 @@ class CheckCommand(Command):
         self._gen()
 
     def _gen(self):
-        self.logger.info("Checking BGT/BGM")
-        bgt = ScanIter(JointScanner(
-            BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False),
-            BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt")
-        ))
-        self._check(bgt)
-        self.logger.info("Finished BGT/BGM")
-
         self.logger.info("Checking OpenGNT")
         ognt = ScanIter(OGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv", True))
         self._check(ognt)
@@ -62,6 +55,19 @@ class CheckCommand(Command):
         rsgnt = ScanIter(RSGNTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/rock-solid-gnt.txt", False))
         self._check(rsgnt)
         self.logger.info("Finished Rock Solid GNT")
+
+        self.logger.info("Checking Vetus JG")
+        jgvt = ScanIter(JGVTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/septuagint3/", True, False))
+        self._check(jgvt)
+        self.logger.info("Finished Vetus JG")
+
+        self.logger.info("Checking BGT/BGM")
+        bgt = ScanIter(JointScanner(
+            BGTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgt.txt", False),
+            BGMScanner(str(self.target) + "/bible-analyzer-corpora/corpora/bgm.txt")
+        ))
+        self._check(bgt)
+        self.logger.info("Finished BGT/BGM")
 
     def _check(self, scanner):
         for token in scanner:

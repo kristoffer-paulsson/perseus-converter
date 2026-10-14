@@ -79,9 +79,11 @@ class VetusTraverser(AbstractTraverser):
             texts.append(child.text.strip())
 
         for verse, text in zip(verses, texts):
-            yield 5, f"{book} {chapter}:{verse}"
-            #for token in tokenizer.tokenize(tokenizer.standardize(text)):
-            #    yield token
+            v_parts = verse.split('-')
+            for part in v_parts:
+                yield 5, f"{book} {chapter}:{part}"
+            for token in tokenizer.tokenize(tokenizer.standardize(text)):
+                yield token
 
     def general(self):
         return NotImplemented

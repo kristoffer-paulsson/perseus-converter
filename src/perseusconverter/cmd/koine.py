@@ -30,8 +30,7 @@ from . import Command
 from ..app import Config
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
-from ..traverse.bibvt import VetusTraverser
-from ..traverse.general import AbstractTeiTraverser, Tei2Traverser
+from ..traverse.general import AbstractTeiTraverser
 from ..traverse.lsjlex import LsjTraverser
 
 BETACODE = (
@@ -151,7 +150,8 @@ class KoineCommand(Command):
                 continue
             self.logger.info("Processing file: {}".format(filename))
             txt = BgtTraverser(filename)
-            txt.traverse()
+            for token in txt.traverse():
+                print(token)
 
     def _lex_lsj(self):
         counter = 0

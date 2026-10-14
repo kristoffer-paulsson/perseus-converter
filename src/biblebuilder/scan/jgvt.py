@@ -122,8 +122,8 @@ class JGVTScanner(Scanner):
         """Initialize the scanner with a path to bgm.txt file."""
         self._book_map = dict(zip(self.book_abbr, self.book_names))
         self.filepath = Path(filepath)
-        if not self.filepath.exists():
-            raise FileNotFoundError(f"File not found: {filepath}")
+        if not self.filepath.is_dir():
+            raise FileNotFoundError(f"Directory not found: {filepath}")
         self._lexeme = lexeme
         self.include_punctuation = include_punctuation
 
@@ -169,7 +169,7 @@ class JGVTScanner(Scanner):
         Extract Matthew lexemes from OpenGNT corpus.
         """
 
-        files = [filename for filename in RecursiveIterator(self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3/"))]
+        files = [filename for filename in RecursiveIterator(self.filepath)]
 
         book_order = dict()
         num_order = dict()
