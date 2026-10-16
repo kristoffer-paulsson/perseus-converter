@@ -24,7 +24,6 @@ from typing import Dict, List
 from bs4 import BeautifulSoup
 
 from greektextify.text.word import GreekWord
-from perseusconverter.traverse.bibvt import VetusTraverser
 from perseusconverter.traverse.nocr import NocrTraverser
 from .scanner import Scanner, WideToken
 from pathlib import Path

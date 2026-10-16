@@ -35,7 +35,6 @@ from greektextify.text.spacing import Spacing
 from greektextify.text.token import Tokenize
 from greektextify.text.word import GreekWord
 from perseusconverter.traverse.bibbgt import INDEX
-from perseusconverter.traverse.plain import AbstractPlainTraverser
 from perseusconverter.traverse.traverser import AbstractTraverser
 
 
@@ -55,45 +54,45 @@ class NocrTraverser(AbstractTraverser):
         self._chapter = chapter
 
     def traverse(self):
-        try:
-            nocr_path = self.filepath.joinpath("abcom")
-            filename = "{0}.{1}.txt".format(self._book.lower(), str(self._chapter).zfill(3))
-            path = nocr_path.joinpath(filename)
-            if path.exists():
-                FileNotFoundError("ABCOM file: {} not found".format(str(path)))
+        nocr_path = self._filename.joinpath("abcom")
+        filename = "{0}.{1}.txt".format(self._book.lower(), str(self._chapter).zfill(3))
+        path = nocr_path.joinpath(filename)
+        if path.exists():
             with path.open("r") as txt:
-                try:
-                    text = txt.read()
-                    for line in text.split('\n'):
-                        yield self._traverse(line)
-                except IndexError as e:
-                    pass
-        except FileNotFoundError:
-            nocr_path = self.filepath.joinpath("nocr")
+                text = txt.read()
+                for line in text.split('\n'):
+                    for token in  self._traverse(line, True):
+                        yield token
+        else:
+            nocr_path = self._filename.joinpath("nocr")
             filename = "{0}.{1}.html".format(self._book.lower(), str(self._chapter).zfill(3))
             path = nocr_path.joinpath(filename)
-            if path.exists():
-                RuntimeWarning("NOCR file: {} not found".format(str(path)))
             with path.open("r") as xml:
-                try:
-                    text = xml.read()
-                    text = text.split(
-                        '<div align="center"><p><table width="75%" border="0"><tr><td align="left" valign="middle">'
-                    )[1].split('</td></tr></table></div>')[0]
-                    html = BeautifulSoup(text, "html.parser")
-                    for line in html.text.split('\n'):
-                        yield self._traverse(line)
-                except IndexError as e:
-                    pass
+                text = xml.read()
+                text = text.split(
+                    '<div align="center"><p><table width="75%" border="0"><tr><td align="left" valign="middle">'
+                )[1].split('</td></tr></table></div>')[0]
+                html = BeautifulSoup(text, "html.parser")
+                for line in html.text.split('\n'):
+                    if line.strip() != '':
+                        for token in  self._traverse(line, False):
+                            if token is None:
+                                continue
+                            yield token
 
-    def _traverse(self, line: str):
-        self._book, self._chapter, self._verse, text = regex.search(r"(.*) (\d+):(\d+)?(.*)$", line.strip()).groups()
+    def _traverse(self, line: str, wbook: bool):
+        line = line.strip()
+        if line == '':
+            yield
+        if wbook:
+            _, self._chapter, self._verse, text = regex.search(r"(.*) (\d+):(\d+)?(.*)$", line.strip()).groups()
+        else:
+            self._chapter, self._verse, text = regex.search(r"(\d+):(\d+)?(.*)$", line.strip()).groups()
         std = DbgUtfStandard.standardize(text.strip())
 
         for idx, line in self._sub_verses(std):
             self._verse = idx
-            yield (5, "{} {}:{}".format(self._book, self._chapter, self._verse))
-            # print("(5, " +  + ")")
+            yield 5, "{} {}:{}".format(self._book, self._chapter, self._verse)
             for token in  self.general(line):
                 yield token
 
