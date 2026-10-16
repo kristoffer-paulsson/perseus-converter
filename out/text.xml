@@ -1,410 +1,2233 @@
 <root>
     <app>
-        <rdg wit="#bgt">ἀποκάλυψις ἰησοῦ χριστοῦ ἣν ἔδωκεν αὐτῷ ὁ θεο</rdg>
-        <rdg wit="#ognt">ἀποκάλυψις ἰησοῦ χριστοῦ ἣν ἔδωκεν αὐτῷ ὁ θεο</rdg>
-        <rdg wit="#rsgnt">ἀποκάλυψις ἰησοῦ χριστοῦ ἣν ἔδωκεν αὐτῷ ὁ θεο</rdg>
+        <rdg wit="#bgt">Ἀποκάλυψις</rdg>
+        <rdg wit="#ognt">Ἀποκάλυψις</rdg>
+        <rdg wit="#rsgnt">Ἀποκάλυψις</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀</rdg>
-        <rdg wit="#ognt">́</rdg>
-        <rdg wit="#rsgnt">̀</rdg>
+        <rdg wit="#bgt">Ἰησοῦ</rdg>
+        <rdg wit="#ognt">Ἰησοῦ</rdg>
+        <rdg wit="#rsgnt">Ἰησοῦ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ς δεῖξαι τοῖς δούλοις αὐτοῦ ἃ δεῖ γενέσθαι ἐν τάχει καὶ ἐσήμανεν ἀποστείλας διὰ τοῦ ἀγγέλου
-            αὐτοῦ τῷ δούλῳ αὐτοῦ ἰωάννῃ ὃς ἐμαρτύρησεν τὸν λόγον τοῦ θεοῦ καὶ τὴν μαρτυρίαν ἰησοῦ χριστοῦ ὅσα εἶδεν
-            μακάριος ὁ ἀναγινώσκων καὶ οἱ ἀκούοντες τοὺς λόγους τῆς προφητείας καὶ τηροῦντες τὰ ἐν αὐτῇ γεγραμμένα ὁ γὰρ
-            καιρὸς ἐγγύς ἰωάννης ταῖς ἑπτὰ ἐκκλησίαις ταῖς ἐν τῇ ἀσίᾳ χάρις ὑμῖν καὶ εἰρήνη ἀπὸ
-        </rdg>
-        <rdg wit="#ognt">ς δεῖξαι τοῖς δούλοις αὐτοῦ ἃ δεῖ γενέσθαι ἐν τάχει καὶ ἐσήμανεν ἀποστείλας διὰ τοῦ ἀγγέλου
-            αὐτοῦ τῷ δούλῳ αὐτοῦ ἰωάννῃ ὃς ἐμαρτύρησεν τὸν λόγον τοῦ θεοῦ καὶ τὴν μαρτυρίαν ἰησοῦ χριστοῦ ὅσα εἶδεν
-            μακάριος ὁ ἀναγινώσκων καὶ οἱ ἀκούοντες τοὺς λόγους τῆς προφητείας καὶ τηροῦντες τὰ ἐν αὐτῇ γεγραμμένα ὁ
-            γὰρ καιρὸς ἐγγύς ἰωάννης ταῖς ἑπτὰ ἐκκλησίαις ταῖς ἐν τῇ ἀσίᾳ χάρις ὑμῖν καὶ εἰρήνη ἀπὸ
-        </rdg>
-        <rdg wit="#rsgnt">ς δεῖξαι τοῖς δούλοις αὐτοῦ ἃ δεῖ γενέσθαι ἐν τάχει καὶ ἐσήμανεν ἀποστείλας διὰ τοῦ ἀγγέλου
-            αὐτοῦ τῷ δούλῳ αὐτοῦ ἰωάννῃ ὃς ἐμαρτύρησεν τὸν λόγον τοῦ θεοῦ καὶ τὴν μαρτυρίαν ἰησοῦ χριστοῦ ὅσα εἶδεν
-            μακάριος ὁ ἀναγινώσκων καὶ οἱ ἀκούοντες τοὺς λόγους τῆς προφητείας καὶ τηροῦντες τὰ ἐν αὐτῇ γεγραμμένα ὁ γὰρ
-            καιρὸς ἐγγύς ἰωάννης ταῖς ἑπτὰ ἐκκλησίαις ταῖς ἐν τῇ ἀσίᾳ χάρις ὑμῖν καὶ εἰρήνη ἀπὸ
-        </rdg>
+        <rdg wit="#bgt">Χριστοῦ</rdg>
+        <rdg wit="#ognt">Χριστοῦ</rdg>
+        <rdg wit="#rsgnt">χριστοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἣν</rdg>
+        <rdg wit="#ognt">ἣν</rdg>
+        <rdg wit="#rsgnt">ἣν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἔδωκεν</rdg>
+        <rdg wit="#ognt">ἔδωκεν</rdg>
+        <rdg wit="#rsgnt">ἔδωκεν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτῷ</rdg>
+        <rdg wit="#ognt">αὐτῷ</rdg>
+        <rdg wit="#rsgnt">αὐτῷ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">θεὸς</rdg>
+        <rdg wit="#ognt">Θεός</rdg>
+        <rdg wit="#rsgnt">θεὸς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">δεῖξαι</rdg>
+        <rdg wit="#ognt">δεῖξαι</rdg>
+        <rdg wit="#rsgnt">δεῖξαι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τοῖς</rdg>
+        <rdg wit="#ognt">τοῖς</rdg>
+        <rdg wit="#rsgnt">τοῖς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">δούλοις</rdg>
+        <rdg wit="#ognt">δούλοις</rdg>
+        <rdg wit="#rsgnt">δούλοις</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἃ</rdg>
+        <rdg wit="#ognt">ἃ</rdg>
+        <rdg wit="#rsgnt">ἃ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">δεῖ</rdg>
+        <rdg wit="#ognt">δεῖ</rdg>
+        <rdg wit="#rsgnt">δεῖ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">γενέσθαι</rdg>
+        <rdg wit="#ognt">γενέσθαι</rdg>
+        <rdg wit="#rsgnt">γενέσθαι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τάχει</rdg>
+        <rdg wit="#ognt">τάχει</rdg>
+        <rdg wit="#rsgnt">τάχει</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐσήμανεν</rdg>
+        <rdg wit="#ognt">ἐσήμανεν</rdg>
+        <rdg wit="#rsgnt">ἐσήμανεν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀποστείλας</rdg>
+        <rdg wit="#ognt">ἀποστείλας</rdg>
+        <rdg wit="#rsgnt">ἀποστείλας</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">διὰ</rdg>
+        <rdg wit="#ognt">διὰ</rdg>
+        <rdg wit="#rsgnt">διὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τοῦ</rdg>
+        <rdg wit="#ognt">τοῦ</rdg>
+        <rdg wit="#rsgnt">τοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀγγέλου</rdg>
+        <rdg wit="#ognt">ἀγγέλου</rdg>
+        <rdg wit="#rsgnt">ἀγγέλου</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῷ</rdg>
+        <rdg wit="#ognt">τῷ</rdg>
+        <rdg wit="#rsgnt">τῷ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">δούλῳ</rdg>
+        <rdg wit="#ognt">δούλῳ</rdg>
+        <rdg wit="#rsgnt">δούλῳ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἰωάννῃ</rdg>
+        <rdg wit="#ognt">Ἰωάννῃ</rdg>
+        <rdg wit="#rsgnt">Ἰωάννῃ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὃς</rdg>
+        <rdg wit="#ognt">ὃς</rdg>
+        <rdg wit="#rsgnt">ὃς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐμαρτύρησεν</rdg>
+        <rdg wit="#ognt">ἐμαρτύρησεν</rdg>
+        <rdg wit="#rsgnt">ἐμαρτύρησεν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὸν</rdg>
+        <rdg wit="#ognt">τὸν</rdg>
+        <rdg wit="#rsgnt">τὸν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λόγον</rdg>
+        <rdg wit="#ognt">λόγον</rdg>
+        <rdg wit="#rsgnt">λόγον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τοῦ</rdg>
+        <rdg wit="#ognt">τοῦ</rdg>
+        <rdg wit="#rsgnt">τοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">θεοῦ</rdg>
+        <rdg wit="#ognt">Θεοῦ</rdg>
+        <rdg wit="#rsgnt">θεοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὴν</rdg>
+        <rdg wit="#ognt">τὴν</rdg>
+        <rdg wit="#rsgnt">τὴν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μαρτυρίαν</rdg>
+        <rdg wit="#ognt">μαρτυρίαν</rdg>
+        <rdg wit="#rsgnt">μαρτυρίαν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἰησοῦ</rdg>
+        <rdg wit="#ognt">Ἰησοῦ</rdg>
+        <rdg wit="#rsgnt">Ἰησοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Χριστοῦ</rdg>
+        <rdg wit="#ognt">Χριστοῦ</rdg>
+        <rdg wit="#rsgnt">χριστοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὅσα</rdg>
+        <rdg wit="#ognt">ὅσα</rdg>
+        <rdg wit="#rsgnt">ὅσα</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἶδεν</rdg>
+        <rdg wit="#ognt">εἶδεν</rdg>
+        <rdg wit="#rsgnt">εἶδεν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Μακάριος</rdg>
+        <rdg wit="#ognt">Μακάριος</rdg>
+        <rdg wit="#rsgnt">Μακάριος</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀναγινώσκων</rdg>
+        <rdg wit="#ognt">ἀναγινώσκων</rdg>
+        <rdg wit="#rsgnt">ἀναγινώσκων</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">οἱ</rdg>
+        <rdg wit="#ognt">οἱ</rdg>
+        <rdg wit="#rsgnt">οἱ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀκούοντες</rdg>
+        <rdg wit="#ognt">ἀκούοντες</rdg>
+        <rdg wit="#rsgnt">ἀκούοντες</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τοὺς</rdg>
+        <rdg wit="#ognt">τοὺς</rdg>
+        <rdg wit="#rsgnt">τοὺς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λόγους</rdg>
+        <rdg wit="#ognt">λόγους</rdg>
+        <rdg wit="#rsgnt">λόγους</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῆς</rdg>
+        <rdg wit="#ognt">τῆς</rdg>
+        <rdg wit="#rsgnt">τῆς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">προφητείας</rdg>
+        <rdg wit="#ognt">προφητείας</rdg>
+        <rdg wit="#rsgnt">προφητείας</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τηροῦντες</rdg>
+        <rdg wit="#ognt">τηροῦντες</rdg>
+        <rdg wit="#rsgnt">τηροῦντες</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὰ</rdg>
+        <rdg wit="#ognt">τὰ</rdg>
+        <rdg wit="#rsgnt">τὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτῇ</rdg>
+        <rdg wit="#ognt">αὐτῇ</rdg>
+        <rdg wit="#rsgnt">αὐτῇ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">γεγραμμένα</rdg>
+        <rdg wit="#ognt">γεγραμμένα</rdg>
+        <rdg wit="#rsgnt">γεγραμμένα</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">γὰρ</rdg>
+        <rdg wit="#ognt">γὰρ</rdg>
+        <rdg wit="#rsgnt">γὰρ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καιρὸς</rdg>
+        <rdg wit="#ognt">καιρὸς</rdg>
+        <rdg wit="#rsgnt">καιρὸς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐγγύς</rdg>
+        <rdg wit="#ognt">ἐγγύς</rdg>
+        <rdg wit="#rsgnt">ἐγγύς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἰωάννης</rdg>
+        <rdg wit="#ognt">Ἰωάννης</rdg>
+        <rdg wit="#rsgnt">Ἰωάννης</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ταῖς</rdg>
+        <rdg wit="#ognt">Ταῖς</rdg>
+        <rdg wit="#rsgnt">ταῖς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτὰ</rdg>
+        <rdg wit="#rsgnt">ἑπτὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐκκλησίαις</rdg>
+        <rdg wit="#ognt">ἐκκλησίαις</rdg>
+        <rdg wit="#rsgnt">ἐκκλησίαις</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ταῖς</rdg>
+        <rdg wit="#ognt">ταῖς</rdg>
+        <rdg wit="#rsgnt">ταῖς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῇ</rdg>
+        <rdg wit="#ognt">τῇ</rdg>
+        <rdg wit="#rsgnt">τῇ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἀσίᾳ</rdg>
+        <rdg wit="#ognt">Ἀσίᾳ</rdg>
+        <rdg wit="#rsgnt">Ἀσίᾳ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">χάρις</rdg>
+        <rdg wit="#ognt">Χάρις</rdg>
+        <rdg wit="#rsgnt">χάρις</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὑμῖν</rdg>
+        <rdg wit="#ognt">ὑμῖν</rdg>
+        <rdg wit="#rsgnt">ὑμῖν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰρήνη</rdg>
+        <rdg wit="#ognt">εἰρήνη</rdg>
+        <rdg wit="#rsgnt">εἰρήνη</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀπὸ</rdg>
+        <rdg wit="#ognt">ἀπὸ</rdg>
+        <rdg wit="#rsgnt">ἀπὸ</rdg>
     </app>
     <app>
         <rdg wit="#rsgnt">θεοῦ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ὁ ὢν καὶ ὁ ἦν καὶ ὁ ἐρχόμενος καὶ ἀπὸ τῶν ἑπτὰ πνευμάτων ἃ ἐνώπιον τοῦ θρόνου αὐτοῦ καὶ ἀπὸ
-            ἰησοῦ χριστοῦ ὁ μάρτυς ὁ πιστός ὁ πρωτότοκος τῶν νεκρῶν καὶ ὁ ἄρχων τῶν βασιλέων τῆς γῆς τῷ ἀγαπῶντι ἡμᾶς
-            καὶ
-        </rdg>
-        <rdg wit="#ognt">ὁ ὢν καὶ ὁ ἦν καὶ ὁ ἐρχόμενος καὶ ἀπὸ τῶν ἑπτὰ πνευμάτων ἃ ἐνώπιον τοῦ θρόνου αὐτοῦ καὶ ἀπὸ
-            ἰησοῦ χριστοῦ ὁ μάρτυς ὁ πιστός ὁ πρωτότοκος τῶν νεκρῶν καὶ ὁ ἄρχων τῶν βασιλέων τῆς γῆς τῷ ἀγαπῶντι ἡμᾶς
-            καὶ
-        </rdg>
-        <rdg wit="#rsgnt">ὁ ὢν καὶ ὁ ἦν καὶ ὁ ἐρχόμενος καὶ ἀπὸ τῶν ἑπτὰ πνευμάτων ἃ ἐνώπιον τοῦ θρόνου αὐτοῦ καὶ ἀπὸ
-            ἰησοῦ χριστοῦ ὁ μάρτυς ὁ πιστός ὁ πρωτότοκος τῶν νεκρῶν καὶ ὁ ἄρχων τῶν βασιλέων τῆς γῆς τῷ ἀγαπῶντι ἡμᾶς
-            καὶ
-        </rdg>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">λυ</rdg>
-        <rdg wit="#ognt">λυ</rdg>
-        <rdg wit="#rsgnt">λου</rdg>
+        <rdg wit="#bgt">ὢν</rdg>
+        <rdg wit="#ognt">ὢν</rdg>
+        <rdg wit="#rsgnt">ὢν</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">́σαντι ἡμᾶς</rdg>
-        <rdg wit="#ognt">́σαντι ἡμᾶς</rdg>
-        <rdg wit="#rsgnt">́σαντι ἡμᾶς</rdg>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ε</rdg>
-        <rdg wit="#ognt">ε</rdg>
-        <rdg wit="#rsgnt">α</rdg>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̓</rdg>
-        <rdg wit="#ognt">̓</rdg>
-        <rdg wit="#rsgnt">̓</rdg>
+        <rdg wit="#bgt">ἦν</rdg>
+        <rdg wit="#ognt">ἦν</rdg>
+        <rdg wit="#rsgnt">ἦν</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">κ</rdg>
-        <rdg wit="#ognt">κ</rdg>
-        <rdg wit="#rsgnt">πὸ</rdg>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">τῶν ἁμαρτιῶν ἡμῶν ἐν τῷ αἵματι αὐτοῦ καὶ ἐποίησεν ἡμᾶς βασιλείαν ἱερεῖς τῷ θεῷ καὶ πατρὶ αὐτοῦ
-            αὐτῷ ἡ δόξα καὶ τὸ κράτος εἰς τοὺς αἰῶνας
-        </rdg>
-        <rdg wit="#ognt">τῶν ἁμαρτιῶν ἡμῶν ἐν τῷ αἵματι αὐτοῦ καὶ ἐποίησεν ἡμᾶς βασιλείαν ἱερεῖς τῷ θεῷ καὶ πατρὶ αὐτοῦ
-            αὐτῷ ἡ δόξα καὶ τὸ κράτος εἰς τοὺς αἰῶνας
-        </rdg>
-        <rdg wit="#rsgnt">τῶν ἁμαρτιῶν ἡμῶν ἐν τῷ αἵματι αὐτοῦ καὶ ἐποίησεν ἡμᾶς βασιλείαν ἱερεῖς τῷ θεῷ καὶ πατρὶ
-            αὐτοῦ αὐτῷ ἡ δόξα καὶ τὸ κράτος εἰς τοὺς αἰῶνας
-        </rdg>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">[</rdg>
+        <rdg wit="#bgt">ἐρχόμενος</rdg>
+        <rdg wit="#ognt">ἐρχόμενος</rdg>
+        <rdg wit="#rsgnt">ἐρχόμενος</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">τῶν αἰώνων</rdg>
-        <rdg wit="#ognt">τῶν αἰώνων</rdg>
-        <rdg wit="#rsgnt">τῶν αἰώνων</rdg>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">]</rdg>
+        <rdg wit="#bgt">ἀπὸ</rdg>
+        <rdg wit="#ognt">ἀπὸ</rdg>
+        <rdg wit="#rsgnt">ἀπὸ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ἀμήν ἰδου</rdg>
-        <rdg wit="#ognt">ἀμήν ἰδου</rdg>
-        <rdg wit="#rsgnt">ἀμήν ἰδου</rdg>
+        <rdg wit="#bgt">τῶν</rdg>
+        <rdg wit="#ognt">τῶν</rdg>
+        <rdg wit="#rsgnt">τῶν</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀</rdg>
-        <rdg wit="#ognt">̀</rdg>
-        <rdg wit="#rsgnt">́</rdg>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτὰ</rdg>
+        <rdg wit="#rsgnt">ἑπτὰ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ἔρχεται μετὰ τῶν νεφελῶν καὶ ὄψεται αὐτὸν πᾶς ὀφθαλμο</rdg>
-        <rdg wit="#ognt">ἔρχεται μετὰ τῶν νεφελῶν καὶ ὄψεται αὐτὸν πᾶς ὀφθαλμο</rdg>
-        <rdg wit="#rsgnt">ἔρχεται μετὰ τῶν νεφελῶν καὶ ὄψεται αὐτὸν πᾶς ὀφθαλμο</rdg>
+        <rdg wit="#bgt">πνευμάτων</rdg>
+        <rdg wit="#ognt">Πνευμάτων</rdg>
+        <rdg wit="#rsgnt">πνευμάτων</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀</rdg>
-        <rdg wit="#ognt">̀</rdg>
-        <rdg wit="#rsgnt">́</rdg>
+        <rdg wit="#bgt">ἃ</rdg>
+        <rdg wit="#ognt">ἃ</rdg>
+        <rdg wit="#rsgnt">ἃ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ς καὶ οἵτινες αὐτὸν ἐξεκέντησαν καὶ κόψονται ἐπ</rdg>
-        <rdg wit="#ognt">ς καὶ οἵτινες αὐτὸν ἐξεκέντησαν καὶ κόψονται ἐπ</rdg>
-        <rdg wit="#rsgnt">ς καὶ οἵτινες αὐτὸν ἐξεκέντησαν καὶ κόψονται ἐπ</rdg>
+        <rdg wit="#bgt">ἐνώπιον</rdg>
+        <rdg wit="#ognt">ἐνώπιον</rdg>
+        <rdg wit="#rsgnt">ἐνώπιον</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">'</rdg>
-        <rdg wit="#ognt">'</rdg>
+        <rdg wit="#bgt">τοῦ</rdg>
+        <rdg wit="#ognt">τοῦ</rdg>
+        <rdg wit="#rsgnt">τοῦ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">αὐτὸν πᾶσαι αἱ φυλαὶ τῆς γῆς ναί ἀμήν ἐγώ εἰμι τὸ ἄλφα καὶ τὸ ὦ λέγει κύριος ὁ θεός ὁ ὢν καὶ ὁ
-            ἦν καὶ ὁ ἐρχόμενος ὁ παντοκράτωρ ἐγὼ ἰωάννης ὁ ἀδελφὸς ὑμῶν καὶ
-        </rdg>
-        <rdg wit="#ognt">αὐτὸν πᾶσαι αἱ φυλαὶ τῆς γῆς ναί ἀμήν ἐγώ εἰμι τὸ ἄλφα καὶ τὸ ὦ λέγει κύριος ὁ θεός ὁ ὢν καὶ
-            ὁ ἦν καὶ ὁ ἐρχόμενος ὁ παντοκράτωρ ἐγὼ ἰωάννης ὁ ἀδελφὸς ὑμῶν καὶ
-        </rdg>
-        <rdg wit="#rsgnt">αὐτὸν πᾶσαι αἱ φυλαὶ τῆς γῆς ναί ἀμήν ἐγώ εἰμι τὸ ἄλφα καὶ τὸ ὦ λέγει κύριος ὁ θεός ὁ ὢν καὶ ὁ
-            ἦν καὶ ὁ ἐρχόμενος ὁ παντοκράτωρ ἐγὼ ἰωάννης ὁ ἀδελφὸς ὑμῶν καὶ
-        </rdg>
+        <rdg wit="#bgt">θρόνου</rdg>
+        <rdg wit="#ognt">θρόνου</rdg>
+        <rdg wit="#rsgnt">θρόνου</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">συγκοινωνο</rdg>
-        <rdg wit="#ognt">συνκοινωνο</rdg>
-        <rdg wit="#rsgnt">κοινωνο</rdg>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀ς ἐν τῇ θλίψει καὶ βασιλείᾳ καὶ ὑπομονῇ ἐν</rdg>
-        <rdg wit="#ognt">̀ς ἐν τῇ θλίψει καὶ βασιλείᾳ καὶ ὑπομονῇ ἐν</rdg>
-        <rdg wit="#rsgnt">̀ς ἐν τῇ θλίψει καὶ βασιλείᾳ καὶ ὑπομονῇ ἐν</rdg>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀπὸ</rdg>
+        <rdg wit="#ognt">ἀπὸ</rdg>
+        <rdg wit="#rsgnt">ἀπὸ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἰησοῦ</rdg>
+        <rdg wit="#ognt">Ἰησοῦ</rdg>
+        <rdg wit="#rsgnt">Ἰησοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Χριστοῦ</rdg>
+        <rdg wit="#ognt">Χριστοῦ</rdg>
+        <rdg wit="#rsgnt">χριστοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μάρτυς</rdg>
+        <rdg wit="#ognt">μάρτυς</rdg>
+        <rdg wit="#rsgnt">μάρτυς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πιστός</rdg>
+        <rdg wit="#ognt">πιστός</rdg>
+        <rdg wit="#rsgnt">πιστός</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πρωτότοκος</rdg>
+        <rdg wit="#ognt">πρωτότοκος</rdg>
+        <rdg wit="#rsgnt">πρωτότοκος</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῶν</rdg>
+        <rdg wit="#ognt">τῶν</rdg>
+        <rdg wit="#rsgnt">τῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">νεκρῶν</rdg>
+        <rdg wit="#ognt">νεκρῶν</rdg>
+        <rdg wit="#rsgnt">νεκρῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἄρχων</rdg>
+        <rdg wit="#ognt">ἄρχων</rdg>
+        <rdg wit="#rsgnt">ἄρχων</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῶν</rdg>
+        <rdg wit="#ognt">τῶν</rdg>
+        <rdg wit="#rsgnt">τῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">βασιλέων</rdg>
+        <rdg wit="#ognt">βασιλέων</rdg>
+        <rdg wit="#rsgnt">βασιλέων</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῆς</rdg>
+        <rdg wit="#ognt">τῆς</rdg>
+        <rdg wit="#rsgnt">τῆς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">γῆς</rdg>
+        <rdg wit="#ognt">γῆς</rdg>
+        <rdg wit="#rsgnt">γῆς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Τῷ</rdg>
+        <rdg wit="#ognt">Τῷ</rdg>
+        <rdg wit="#rsgnt">Τῷ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀγαπῶντι</rdg>
+        <rdg wit="#ognt">ἀγαπῶντι</rdg>
+        <rdg wit="#rsgnt">ἀγαπῶντι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἡμᾶς</rdg>
+        <rdg wit="#ognt">ἡμᾶς</rdg>
+        <rdg wit="#rsgnt">ἡμᾶς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λύσαντι</rdg>
+        <rdg wit="#ognt">λύσαντι</rdg>
+        <rdg wit="#rsgnt">λούσαντι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἡμᾶς</rdg>
+        <rdg wit="#ognt">ἡμᾶς</rdg>
+        <rdg wit="#rsgnt">ἡμᾶς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐκ</rdg>
+        <rdg wit="#ognt">ἐκ</rdg>
+        <rdg wit="#rsgnt">ἀπὸ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῶν</rdg>
+        <rdg wit="#ognt">τῶν</rdg>
+        <rdg wit="#rsgnt">τῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἁμαρτιῶν</rdg>
+        <rdg wit="#ognt">ἁμαρτιῶν</rdg>
+        <rdg wit="#rsgnt">ἁμαρτιῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἡμῶν</rdg>
+        <rdg wit="#ognt">ἡμῶν</rdg>
+        <rdg wit="#rsgnt">ἡμῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῷ</rdg>
+        <rdg wit="#ognt">τῷ</rdg>
+        <rdg wit="#rsgnt">τῷ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αἵματι</rdg>
+        <rdg wit="#ognt">αἵματι</rdg>
+        <rdg wit="#rsgnt">αἵματι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐποίησεν</rdg>
+        <rdg wit="#ognt">ἐποίησεν</rdg>
+        <rdg wit="#rsgnt">ἐποίησεν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἡμᾶς</rdg>
+        <rdg wit="#ognt">ἡμᾶς</rdg>
+        <rdg wit="#rsgnt">ἡμᾶς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">βασιλείαν</rdg>
+        <rdg wit="#ognt">βασιλείαν</rdg>
+        <rdg wit="#rsgnt">βασιλείαν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἱερεῖς</rdg>
+        <rdg wit="#ognt">ἱερεῖς</rdg>
+        <rdg wit="#rsgnt">ἱερεῖς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῷ</rdg>
+        <rdg wit="#ognt">τῷ</rdg>
+        <rdg wit="#rsgnt">τῷ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">θεῷ</rdg>
+        <rdg wit="#ognt">Θεῷ</rdg>
+        <rdg wit="#rsgnt">θεῷ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πατρὶ</rdg>
+        <rdg wit="#ognt">Πατρὶ</rdg>
+        <rdg wit="#rsgnt">πατρὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτῷ</rdg>
+        <rdg wit="#ognt">αὐτῷ</rdg>
+        <rdg wit="#rsgnt">αὐτῷ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἡ</rdg>
+        <rdg wit="#ognt">ἡ</rdg>
+        <rdg wit="#rsgnt">ἡ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">δόξα</rdg>
+        <rdg wit="#ognt">δόξα</rdg>
+        <rdg wit="#rsgnt">δόξα</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὸ</rdg>
+        <rdg wit="#ognt">τὸ</rdg>
+        <rdg wit="#rsgnt">τὸ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">κράτος</rdg>
+        <rdg wit="#ognt">κράτος</rdg>
+        <rdg wit="#rsgnt">κράτος</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰς</rdg>
+        <rdg wit="#ognt">εἰς</rdg>
+        <rdg wit="#rsgnt">εἰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τοὺς</rdg>
+        <rdg wit="#ognt">τοὺς</rdg>
+        <rdg wit="#rsgnt">τοὺς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αἰῶνας</rdg>
+        <rdg wit="#ognt">αἰῶνας</rdg>
+        <rdg wit="#rsgnt">αἰῶνας</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῶν</rdg>
+        <rdg wit="#ognt">τῶν</rdg>
+        <rdg wit="#rsgnt">τῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αἰώνων</rdg>
+        <rdg wit="#ognt">αἰώνων</rdg>
+        <rdg wit="#rsgnt">αἰώνων</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀμήν</rdg>
+        <rdg wit="#ognt">ἀμήν</rdg>
+        <rdg wit="#rsgnt">Ἀμήν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἰδοὺ</rdg>
+        <rdg wit="#ognt">Ἰδοὺ</rdg>
+        <rdg wit="#rsgnt">Ἰδού</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἔρχεται</rdg>
+        <rdg wit="#ognt">ἔρχεται</rdg>
+        <rdg wit="#rsgnt">ἔρχεται</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μετὰ</rdg>
+        <rdg wit="#ognt">μετὰ</rdg>
+        <rdg wit="#rsgnt">μετὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῶν</rdg>
+        <rdg wit="#ognt">τῶν</rdg>
+        <rdg wit="#rsgnt">τῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">νεφελῶν</rdg>
+        <rdg wit="#ognt">νεφελῶν</rdg>
+        <rdg wit="#rsgnt">νεφελῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὄψεται</rdg>
+        <rdg wit="#ognt">ὄψεται</rdg>
+        <rdg wit="#rsgnt">ὄψεται</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτὸν</rdg>
+        <rdg wit="#ognt">αὐτὸν</rdg>
+        <rdg wit="#rsgnt">αὐτὸν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πᾶς</rdg>
+        <rdg wit="#ognt">πᾶς</rdg>
+        <rdg wit="#rsgnt">πᾶς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὀφθαλμὸς</rdg>
+        <rdg wit="#ognt">ὀφθαλμὸς</rdg>
+        <rdg wit="#rsgnt">ὀφθαλμός</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">οἵτινες</rdg>
+        <rdg wit="#ognt">οἵτινες</rdg>
+        <rdg wit="#rsgnt">οἵτινες</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτὸν</rdg>
+        <rdg wit="#ognt">αὐτὸν</rdg>
+        <rdg wit="#rsgnt">αὐτὸν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐξεκέντησαν</rdg>
+        <rdg wit="#ognt">ἐξεκέντησαν</rdg>
+        <rdg wit="#rsgnt">ἐξεκέντησαν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">κόψονται</rdg>
+        <rdg wit="#ognt">κόψονται</rdg>
+        <rdg wit="#rsgnt">κόψονται</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐπ᾽</rdg>
+        <rdg wit="#ognt">ἐπ'</rdg>
+        <rdg wit="#rsgnt">ἐπ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτὸν</rdg>
+        <rdg wit="#ognt">αὐτὸν</rdg>
+        <rdg wit="#rsgnt">αὐτὸν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πᾶσαι</rdg>
+        <rdg wit="#ognt">πᾶσαι</rdg>
+        <rdg wit="#rsgnt">πᾶσαι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αἱ</rdg>
+        <rdg wit="#ognt">αἱ</rdg>
+        <rdg wit="#rsgnt">αἱ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">φυλαὶ</rdg>
+        <rdg wit="#ognt">φυλαὶ</rdg>
+        <rdg wit="#rsgnt">φυλαὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῆς</rdg>
+        <rdg wit="#ognt">τῆς</rdg>
+        <rdg wit="#rsgnt">τῆς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">γῆς</rdg>
+        <rdg wit="#ognt">γῆς</rdg>
+        <rdg wit="#rsgnt">γῆς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ναί</rdg>
+        <rdg wit="#ognt">ναί</rdg>
+        <rdg wit="#rsgnt">Ναί</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀμήν</rdg>
+        <rdg wit="#ognt">ἀμήν</rdg>
+        <rdg wit="#rsgnt">ἀμήν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἐγώ</rdg>
+        <rdg wit="#ognt">Ἐγώ</rdg>
+        <rdg wit="#rsgnt">Ἐγώ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰμι</rdg>
+        <rdg wit="#ognt">εἰμι</rdg>
+        <rdg wit="#rsgnt">εἰμι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὸ</rdg>
+        <rdg wit="#ognt">τὸ</rdg>
+        <rdg wit="#rsgnt">τὸ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἄλφα</rdg>
+        <rdg wit="#ognt">Ἄλφα</rdg>
+        <rdg wit="#rsgnt">Ἄλφα</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὸ</rdg>
+        <rdg wit="#ognt">τὸ</rdg>
+        <rdg wit="#rsgnt">τὸ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὦ</rdg>
+        <rdg wit="#ognt">Ὦ</rdg>
+        <rdg wit="#rsgnt">Ὦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λέγει</rdg>
+        <rdg wit="#ognt">λέγει</rdg>
+        <rdg wit="#rsgnt">λέγει</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">κύριος</rdg>
+        <rdg wit="#ognt">Κύριος</rdg>
+        <rdg wit="#rsgnt">κύριος</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">θεός</rdg>
+        <rdg wit="#ognt">Θεός</rdg>
+        <rdg wit="#rsgnt">θεός</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὢν</rdg>
+        <rdg wit="#ognt">ὢν</rdg>
+        <rdg wit="#rsgnt">ὢν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἦν</rdg>
+        <rdg wit="#ognt">ἦν</rdg>
+        <rdg wit="#rsgnt">ἦν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐρχόμενος</rdg>
+        <rdg wit="#ognt">ἐρχόμενος</rdg>
+        <rdg wit="#rsgnt">ἐρχόμενος</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">παντοκράτωρ</rdg>
+        <rdg wit="#ognt">Παντοκράτωρ</rdg>
+        <rdg wit="#rsgnt">παντοκράτωρ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἐγὼ</rdg>
+        <rdg wit="#ognt">Ἐγὼ</rdg>
+        <rdg wit="#rsgnt">Ἐγὼ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἰωάννης</rdg>
+        <rdg wit="#ognt">Ἰωάννης</rdg>
+        <rdg wit="#rsgnt">Ἰωάννης</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀδελφὸς</rdg>
+        <rdg wit="#ognt">ἀδελφὸς</rdg>
+        <rdg wit="#rsgnt">ἀδελφὸς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὑμῶν</rdg>
+        <rdg wit="#ognt">ὑμῶν</rdg>
+        <rdg wit="#rsgnt">ὑμῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">συγκοινωνὸς</rdg>
+        <rdg wit="#ognt">συνκοινωνὸς</rdg>
+        <rdg wit="#rsgnt">κοινωνὸς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῇ</rdg>
+        <rdg wit="#ognt">τῇ</rdg>
+        <rdg wit="#rsgnt">τῇ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">θλίψει</rdg>
+        <rdg wit="#ognt">θλίψει</rdg>
+        <rdg wit="#rsgnt">θλίψει</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">βασιλείᾳ</rdg>
+        <rdg wit="#ognt">βασιλείᾳ</rdg>
+        <rdg wit="#rsgnt">βασιλείᾳ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὑπομονῇ</rdg>
+        <rdg wit="#ognt">ὑπομονῇ</rdg>
+        <rdg wit="#rsgnt">ὑπομονῇ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
     </app>
     <app>
         <rdg wit="#rsgnt">χριστῷ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ἰησοῦ ἐγενόμην ἐν τῇ νήσῳ τῇ καλουμένῃ πάτμῳ διὰ τὸν λόγον τοῦ θεοῦ και</rdg>
-        <rdg wit="#ognt">ἰησοῦ ἐγενόμην ἐν τῇ νήσῳ τῇ καλουμένῃ πάτμῳ διὰ τὸν λόγον τοῦ θεοῦ και</rdg>
-        <rdg wit="#rsgnt">ἰησοῦ ἐγενόμην ἐν τῇ νήσῳ τῇ καλουμένῃ πάτμῳ διὰ τὸν λόγον τοῦ θεοῦ και</rdg>
+        <rdg wit="#bgt">Ἰησοῦ</rdg>
+        <rdg wit="#ognt">Ἰησοῦ</rdg>
+        <rdg wit="#rsgnt">Ἰησοῦ</rdg>
     </app>
     <app>
-        <rdg wit="#rsgnt">̀ δια</rdg>
+        <rdg wit="#bgt">ἐγενόμην</rdg>
+        <rdg wit="#ognt">ἐγενόμην</rdg>
+        <rdg wit="#rsgnt">ἐγενόμην</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀ τὴν μαρτυρίαν ἰησου</rdg>
-        <rdg wit="#ognt">̀ τὴν μαρτυρίαν ἰησου</rdg>
-        <rdg wit="#rsgnt">̀ τὴν μαρτυρίαν ἰησου</rdg>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
     </app>
     <app>
-        <rdg wit="#rsgnt">͂ χριστου</rdg>
+        <rdg wit="#bgt">τῇ</rdg>
+        <rdg wit="#ognt">τῇ</rdg>
+        <rdg wit="#rsgnt">τῇ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">͂ ἐγενόμην ἐν πνεύματι ἐν τῇ κυριακῇ ἡμέρᾳ καὶ ἤκουσα</rdg>
-        <rdg wit="#ognt">͂ ἐγενόμην ἐν πνεύματι ἐν τῇ κυριακῇ ἡμέρᾳ καὶ ἤκουσα</rdg>
-        <rdg wit="#rsgnt">͂ ἐγενόμην ἐν πνεύματι ἐν τῇ κυριακῇ ἡμέρᾳ καὶ ἤκουσα</rdg>
+        <rdg wit="#bgt">νήσῳ</rdg>
+        <rdg wit="#ognt">νήσῳ</rdg>
+        <rdg wit="#rsgnt">νήσῳ</rdg>
     </app>
     <app>
+        <rdg wit="#bgt">τῇ</rdg>
+        <rdg wit="#ognt">τῇ</rdg>
+        <rdg wit="#rsgnt">τῇ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καλουμένῃ</rdg>
+        <rdg wit="#ognt">καλουμένῃ</rdg>
+        <rdg wit="#rsgnt">καλουμένῃ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Πάτμῳ</rdg>
+        <rdg wit="#ognt">Πάτμῳ</rdg>
+        <rdg wit="#rsgnt">Πάτμῳ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">διὰ</rdg>
+        <rdg wit="#ognt">διὰ</rdg>
+        <rdg wit="#rsgnt">διὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὸν</rdg>
+        <rdg wit="#ognt">τὸν</rdg>
+        <rdg wit="#rsgnt">τὸν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λόγον</rdg>
+        <rdg wit="#ognt">λόγον</rdg>
+        <rdg wit="#rsgnt">λόγον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τοῦ</rdg>
+        <rdg wit="#ognt">τοῦ</rdg>
+        <rdg wit="#rsgnt">τοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">θεοῦ</rdg>
+        <rdg wit="#ognt">Θεοῦ</rdg>
+        <rdg wit="#rsgnt">θεοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#rsgnt">διὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὴν</rdg>
+        <rdg wit="#ognt">τὴν</rdg>
+        <rdg wit="#rsgnt">τὴν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μαρτυρίαν</rdg>
+        <rdg wit="#ognt">μαρτυρίαν</rdg>
+        <rdg wit="#rsgnt">μαρτυρίαν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἰησοῦ</rdg>
+        <rdg wit="#ognt">Ἰησοῦ</rdg>
+        <rdg wit="#rsgnt">Ἰησοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐγενόμην</rdg>
+        <rdg wit="#ognt">ἐγενόμην</rdg>
+        <rdg wit="#rsgnt">χριστοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#rsgnt">Ἐγενόμην</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πνεύματι</rdg>
+        <rdg wit="#ognt">Πνεύματι</rdg>
+        <rdg wit="#rsgnt">πνεύματι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῇ</rdg>
+        <rdg wit="#ognt">τῇ</rdg>
+        <rdg wit="#rsgnt">τῇ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">κυριακῇ</rdg>
+        <rdg wit="#ognt">κυριακῇ</rdg>
+        <rdg wit="#rsgnt">κυριακῇ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἡμέρᾳ</rdg>
+        <rdg wit="#ognt">ἡμέρᾳ</rdg>
+        <rdg wit="#rsgnt">ἡμέρᾳ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἤκουσα</rdg>
+        <rdg wit="#ognt">ἤκουσα</rdg>
+        <rdg wit="#rsgnt">ἤκουσα</rdg>
+    </app>
+    <app>
+        <rdg wit="#ognt">ὀπίσω</rdg>
         <rdg wit="#rsgnt">φωνὴν</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ὀπίσω μου</rdg>
-        <rdg wit="#ognt">ὀπίσω μου</rdg>
-        <rdg wit="#rsgnt">ὀπίσω μου</rdg>
+        <rdg wit="#bgt">ὀπίσω</rdg>
+        <rdg wit="#rsgnt">ὀπίσω</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μου</rdg>
+        <rdg wit="#ognt">μου</rdg>
+        <rdg wit="#rsgnt">μου</rdg>
     </app>
     <app>
         <rdg wit="#bgt">φωνὴν</rdg>
         <rdg wit="#ognt">φωνὴν</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">μεγάλην ὡς σάλπιγγος λεγούσης ὃ βλέπεις γράψον εἰς βιβλίον καὶ πέμψον ταῖς ἑπτὰ ἐκκλησίαις εἰς
-            ἔφεσον καὶ εἰς σμύρναν καὶ εἰς πέργαμον καὶ εἰς θυάτειρα καὶ εἰς σάρδεις καὶ εἰς φιλαδέλφειαν καὶ εἰς
-            λαοδίκειαν καὶ
-        </rdg>
-        <rdg wit="#ognt">μεγάλην ὡς σάλπιγγος λεγούσης ὃ βλέπεις γράψον εἰς βιβλίον καὶ πέμψον ταῖς ἑπτὰ ἐκκλησίαις εἰς
-            ἔφεσον καὶ εἰς σμύρναν καὶ εἰς πέργαμον καὶ εἰς θυάτειρα καὶ εἰς σάρδεις καὶ εἰς φιλαδέλφειαν καὶ εἰς
-            λαοδίκειαν καὶ
-        </rdg>
-        <rdg wit="#rsgnt">μεγάλην ὡς σάλπιγγος λεγούσης ὃ βλέπεις γράψον εἰς βιβλίον καὶ πέμψον ταῖς ἑπτὰ ἐκκλησίαις εἰς
-            ἔφεσον καὶ εἰς σμύρναν καὶ εἰς πέργαμον καὶ εἰς θυάτειρα καὶ εἰς σάρδεις καὶ εἰς φιλαδέλφειαν καὶ εἰς
-            λαοδίκειαν καὶ
-        </rdg>
+        <rdg wit="#bgt">μεγάλην</rdg>
+        <rdg wit="#ognt">μεγάλην</rdg>
+        <rdg wit="#rsgnt">μεγάλην</rdg>
     </app>
     <app>
+        <rdg wit="#bgt">ὡς</rdg>
+        <rdg wit="#ognt">ὡς</rdg>
+        <rdg wit="#rsgnt">ὡς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">σάλπιγγος</rdg>
+        <rdg wit="#ognt">σάλπιγγος</rdg>
+        <rdg wit="#rsgnt">σάλπιγγος</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λεγούσης</rdg>
+        <rdg wit="#ognt">λεγούσης</rdg>
+        <rdg wit="#rsgnt">λεγούσης</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὃ</rdg>
+        <rdg wit="#ognt">Ὃ</rdg>
+        <rdg wit="#rsgnt">Ὃ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">βλέπεις</rdg>
+        <rdg wit="#ognt">βλέπεις</rdg>
+        <rdg wit="#rsgnt">βλέπεις</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">γράψον</rdg>
+        <rdg wit="#ognt">γράψον</rdg>
+        <rdg wit="#rsgnt">γράψον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰς</rdg>
+        <rdg wit="#ognt">εἰς</rdg>
+        <rdg wit="#rsgnt">εἰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">βιβλίον</rdg>
+        <rdg wit="#ognt">βιβλίον</rdg>
+        <rdg wit="#rsgnt">βιβλίον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πέμψον</rdg>
+        <rdg wit="#ognt">πέμψον</rdg>
+        <rdg wit="#rsgnt">πέμψον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ταῖς</rdg>
+        <rdg wit="#ognt">ταῖς</rdg>
+        <rdg wit="#rsgnt">ταῖς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτὰ</rdg>
+        <rdg wit="#rsgnt">ἑπτὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐκκλησίαις</rdg>
+        <rdg wit="#ognt">ἐκκλησίαις</rdg>
+        <rdg wit="#rsgnt">ἐκκλησίαις</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰς</rdg>
+        <rdg wit="#ognt">εἰς</rdg>
+        <rdg wit="#rsgnt">εἰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Ἔφεσον</rdg>
+        <rdg wit="#ognt">Ἔφεσον</rdg>
+        <rdg wit="#rsgnt">Ἔφεσον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰς</rdg>
+        <rdg wit="#ognt">εἰς</rdg>
+        <rdg wit="#rsgnt">εἰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Σμύρναν</rdg>
+        <rdg wit="#ognt">Σμύρναν</rdg>
+        <rdg wit="#rsgnt">Σμύρναν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰς</rdg>
+        <rdg wit="#ognt">εἰς</rdg>
+        <rdg wit="#rsgnt">εἰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Πέργαμον</rdg>
+        <rdg wit="#ognt">Πέργαμον</rdg>
+        <rdg wit="#rsgnt">Πέργαμον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰς</rdg>
+        <rdg wit="#ognt">εἰς</rdg>
+        <rdg wit="#rsgnt">εἰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Θυάτειρα</rdg>
+        <rdg wit="#ognt">Θυάτειρα</rdg>
+        <rdg wit="#rsgnt">Θυάτειρα</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰς</rdg>
+        <rdg wit="#ognt">εἰς</rdg>
+        <rdg wit="#rsgnt">εἰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Σάρδεις</rdg>
+        <rdg wit="#ognt">Σάρδεις</rdg>
+        <rdg wit="#rsgnt">Σάρδεις</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰς</rdg>
+        <rdg wit="#ognt">εἰς</rdg>
+        <rdg wit="#rsgnt">εἰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Φιλαδέλφειαν</rdg>
+        <rdg wit="#ognt">Φιλαδέλφειαν</rdg>
+        <rdg wit="#rsgnt">Φιλαδέλφειαν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰς</rdg>
+        <rdg wit="#ognt">εἰς</rdg>
+        <rdg wit="#rsgnt">εἰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Λαοδίκειαν</rdg>
+        <rdg wit="#ognt">Λαοδίκειαν</rdg>
+        <rdg wit="#rsgnt">Λαοδίκειαν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Καὶ</rdg>
+        <rdg wit="#ognt">Καὶ</rdg>
+        <rdg wit="#rsgnt">Καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#ognt">ἐπέστρεψα</rdg>
         <rdg wit="#rsgnt">ἐκεῖ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ἐπέστρεψα βλέπειν τὴν φωνὴν ἥτις ἐλάλει μετ</rdg>
-        <rdg wit="#ognt">ἐπέστρεψα βλέπειν τὴν φωνὴν ἥτις ἐλάλει μετ</rdg>
-        <rdg wit="#rsgnt">ἐπέστρεψα βλέπειν τὴν φωνὴν ἥτις ἐλάλει μετ</rdg>
+        <rdg wit="#bgt">ἐπέστρεψα</rdg>
+        <rdg wit="#ognt">βλέπειν</rdg>
+        <rdg wit="#rsgnt">ἐπέστρεψα</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">'</rdg>
-        <rdg wit="#ognt">'</rdg>
+        <rdg wit="#bgt">βλέπειν</rdg>
+        <rdg wit="#rsgnt">βλέπειν</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ἐμοῦ καὶ ἐπιστρέψας εἶδον ἑπτὰ λυχνίας χρυσᾶς καὶ ἐν μέσῳ τῶν</rdg>
-        <rdg wit="#ognt">ἐμοῦ καὶ ἐπιστρέψας εἶδον ἑπτὰ λυχνίας χρυσᾶς καὶ ἐν μέσῳ τῶν</rdg>
-        <rdg wit="#rsgnt">ἐμοῦ καὶ ἐπιστρέψας εἶδον ἑπτὰ λυχνίας χρυσᾶς καὶ ἐν μέσῳ τῶν</rdg>
+        <rdg wit="#bgt">τὴν</rdg>
+        <rdg wit="#ognt">τὴν</rdg>
+        <rdg wit="#rsgnt">τὴν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">φωνὴν</rdg>
+        <rdg wit="#ognt">φωνὴν</rdg>
+        <rdg wit="#rsgnt">φωνὴν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἥτις</rdg>
+        <rdg wit="#ognt">ἥτις</rdg>
+        <rdg wit="#rsgnt">ἥτις</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐλάλει</rdg>
+        <rdg wit="#ognt">ἐλάλει</rdg>
+        <rdg wit="#rsgnt">ἐλάλει</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μετ᾽</rdg>
+        <rdg wit="#ognt">μετ'</rdg>
+        <rdg wit="#rsgnt">μετ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐμοῦ</rdg>
+        <rdg wit="#ognt">ἐμοῦ</rdg>
+        <rdg wit="#rsgnt">ἐμοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">Καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐπιστρέψας</rdg>
+        <rdg wit="#ognt">ἐπιστρέψας</rdg>
+        <rdg wit="#rsgnt">ἐπιστρέψας</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἶδον</rdg>
+        <rdg wit="#ognt">εἶδον</rdg>
+        <rdg wit="#rsgnt">εἶδον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτὰ</rdg>
+        <rdg wit="#rsgnt">ἑπτὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λυχνίας</rdg>
+        <rdg wit="#ognt">λυχνίας</rdg>
+        <rdg wit="#rsgnt">λυχνίας</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">χρυσᾶς</rdg>
+        <rdg wit="#ognt">χρυσᾶς</rdg>
+        <rdg wit="#rsgnt">χρυσᾶς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μέσῳ</rdg>
+        <rdg wit="#ognt">μέσῳ</rdg>
+        <rdg wit="#rsgnt">μέσῳ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῶν</rdg>
+        <rdg wit="#ognt">τῶν</rdg>
+        <rdg wit="#rsgnt">τῶν</rdg>
     </app>
     <app>
         <rdg wit="#rsgnt">ἑπτὰ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">λυχνιῶν ὅμοιον υἱ</rdg>
-        <rdg wit="#ognt">λυχνιῶν ὅμοιον υἱ</rdg>
-        <rdg wit="#rsgnt">λυχνιῶν ὅμοιον υἱ</rdg>
+        <rdg wit="#bgt">λυχνιῶν</rdg>
+        <rdg wit="#ognt">λυχνιῶν</rdg>
+        <rdg wit="#rsgnt">λυχνιῶν</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ὸν</rdg>
-        <rdg wit="#ognt">ὸν</rdg>
-        <rdg wit="#rsgnt">ῷ</rdg>
+        <rdg wit="#bgt">ὅμοιον</rdg>
+        <rdg wit="#ognt">ὅμοιον</rdg>
+        <rdg wit="#rsgnt">ὅμοιον</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ἀνθρώπου ἐνδεδυμένον ποδήρη καὶ περιεζωσμένον πρὸς τοῖς μαστοῖς ζώνην</rdg>
-        <rdg wit="#ognt">ἀνθρώπου ἐνδεδυμένον ποδήρη καὶ περιεζωσμένον πρὸς τοῖς μαστοῖς ζώνην</rdg>
-        <rdg wit="#rsgnt">ἀνθρώπου ἐνδεδυμένον ποδήρη καὶ περιεζωσμένον πρὸς τοῖς μαστοῖς ζώνην</rdg>
+        <rdg wit="#bgt">υἱὸν</rdg>
+        <rdg wit="#ognt">υἱὸν</rdg>
+        <rdg wit="#rsgnt">υἱῷ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">χρυσα</rdg>
-        <rdg wit="#ognt">χρυσα</rdg>
-        <rdg wit="#rsgnt">χρυση</rdg>
+        <rdg wit="#bgt">ἀνθρώπου</rdg>
+        <rdg wit="#ognt">ἀνθρώπου</rdg>
+        <rdg wit="#rsgnt">ἀνθρώπου</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">͂ν ἡ δὲ κεφαλὴ αὐτοῦ καὶ αἱ τρίχες λευκαὶ ὡς ἔριον λευκο</rdg>
-        <rdg wit="#ognt">͂ν ἡ δὲ κεφαλὴ αὐτοῦ καὶ αἱ τρίχες λευκαὶ ὡς ἔριον λευκο</rdg>
-        <rdg wit="#rsgnt">͂ν ἡ δὲ κεφαλὴ αὐτοῦ καὶ αἱ τρίχες λευκαὶ ὡς ἔριον λευκο</rdg>
+        <rdg wit="#bgt">ἐνδεδυμένον</rdg>
+        <rdg wit="#ognt">ἐνδεδυμένον</rdg>
+        <rdg wit="#rsgnt">ἐνδεδυμένον</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀</rdg>
-        <rdg wit="#ognt">́</rdg>
-        <rdg wit="#rsgnt">́</rdg>
+        <rdg wit="#bgt">ποδήρη</rdg>
+        <rdg wit="#ognt">ποδήρη</rdg>
+        <rdg wit="#rsgnt">ποδήρη</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ν ὡς χιω</rdg>
-        <rdg wit="#ognt">ν ὡς χιω</rdg>
-        <rdg wit="#rsgnt">ν ὡς χιω</rdg>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀</rdg>
-        <rdg wit="#ognt">́</rdg>
-        <rdg wit="#rsgnt">́</rdg>
+        <rdg wit="#bgt">περιεζωσμένον</rdg>
+        <rdg wit="#ognt">περιεζωσμένον</rdg>
+        <rdg wit="#rsgnt">περιεζωσμένον</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ν καὶ οἱ ὀφθαλμοὶ αὐτοῦ ὡς φλὸξ πυρο</rdg>
-        <rdg wit="#ognt">ν καὶ οἱ ὀφθαλμοὶ αὐτοῦ ὡς φλὸξ πυρο</rdg>
-        <rdg wit="#rsgnt">ν καὶ οἱ ὀφθαλμοὶ αὐτοῦ ὡς φλὸξ πυρο</rdg>
+        <rdg wit="#bgt">πρὸς</rdg>
+        <rdg wit="#ognt">πρὸς</rdg>
+        <rdg wit="#rsgnt">πρὸς</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀</rdg>
-        <rdg wit="#ognt">́</rdg>
-        <rdg wit="#rsgnt">́</rdg>
+        <rdg wit="#bgt">τοῖς</rdg>
+        <rdg wit="#ognt">τοῖς</rdg>
+        <rdg wit="#rsgnt">τοῖς</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ς καὶ οἱ πόδες αὐτοῦ ὅμοιοι χαλκολιβάνῳ ὡς ἐν καμίνῳ πεπυρωμέ</rdg>
-        <rdg wit="#ognt">ς καὶ οἱ πόδες αὐτοῦ ὅμοιοι χαλκολιβάνῳ ὡς ἐν καμίνῳ πεπυρωμέ</rdg>
-        <rdg wit="#rsgnt">ς καὶ οἱ πόδες αὐτοῦ ὅμοιοι χαλκολιβάνῳ ὡς ἐν καμίνῳ πεπυρωμέ</rdg>
+        <rdg wit="#bgt">μαστοῖς</rdg>
+        <rdg wit="#ognt">μαστοῖς</rdg>
+        <rdg wit="#rsgnt">μαστοῖς</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">νης</rdg>
-        <rdg wit="#ognt">νης</rdg>
-        <rdg wit="#rsgnt">νοι</rdg>
+        <rdg wit="#bgt">ζώνην</rdg>
+        <rdg wit="#ognt">ζώνην</rdg>
+        <rdg wit="#rsgnt">ζώνην</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">καὶ ἡ φωνὴ αὐτοῦ ὡς φωνὴ ὑδάτων πολλῶν καὶ ἔχων ἐν τῇ δεξιᾷ</rdg>
-        <rdg wit="#ognt">καὶ ἡ φωνὴ αὐτοῦ ὡς φωνὴ ὑδάτων πολλῶν καὶ ἔχων ἐν τῇ δεξιᾷ</rdg>
-        <rdg wit="#rsgnt">καὶ ἡ φωνὴ αὐτοῦ ὡς φωνὴ ὑδάτων πολλῶν καὶ ἔχων ἐν τῇ δεξιᾷ</rdg>
+        <rdg wit="#bgt">χρυσᾶν</rdg>
+        <rdg wit="#ognt">χρυσᾶν</rdg>
+        <rdg wit="#rsgnt">χρυσῆν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἡ</rdg>
+        <rdg wit="#ognt">ἡ</rdg>
+        <rdg wit="#rsgnt">Ἡ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">δὲ</rdg>
+        <rdg wit="#ognt">δὲ</rdg>
+        <rdg wit="#rsgnt">δὲ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">κεφαλὴ</rdg>
+        <rdg wit="#ognt">κεφαλὴ</rdg>
+        <rdg wit="#rsgnt">κεφαλὴ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αἱ</rdg>
+        <rdg wit="#ognt">αἱ</rdg>
+        <rdg wit="#rsgnt">αἱ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τρίχες</rdg>
+        <rdg wit="#ognt">τρίχες</rdg>
+        <rdg wit="#rsgnt">τρίχες</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λευκαὶ</rdg>
+        <rdg wit="#ognt">λευκαὶ</rdg>
+        <rdg wit="#rsgnt">λευκαὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὡς</rdg>
+        <rdg wit="#ognt">ὡς</rdg>
+        <rdg wit="#rsgnt">ὡς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἔριον</rdg>
+        <rdg wit="#ognt">ἔριον</rdg>
+        <rdg wit="#rsgnt">ἔριον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λευκὸν</rdg>
+        <rdg wit="#ognt">λευκόν</rdg>
+        <rdg wit="#rsgnt">λευκόν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὡς</rdg>
+        <rdg wit="#ognt">ὡς</rdg>
+        <rdg wit="#rsgnt">ὡς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">χιὼν</rdg>
+        <rdg wit="#ognt">χιών</rdg>
+        <rdg wit="#rsgnt">χιών</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">οἱ</rdg>
+        <rdg wit="#ognt">οἱ</rdg>
+        <rdg wit="#rsgnt">οἱ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὀφθαλμοὶ</rdg>
+        <rdg wit="#ognt">ὀφθαλμοὶ</rdg>
+        <rdg wit="#rsgnt">ὀφθαλμοὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὡς</rdg>
+        <rdg wit="#ognt">ὡς</rdg>
+        <rdg wit="#rsgnt">ὡς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">φλὸξ</rdg>
+        <rdg wit="#ognt">φλὸξ</rdg>
+        <rdg wit="#rsgnt">φλὸξ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πυρὸς</rdg>
+        <rdg wit="#ognt">πυρός</rdg>
+        <rdg wit="#rsgnt">πυρός</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">οἱ</rdg>
+        <rdg wit="#ognt">οἱ</rdg>
+        <rdg wit="#rsgnt">οἱ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πόδες</rdg>
+        <rdg wit="#ognt">πόδες</rdg>
+        <rdg wit="#rsgnt">πόδες</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὅμοιοι</rdg>
+        <rdg wit="#ognt">ὅμοιοι</rdg>
+        <rdg wit="#rsgnt">ὅμοιοι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">χαλκολιβάνῳ</rdg>
+        <rdg wit="#ognt">χαλκολιβάνῳ</rdg>
+        <rdg wit="#rsgnt">χαλκολιβάνῳ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὡς</rdg>
+        <rdg wit="#ognt">ὡς</rdg>
+        <rdg wit="#rsgnt">ὡς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καμίνῳ</rdg>
+        <rdg wit="#ognt">καμίνῳ</rdg>
+        <rdg wit="#rsgnt">καμίνῳ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πεπυρωμένης</rdg>
+        <rdg wit="#ognt">πεπυρωμένης</rdg>
+        <rdg wit="#rsgnt">πεπυρωμένοι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἡ</rdg>
+        <rdg wit="#ognt">ἡ</rdg>
+        <rdg wit="#rsgnt">ἡ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">φωνὴ</rdg>
+        <rdg wit="#ognt">φωνὴ</rdg>
+        <rdg wit="#rsgnt">φωνὴ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὡς</rdg>
+        <rdg wit="#ognt">ὡς</rdg>
+        <rdg wit="#rsgnt">ὡς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">φωνὴ</rdg>
+        <rdg wit="#ognt">φωνὴ</rdg>
+        <rdg wit="#rsgnt">φωνὴ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὑδάτων</rdg>
+        <rdg wit="#ognt">ὑδάτων</rdg>
+        <rdg wit="#rsgnt">ὑδάτων</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πολλῶν</rdg>
+        <rdg wit="#ognt">πολλῶν</rdg>
+        <rdg wit="#rsgnt">πολλῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">Καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἔχων</rdg>
+        <rdg wit="#ognt">ἔχων</rdg>
+        <rdg wit="#rsgnt">ἔχων</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῇ</rdg>
+        <rdg wit="#ognt">τῇ</rdg>
+        <rdg wit="#rsgnt">τῇ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">δεξιᾷ</rdg>
+        <rdg wit="#ognt">δεξιᾷ</rdg>
+        <rdg wit="#rsgnt">δεξιᾷ</rdg>
+    </app>
+    <app>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
     </app>
     <app>
         <rdg wit="#bgt">χειρὶ</rdg>
         <rdg wit="#ognt">χειρὶ</rdg>
-    </app>
-    <app>
-        <rdg wit="#bgt">αὐτοῦ</rdg>
-        <rdg wit="#ognt">αὐτοῦ</rdg>
-        <rdg wit="#rsgnt">αὐτοῦ</rdg>
-    </app>
-    <app>
         <rdg wit="#rsgnt">χειρὶ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ἀστέρας ἑπτα</rdg>
-        <rdg wit="#ognt">ἀστέρας ἑπτα</rdg>
-        <rdg wit="#rsgnt">ἀστέρας ἑπτα</rdg>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀</rdg>
-        <rdg wit="#ognt">́</rdg>
-        <rdg wit="#rsgnt">́</rdg>
+        <rdg wit="#bgt">ἀστέρας</rdg>
+        <rdg wit="#ognt">ἀστέρας</rdg>
+        <rdg wit="#rsgnt">ἀστέρας</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">καὶ ἐκ τοῦ στόματος αὐτοῦ ῥομφαία δίστομος ὀξεῖα ἐκπορευομένη καὶ ἡ ὄψις αὐτοῦ ὡς ὁ ἥλιος φαίνει
-            ἐν τῇ δυνάμει αὐτοῦ καὶ ὅτε εἶδον αὐτόν ἔπεσα πρὸς τοὺς πόδας αὐτοῦ ὡς νεκρός καὶ ἔθηκεν τὴν δεξιὰν αὐτοῦ
-            ἐπ
-        </rdg>
-        <rdg wit="#ognt">καὶ ἐκ τοῦ στόματος αὐτοῦ ῥομφαία δίστομος ὀξεῖα ἐκπορευομένη καὶ ἡ ὄψις αὐτοῦ ὡς ὁ ἥλιος
-            φαίνει ἐν τῇ δυνάμει αὐτοῦ καὶ ὅτε εἶδον αὐτόν ἔπεσα πρὸς τοὺς πόδας αὐτοῦ ὡς νεκρός καὶ ἔθηκεν τὴν δεξιὰν
-            αὐτοῦ ἐπ
-        </rdg>
-        <rdg wit="#rsgnt">καὶ ἐκ τοῦ στόματος αὐτοῦ ῥομφαία δίστομος ὀξεῖα ἐκπορευομένη καὶ ἡ ὄψις αὐτοῦ ὡς ὁ ἥλιος
-            φαίνει ἐν τῇ δυνάμει αὐτοῦ καὶ ὅτε εἶδον αὐτόν ἔπεσα πρὸς τοὺς πόδας αὐτοῦ ὡς νεκρός καὶ ἔθηκεν τὴν δεξιὰν
-            αὐτοῦ ἐπ
-        </rdg>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτά</rdg>
+        <rdg wit="#rsgnt">ἑπτά</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">'</rdg>
-        <rdg wit="#ognt">'</rdg>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ἐμε</rdg>
-        <rdg wit="#ognt">ἐμε</rdg>
-        <rdg wit="#rsgnt">ἐμε</rdg>
+        <rdg wit="#bgt">ἐκ</rdg>
+        <rdg wit="#ognt">ἐκ</rdg>
+        <rdg wit="#rsgnt">ἐκ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀</rdg>
-        <rdg wit="#ognt">̀</rdg>
-        <rdg wit="#rsgnt">́</rdg>
+        <rdg wit="#bgt">τοῦ</rdg>
+        <rdg wit="#ognt">τοῦ</rdg>
+        <rdg wit="#rsgnt">τοῦ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">λέγων μὴ φοβοῦ ἐγώ εἰμι ὁ πρῶτος καὶ ὁ ἔσχατος καὶ ὁ ζῶν καὶ ἐγενόμην νεκρο</rdg>
-        <rdg wit="#ognt">λέγων μὴ φοβοῦ ἐγώ εἰμι ὁ πρῶτος καὶ ὁ ἔσχατος καὶ ὁ ζῶν καὶ ἐγενόμην νεκρο</rdg>
-        <rdg wit="#rsgnt">λέγων μὴ φοβοῦ ἐγώ εἰμι ὁ πρῶτος καὶ ὁ ἔσχατος καὶ ὁ ζῶν καὶ ἐγενόμην νεκρο</rdg>
+        <rdg wit="#bgt">στόματος</rdg>
+        <rdg wit="#ognt">στόματος</rdg>
+        <rdg wit="#rsgnt">στόματος</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀</rdg>
-        <rdg wit="#ognt">̀</rdg>
-        <rdg wit="#rsgnt">́</rdg>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ς καὶ ἰδου</rdg>
-        <rdg wit="#ognt">ς καὶ ἰδου</rdg>
-        <rdg wit="#rsgnt">ς καὶ ἰδου</rdg>
+        <rdg wit="#bgt">ῥομφαία</rdg>
+        <rdg wit="#ognt">ῥομφαία</rdg>
+        <rdg wit="#rsgnt">ῥομφαία</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̀</rdg>
-        <rdg wit="#ognt">̀</rdg>
-        <rdg wit="#rsgnt">́</rdg>
+        <rdg wit="#bgt">δίστομος</rdg>
+        <rdg wit="#ognt">δίστομος</rdg>
+        <rdg wit="#rsgnt">δίστομος</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">ζῶν εἰμι</rdg>
-        <rdg wit="#ognt">ζῶν εἰμι</rdg>
-        <rdg wit="#rsgnt">ζῶν εἰμι</rdg>
+        <rdg wit="#bgt">ὀξεῖα</rdg>
+        <rdg wit="#ognt">ὀξεῖα</rdg>
+        <rdg wit="#rsgnt">ὀξεῖα</rdg>
     </app>
     <app>
-        <rdg wit="#rsgnt">̀</rdg>
+        <rdg wit="#bgt">ἐκπορευομένη</rdg>
+        <rdg wit="#ognt">ἐκπορευομένη</rdg>
+        <rdg wit="#rsgnt">ἐκπορευομένη</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">εἰς τοὺς αἰῶνας τῶν αἰώνων</rdg>
-        <rdg wit="#ognt">εἰς τοὺς αἰῶνας τῶν αἰώνων</rdg>
-        <rdg wit="#rsgnt">εἰς τοὺς αἰῶνας τῶν αἰώνων</rdg>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἡ</rdg>
+        <rdg wit="#ognt">ἡ</rdg>
+        <rdg wit="#rsgnt">ἡ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὄψις</rdg>
+        <rdg wit="#ognt">ὄψις</rdg>
+        <rdg wit="#rsgnt">ὄψις</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὡς</rdg>
+        <rdg wit="#ognt">ὡς</rdg>
+        <rdg wit="#rsgnt">ὡς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἥλιος</rdg>
+        <rdg wit="#ognt">ἥλιος</rdg>
+        <rdg wit="#rsgnt">ἥλιος</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">φαίνει</rdg>
+        <rdg wit="#ognt">φαίνει</rdg>
+        <rdg wit="#rsgnt">φαίνει</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐν</rdg>
+        <rdg wit="#ognt">ἐν</rdg>
+        <rdg wit="#rsgnt">ἐν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῇ</rdg>
+        <rdg wit="#ognt">τῇ</rdg>
+        <rdg wit="#rsgnt">τῇ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">δυνάμει</rdg>
+        <rdg wit="#ognt">δυνάμει</rdg>
+        <rdg wit="#rsgnt">δυνάμει</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">Καὶ</rdg>
+        <rdg wit="#ognt">Καὶ</rdg>
+        <rdg wit="#rsgnt">Καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὅτε</rdg>
+        <rdg wit="#ognt">ὅτε</rdg>
+        <rdg wit="#rsgnt">ὅτε</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἶδον</rdg>
+        <rdg wit="#ognt">εἶδον</rdg>
+        <rdg wit="#rsgnt">εἶδον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτόν</rdg>
+        <rdg wit="#ognt">αὐτόν</rdg>
+        <rdg wit="#rsgnt">αὐτόν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἔπεσα</rdg>
+        <rdg wit="#ognt">ἔπεσα</rdg>
+        <rdg wit="#rsgnt">ἔπεσα</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πρὸς</rdg>
+        <rdg wit="#ognt">πρὸς</rdg>
+        <rdg wit="#rsgnt">πρὸς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τοὺς</rdg>
+        <rdg wit="#ognt">τοὺς</rdg>
+        <rdg wit="#rsgnt">τοὺς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πόδας</rdg>
+        <rdg wit="#ognt">πόδας</rdg>
+        <rdg wit="#rsgnt">πόδας</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὡς</rdg>
+        <rdg wit="#ognt">ὡς</rdg>
+        <rdg wit="#rsgnt">ὡς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">νεκρός</rdg>
+        <rdg wit="#ognt">νεκρός</rdg>
+        <rdg wit="#rsgnt">νεκρός</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἔθηκεν</rdg>
+        <rdg wit="#ognt">ἔθηκεν</rdg>
+        <rdg wit="#rsgnt">ἔθηκεν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὴν</rdg>
+        <rdg wit="#ognt">τὴν</rdg>
+        <rdg wit="#rsgnt">τὴν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">δεξιὰν</rdg>
+        <rdg wit="#ognt">δεξιὰν</rdg>
+        <rdg wit="#rsgnt">δεξιὰν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αὐτοῦ</rdg>
+        <rdg wit="#ognt">αὐτοῦ</rdg>
+        <rdg wit="#rsgnt">αὐτοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐπ᾽</rdg>
+        <rdg wit="#ognt">ἐπ'</rdg>
+        <rdg wit="#rsgnt">ἐπ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐμὲ</rdg>
+        <rdg wit="#ognt">ἐμὲ</rdg>
+        <rdg wit="#rsgnt">ἐμέ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λέγων</rdg>
+        <rdg wit="#ognt">λέγων</rdg>
+        <rdg wit="#rsgnt">λέγων</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μὴ</rdg>
+        <rdg wit="#ognt">Μὴ</rdg>
+        <rdg wit="#rsgnt">Μὴ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">φοβοῦ</rdg>
+        <rdg wit="#ognt">φοβοῦ</rdg>
+        <rdg wit="#rsgnt">φοβοῦ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐγώ</rdg>
+        <rdg wit="#ognt">ἐγώ</rdg>
+        <rdg wit="#rsgnt">ἐγώ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰμι</rdg>
+        <rdg wit="#ognt">εἰμι</rdg>
+        <rdg wit="#rsgnt">εἰμι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">πρῶτος</rdg>
+        <rdg wit="#ognt">πρῶτος</rdg>
+        <rdg wit="#rsgnt">πρῶτος</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἔσχατος</rdg>
+        <rdg wit="#ognt">ἔσχατος</rdg>
+        <rdg wit="#rsgnt">ἔσχατος</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ὁ</rdg>
+        <rdg wit="#ognt">ὁ</rdg>
+        <rdg wit="#rsgnt">ὁ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ζῶν</rdg>
+        <rdg wit="#ognt">Ζῶν</rdg>
+        <rdg wit="#rsgnt">ζῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐγενόμην</rdg>
+        <rdg wit="#ognt">ἐγενόμην</rdg>
+        <rdg wit="#rsgnt">ἐγενόμην</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">νεκρὸς</rdg>
+        <rdg wit="#ognt">νεκρὸς</rdg>
+        <rdg wit="#rsgnt">νεκρός</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἰδοὺ</rdg>
+        <rdg wit="#ognt">ἰδοὺ</rdg>
+        <rdg wit="#rsgnt">ἰδού</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ζῶν</rdg>
+        <rdg wit="#ognt">ζῶν</rdg>
+        <rdg wit="#rsgnt">ζῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰμι</rdg>
+        <rdg wit="#ognt">εἰμι</rdg>
+        <rdg wit="#rsgnt">εἰμὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰς</rdg>
+        <rdg wit="#ognt">εἰς</rdg>
+        <rdg wit="#rsgnt">εἰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τοὺς</rdg>
+        <rdg wit="#ognt">τοὺς</rdg>
+        <rdg wit="#rsgnt">τοὺς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αἰῶνας</rdg>
+        <rdg wit="#ognt">αἰῶνας</rdg>
+        <rdg wit="#rsgnt">αἰῶνας</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῶν</rdg>
+        <rdg wit="#ognt">τῶν</rdg>
+        <rdg wit="#rsgnt">τῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αἰώνων</rdg>
+        <rdg wit="#ognt">αἰώνων</rdg>
+        <rdg wit="#rsgnt">αἰώνων</rdg>
     </app>
     <app>
         <rdg wit="#rsgnt">ἀμήν</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">καὶ ἔχω τὰς κλεῖς τοῦ θανάτου καὶ τοῦ ᾅδου γράψον οὖν ἃ εἶδες καὶ α</rdg>
-        <rdg wit="#ognt">καὶ ἔχω τὰς κλεῖς τοῦ θανάτου καὶ τοῦ ᾅδου γράψον οὖν ἃ εἶδες καὶ α</rdg>
-        <rdg wit="#rsgnt">καὶ ἔχω τὰς κλεῖς τοῦ θανάτου καὶ τοῦ ᾅδου γράψον οὖν ἃ εἶδες καὶ α</rdg>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">̔̀</rdg>
-        <rdg wit="#ognt">̔̀</rdg>
-        <rdg wit="#rsgnt">̔́</rdg>
+        <rdg wit="#bgt">ἔχω</rdg>
+        <rdg wit="#ognt">ἔχω</rdg>
+        <rdg wit="#rsgnt">ἔχω</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">εἰ</rdg>
-        <rdg wit="#ognt">εἰ</rdg>
-        <rdg wit="#rsgnt">εἰ</rdg>
+        <rdg wit="#bgt">τὰς</rdg>
+        <rdg wit="#ognt">τὰς</rdg>
+        <rdg wit="#rsgnt">τὰς</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">σὶν</rdg>
-        <rdg wit="#ognt">σὶν</rdg>
-        <rdg wit="#rsgnt">σιν</rdg>
+        <rdg wit="#bgt">κλεῖς</rdg>
+        <rdg wit="#ognt">κλεῖς</rdg>
+        <rdg wit="#rsgnt">κλεῖς</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">καὶ ἃ μέλλει</rdg>
-        <rdg wit="#ognt">καὶ ἃ μέλλει</rdg>
-        <rdg wit="#rsgnt">καὶ ἃ μέλλει</rdg>
+        <rdg wit="#bgt">τοῦ</rdg>
+        <rdg wit="#ognt">τοῦ</rdg>
+        <rdg wit="#rsgnt">τοῦ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">γενε</rdg>
-        <rdg wit="#ognt">γενε</rdg>
-        <rdg wit="#rsgnt">γι</rdg>
+        <rdg wit="#bgt">θανάτου</rdg>
+        <rdg wit="#ognt">θανάτου</rdg>
+        <rdg wit="#rsgnt">θανάτου</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">́</rdg>
-        <rdg wit="#ognt">́</rdg>
-        <rdg wit="#rsgnt">́</rdg>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">σθαι</rdg>
-        <rdg wit="#ognt">σθαι</rdg>
-        <rdg wit="#rsgnt">νεσθαι</rdg>
+        <rdg wit="#bgt">τοῦ</rdg>
+        <rdg wit="#ognt">τοῦ</rdg>
+        <rdg wit="#rsgnt">τοῦ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">μετὰ ταῦτα τὸ μυστήριον τῶν ἑπτὰ ἀστέρων</rdg>
-        <rdg wit="#ognt">μετὰ ταῦτα τὸ μυστήριον τῶν ἑπτὰ ἀστέρων</rdg>
-        <rdg wit="#rsgnt">μετὰ ταῦτα τὸ μυστήριον τῶν ἑπτὰ ἀστέρων</rdg>
+        <rdg wit="#bgt">ᾅδου</rdg>
+        <rdg wit="#ognt">ᾅδου</rdg>
+        <rdg wit="#rsgnt">ᾍδου</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">γράψον</rdg>
+        <rdg wit="#ognt">Γράψον</rdg>
+        <rdg wit="#rsgnt">Γράψον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">οὖν</rdg>
+        <rdg wit="#ognt">οὖν</rdg>
+        <rdg wit="#rsgnt">οὖν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἃ</rdg>
+        <rdg wit="#ognt">ἃ</rdg>
+        <rdg wit="#rsgnt">ἃ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἶδες</rdg>
+        <rdg wit="#ognt">εἶδες</rdg>
+        <rdg wit="#rsgnt">εἶδες</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἃ</rdg>
+        <rdg wit="#ognt">ἃ</rdg>
+        <rdg wit="#rsgnt">ἅ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰσὶν</rdg>
+        <rdg wit="#ognt">εἰσὶν</rdg>
+        <rdg wit="#rsgnt">εἰσιν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἃ</rdg>
+        <rdg wit="#ognt">ἃ</rdg>
+        <rdg wit="#rsgnt">ἃ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μέλλει</rdg>
+        <rdg wit="#ognt">μέλλει</rdg>
+        <rdg wit="#rsgnt">μέλλει</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">γενέσθαι</rdg>
+        <rdg wit="#ognt">γενέσθαι</rdg>
+        <rdg wit="#rsgnt">γίνεσθαι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μετὰ</rdg>
+        <rdg wit="#ognt">μετὰ</rdg>
+        <rdg wit="#rsgnt">μετὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ταῦτα</rdg>
+        <rdg wit="#ognt">ταῦτα</rdg>
+        <rdg wit="#rsgnt">ταῦτα</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὸ</rdg>
+        <rdg wit="#ognt">τὸ</rdg>
+        <rdg wit="#rsgnt">τὸ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μυστήριον</rdg>
+        <rdg wit="#ognt">μυστήριον</rdg>
+        <rdg wit="#rsgnt">μυστήριον</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῶν</rdg>
+        <rdg wit="#ognt">τῶν</rdg>
+        <rdg wit="#rsgnt">τῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτὰ</rdg>
+        <rdg wit="#rsgnt">ἑπτὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀστέρων</rdg>
+        <rdg wit="#ognt">ἀστέρων</rdg>
+        <rdg wit="#rsgnt">ἀστέρων</rdg>
     </app>
     <app>
         <rdg wit="#bgt">οὓς</rdg>
@@ -412,24 +2235,138 @@
         <rdg wit="#rsgnt">ὧν</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">εἶδες ἐπὶ τῆς δεξιᾶς μου καὶ τὰς ἑπτὰ λυχνίας τὰς χρυσᾶς οἱ ἑπτὰ ἀστέρες ἄγγελοι τῶν ἑπτὰ
-            ἐκκλησιῶν εἰ
-        </rdg>
-        <rdg wit="#ognt">εἶδες ἐπὶ τῆς δεξιᾶς μου καὶ τὰς ἑπτὰ λυχνίας τὰς χρυσᾶς οἱ ἑπτὰ ἀστέρες ἄγγελοι τῶν ἑπτὰ
-            ἐκκλησιῶν εἰ
-        </rdg>
-        <rdg wit="#rsgnt">εἶδες ἐπὶ τῆς δεξιᾶς μου καὶ τὰς ἑπτὰ λυχνίας τὰς χρυσᾶς οἱ ἑπτὰ ἀστέρες ἄγγελοι τῶν ἑπτὰ
-            ἐκκλησιῶν εἰ
-        </rdg>
+        <rdg wit="#bgt">εἶδες</rdg>
+        <rdg wit="#ognt">εἶδες</rdg>
+        <rdg wit="#rsgnt">εἶδες</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">σιν</rdg>
-        <rdg wit="#ognt">σίν</rdg>
-        <rdg wit="#rsgnt">σίν</rdg>
+        <rdg wit="#bgt">ἐπὶ</rdg>
+        <rdg wit="#ognt">ἐπὶ</rdg>
+        <rdg wit="#rsgnt">ἐπὶ</rdg>
     </app>
     <app>
-        <rdg wit="#bgt">καὶ αἱ λυχνίαι αἱ ἑπτὰ ἑπτὰ ἐκκλησίαι εἰσίν</rdg>
-        <rdg wit="#ognt">καὶ αἱ λυχνίαι αἱ ἑπτὰ ἑπτὰ ἐκκλησίαι εἰσίν</rdg>
-        <rdg wit="#rsgnt">καὶ αἱ λυχνίαι αἱ ἑπτὰ ἑπτὰ ἐκκλησίαι εἰσίν</rdg>
+        <rdg wit="#bgt">τῆς</rdg>
+        <rdg wit="#ognt">τῆς</rdg>
+        <rdg wit="#rsgnt">τῆς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">δεξιᾶς</rdg>
+        <rdg wit="#ognt">δεξιᾶς</rdg>
+        <rdg wit="#rsgnt">δεξιᾶς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">μου</rdg>
+        <rdg wit="#ognt">μου</rdg>
+        <rdg wit="#rsgnt">μου</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὰς</rdg>
+        <rdg wit="#ognt">τὰς</rdg>
+        <rdg wit="#rsgnt">τὰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτὰ</rdg>
+        <rdg wit="#rsgnt">ἑπτὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λυχνίας</rdg>
+        <rdg wit="#ognt">λυχνίας</rdg>
+        <rdg wit="#rsgnt">λυχνίας</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τὰς</rdg>
+        <rdg wit="#ognt">τὰς</rdg>
+        <rdg wit="#rsgnt">τὰς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">χρυσᾶς</rdg>
+        <rdg wit="#ognt">χρυσᾶς</rdg>
+        <rdg wit="#rsgnt">χρυσᾶς</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">οἱ</rdg>
+        <rdg wit="#ognt">οἱ</rdg>
+        <rdg wit="#rsgnt">Οἱ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτὰ</rdg>
+        <rdg wit="#rsgnt">ἑπτὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἀστέρες</rdg>
+        <rdg wit="#ognt">ἀστέρες</rdg>
+        <rdg wit="#rsgnt">ἀστέρες</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἄγγελοι</rdg>
+        <rdg wit="#ognt">ἄγγελοι</rdg>
+        <rdg wit="#rsgnt">ἄγγελοι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">τῶν</rdg>
+        <rdg wit="#ognt">τῶν</rdg>
+        <rdg wit="#rsgnt">τῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτὰ</rdg>
+        <rdg wit="#rsgnt">ἑπτὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐκκλησιῶν</rdg>
+        <rdg wit="#ognt">ἐκκλησιῶν</rdg>
+        <rdg wit="#rsgnt">ἐκκλησιῶν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰσιν</rdg>
+        <rdg wit="#ognt">εἰσίν</rdg>
+        <rdg wit="#rsgnt">εἰσίν</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">καὶ</rdg>
+        <rdg wit="#ognt">καὶ</rdg>
+        <rdg wit="#rsgnt">καὶ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αἱ</rdg>
+        <rdg wit="#ognt">αἱ</rdg>
+        <rdg wit="#rsgnt">αἱ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">λυχνίαι</rdg>
+        <rdg wit="#ognt">λυχνίαι</rdg>
+        <rdg wit="#rsgnt">λυχνίαι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">αἱ</rdg>
+        <rdg wit="#ognt">αἱ</rdg>
+        <rdg wit="#rsgnt">αἱ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτὰ</rdg>
+        <rdg wit="#rsgnt">ἑπτὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἑπτὰ</rdg>
+        <rdg wit="#ognt">ἑπτὰ</rdg>
+        <rdg wit="#rsgnt">ἑπτὰ</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">ἐκκλησίαι</rdg>
+        <rdg wit="#ognt">ἐκκλησίαι</rdg>
+        <rdg wit="#rsgnt">ἐκκλησίαι</rdg>
+    </app>
+    <app>
+        <rdg wit="#bgt">εἰσίν</rdg>
+        <rdg wit="#ognt">εἰσίν</rdg>
+        <rdg wit="#rsgnt">εἰσίν</rdg>
     </app>
 </root>

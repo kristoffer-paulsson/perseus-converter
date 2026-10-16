@@ -26,6 +26,7 @@ from lxml.etree import XMLSyntaxError
 from numpy.matlib import empty
 
 from greektextify.nlp.contextual import NlpContext
+from biblebuilder.scan.nocrvt import NocrVtScanner
 from . import Command
 from ..app import Config
 from ..recursiveiterator import RecursiveIterator
@@ -184,6 +185,8 @@ class KoineCommand(Command):
             pass
 
     def _rgnt(self):
-        filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
-        for token in RockTraverser(filename).traverse():
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/")
+        #for token in RockTraverser(filename).traverse():
+        #    print(token)
+        for token in NocrVtScanner(filename, self.logger).iter():
             print(token)
