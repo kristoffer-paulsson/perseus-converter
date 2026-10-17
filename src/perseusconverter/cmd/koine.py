@@ -316,11 +316,14 @@ class KoineCommand(Command):
                     chapter_num = chapter.text.split(' ')[1][:-1].strip()
                     if chapter_num.find('_') != -1 and len(chapter_num) > 1:
                         chapter_num = chapter_num.split('_')[0]
-                    if len(chapter_num) > 1:
-                        if isalpha(chapter_num[-1]):
-                            chapter_num = chapter_num[:-1]
+                    if isalpha(chapter_num[-1]) and len(chapter_num) > 1:
+                        chapter_num = chapter_num[:-1]
                 else:
                     chapter_num = '_'
+                # Scan for spans and ceertain id:s in a type of state loop to extract full verses
+                #spans = html.find_all('span')
+                #for span in spans:
+                #    print(span.get('id'))
                 verse = html.find_all('span', attrs={'id': 'h4'})
                 print(filename)
                 if chapter_num == '_':
