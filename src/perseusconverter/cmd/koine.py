@@ -21,7 +21,9 @@
 #
 """Module containing the LOAD command class."""
 import itertools
+import re
 from argparse import Namespace
+from curses.ascii import isblank
 
 from bs4 import BeautifulSoup
 from lxml.etree import XMLSyntaxError
@@ -198,6 +200,8 @@ class KoineCommand(Command):
 
         LOWER_OFFICIAL = [x.lower() for x in OFFICIAL]
 
+        MAP_OFFICIAL = dict(zip(LOWER_OFFICIAL, OFFICIAL))
+
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
 
         #for filename in RecursiveIterator(filename):
@@ -239,7 +243,7 @@ class KoineCommand(Command):
                     if hasattr(header, 'text'):
                         #print(html.find('h2').text)
                         if int(header.text.split(' ')[-1]) != chapter:
-                            print("Header chapter not consistend: {}".format(filename))
+                            print("Header chapter not consistent: {}".format(filename))
                     else:
                         print("No header found: {}".format(filename))
 
@@ -251,12 +255,36 @@ class KoineCommand(Command):
                             c_num, v_num = verse.text.strip().split(':')
                             if int(c_num) != chapter:
                                 print("Verse chapter {}  not consistent: {}".format(chapter, filename))
-                            if not verses_verify.verify_no_exc(int(v_num)):
-                                print("Expected verse {} but got {}: {}".format(last_v_num, v_num, filename))
-                            else:
+                            if verses_verify.verify_no_exc(int(v_num)):
                                 last_v_num = v_num
+                            else:
+                                print("Expected verse {} but got {}: {}".format(last_v_num, v_num, filename))
                         else:
-                            print("No verse {} found: {}".format(verses_verify.show_cur(), filename))
+                            print("No verse {} found: {}".format(last_v_num, filename))
+
+                    #data = html.find('td', attrs={'width': '75%', 'border': '0'})
+                    data = html.find_all('table', attrs={'width': '75%', 'border': '0'})
+                    if len(data) < 3:
+                        print("No verse corpus found (1): {}".format(filename))
+                    else:
+                        if not hasattr(data[2], 'text'):
+                            print("No verse corpus found (2): {}".format(filename))
+                        else:
+                            rows = list()
+                            for row in data[2].text.strip().split('\n'):
+                                row = row.strip()
+                                if row != '':
+                                    rows.append(row)
+                                    first_space_idx = row.find(' ')
+                                    if first_space_idx == -1:
+                                        print("Verse without corpus found {} {}, {}".format(MAP_OFFICIAL[book], row, filename))
+                                    else:
+                                        ref_txt = row[:first_space_idx].strip()
+                                        v_txt = row[first_space_idx:].strip()
+                                        subv_cnt = len(re.findall(r"\[\d+\]", v_txt))
+                                        if subv_cnt > 0:
+                                            print("Verse contains {} sub-verse(s) in {} {}, {}".format(subv_cnt, MAP_OFFICIAL[book], ref_txt, filename))
+
 
         #for key, data in VETUSJG.items():
         #    if data[0]:
@@ -276,11 +304,11 @@ class ListVerify:
         self._index = 0
 
     def verify(self, item):
-        if self.verify_no_exc(item):
+        if not self.verify_no_exc(item):
             raise RuntimeError("Verified item not in lieu: {}".format(item))
 
     def verify_no_exc(self, item) -> bool:
-        result = item != self.show_cur()
+        result = item == self.show_cur()
         self._index += 1
         return result
 

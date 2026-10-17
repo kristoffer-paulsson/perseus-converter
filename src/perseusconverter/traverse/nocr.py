@@ -20,7 +20,6 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Plain text BGT traverser."""
-import re
 from pathlib import PurePath
 from typing import List, Tuple
 
@@ -69,6 +68,9 @@ class NocrTraverser(AbstractTraverser):
             path = nocr_path.joinpath(filename)
             with path.open("r") as xml:
                 text = xml.read()
+                chapter = int(BeautifulSoup(text, "html.parser").find('h2').text.split(' ')[-1])
+                if chapter == self._chapter:
+                    print(chapter, self._chapter, path)
                 text = text.split(
                     '<div align="center"><p><table width="75%" border="0"><tr><td align="left" valign="middle">'
                 )[1].split('</td></tr></table></div>')[0]

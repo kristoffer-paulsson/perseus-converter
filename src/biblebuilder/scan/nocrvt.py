@@ -21,8 +21,6 @@
 #
 from typing import Dict, List
 
-from bs4 import BeautifulSoup
-
 from greektextify.text.word import GreekWord
 from perseusconverter.traverse.nocr import NocrTraverser
 from .scanner import Scanner, WideToken
