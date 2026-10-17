@@ -23,7 +23,7 @@
 import itertools
 import re
 from argparse import Namespace
-from curses.ascii import isblank
+from curses.ascii import isblank, isalpha
 
 from bs4 import BeautifulSoup
 from lxml.etree import XMLSyntaxError
@@ -120,6 +120,14 @@ VETUS = {
     'Bet': (False, 'danth', 1192, 1192)
 }
 
+OFFICIAL_VETUS = [
+    'Gen', 'Exo', 'Lev', 'Num', 'Deu', 'Jsa', 'Jos', 'Jda', 'Jdg', 'Rut', '1Sa', '2Sa', '1Ki', '2Ki', '1Ch',
+    '2Ch', '1Es', 'Ezr', 'Neh', 'Est', 'Jdt', 'Tob', 'Tbs', '1Ma', '2Ma', '3Ma', '4Ma', 'Psa', 'Ode', 'Pro',
+    'Ecc', 'Sol', 'Job', 'Wis', 'Sip', 'Sir', 'Pss', 'Hos', 'Amo', 'Mic', 'Joe', 'Oba', 'Jon', 'Nah', 'Hab',
+    'Zep', 'Hag', 'Zec', 'Mal', 'Isa', 'Jer', 'Bar', 'Lam', 'Epj', 'Eze', 'Sus', 'Sut', 'Dan', 'Dat', 'Bel',
+    'Bet'
+]
+
 
 class KoineCommand(Command):
 
@@ -188,24 +196,13 @@ class KoineCommand(Command):
         else:
             pass
 
-    def _rgnt(self):
+    def _nocr(self):
 
-        OFFICIAL = [
-            'Gen', 'Exo', 'Lev', 'Num', 'Deu', 'Jsa', 'Jos', 'Jda', 'Jdg', 'Rut', '1Sa', '2Sa', '1Ki', '2Ki', '1Ch',
-            '2Ch', '1Es', 'Ezr', 'Neh', 'Est', 'Jdt', 'Tob', 'Tbs', '1Ma', '2Ma', '3Ma', '4Ma', 'Psa', 'Ode', 'Pro',
-            'Ecc', 'Sol', 'Job', 'Wis', 'Sip', 'Sir', 'Pss', 'Hos', 'Amo', 'Mic', 'Joe', 'Oba', 'Jon', 'Nah', 'Hab',
-            'Zep', 'Hag', 'Zec', 'Mal', 'Isa', 'Jer', 'Bar', 'Lam', 'Epj', 'Eze', 'Sus', 'Sut', 'Dan', 'Dat', 'Bel',
-            'Bet'
-        ]
+        LOWER_OFFICIAL = [x.lower() for x in OFFICIAL_VETUS]
 
-        LOWER_OFFICIAL = [x.lower() for x in OFFICIAL]
-
-        MAP_OFFICIAL = dict(zip(LOWER_OFFICIAL, OFFICIAL))
+        MAP_OFFICIAL = dict(zip(LOWER_OFFICIAL, OFFICIAL_VETUS))
 
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-
-        #for filename in RecursiveIterator(filename):
-        #    print(filename.stem)
 
         files = [filename for filename in RecursiveIterator(filename)]
 
@@ -220,7 +217,7 @@ class KoineCommand(Command):
             books_index[book][chapter] = filename
         #    num_order[int(parts[2])] = filename
 
-        abbr_set = set([x.lower() for x in OFFICIAL])
+        abbr_set = set([x.lower() for x in OFFICIAL_VETUS])
 
         if set(books_index.keys()) != abbr_set:
             raise RuntimeError("Book OT abbreviations not valid: {}".format(books_index))
@@ -285,18 +282,77 @@ class KoineCommand(Command):
                                         if subv_cnt > 0:
                                             print("Verse contains {} sub-verse(s) in {} {}, {}".format(subv_cnt, MAP_OFFICIAL[book], ref_txt, filename))
 
+    def _rgnt(self):
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3")
 
-        #for key, data in VETUSJG.items():
-        #    if data[0]:
-        #        for chapter, filename in book_order[data[1]].items():
-        #            for token in self.token_iter(VetusTraverser(filename, key, chapter)):
-        #                yield token
-        #    else:
-        #        chapter_cnt = 0
-        #        for num in range(int(data[2]), int(data[3] + 1)):
-        #            chapter_cnt += 1
-        #            for token in self.token_iter(VetusTraverser(num_order[num], key, chapter_cnt)):
-        #                yield token
+        files = [filename for filename in RecursiveIterator(filename)]
+
+        books_index = dict()
+        num_order = dict()
+        book_verify = CountVerify(len(files))
+        for filename in sorted(files, key=lambda x: int(x.stem.split('-')[2])):
+            parts = filename.stem.split('-')
+            book = parts[0]
+            chapter = int(parts[1])
+            num = int(parts[2])
+            book_verify.verify(num)
+            if book not in books_index:
+                books_index[book] = dict()
+            books_index[book][chapter] = filename
+            num_order[num] = filename
+
+        for idx, filename in sorted(num_order.items(), key=lambda x: x[0]):
+            with open(filename, 'r') as f:
+                # print("Working: {}".format(filename))
+                html = BeautifulSoup(f, 'html.parser')
+                book = html.find('span', attrs={'id': 'h2'})
+                if hasattr(book, 'text'):
+                    book_name = book.text.split(' ')[1]
+                greek = html.find('span', attrs={'id': 'gr22'})
+                if hasattr(greek, 'text'):
+                    greek_name = html.find('span', attrs={'id': 'gr22'}).text
+                chapter = html.find('span', attrs={'id': 'h3'})
+                if hasattr(chapter, 'text'):
+                    chapter_num = chapter.text.split(' ')[1][:-1].strip()
+                    if chapter_num.find('_') != -1 and len(chapter_num) > 1:
+                        chapter_num = chapter_num.split('_')[0]
+                    if len(chapter_num) > 1:
+                        if isalpha(chapter_num[-1]):
+                            chapter_num = chapter_num[:-1]
+                else:
+                    chapter_num = '_'
+                verse = html.find_all('span', attrs={'id': 'h4'})
+                print(filename)
+                if chapter_num == '_':
+                    chapter_cnt = 1
+                else:
+                    chapter_cnt = int(chapter_num)
+                for v in verse:
+                    v2 = v.text.split(' ')[1].strip()
+                    split_index = v2.find('-')
+                    if split_index != -1:
+                        v_from = int(v2[:split_index])
+                        v_to = int(v2[split_index + 1:])
+                        for v3 in range(v_from, v_to+1):
+                            verse_cnt = int(v3)
+                            print(greek_name, book_name, chapter_cnt, verse_cnt)
+                    else:
+                        if isalpha(v2[-1]):
+                            verse_cnt = int(v2[:-1])
+                            subv_cnt = ord(v2[-1]) - 96
+                            print(greek_name, book_name, chapter_cnt, verse_cnt, subv_cnt)
+                        else:
+                            verse_cnt = int(v2)
+                            subv_cnt = 0
+                            print(greek_name, book_name, chapter_cnt, verse_cnt)
+
+                #if hasattr(header, 'text'):
+                #    # print(html.find('h2').text)
+                #    if int(header.text.split(' ')[-1]) != chapter:
+                #        print("Header chapter not consistent: {}".format(filename))
+                #else:
+                #    print("No header found: {}".format(filename))
+
 
 class ListVerify:
     def __init__(self, target: list):
