@@ -301,6 +301,9 @@ class KoineCommand(Command):
             books_index[book][chapter] = filename
             num_order[num] = filename
 
+        previous_book = None
+        chapter_cnt_exp = 0
+        verse_cnt_exp = 0
         for idx, filename in sorted(num_order.items(), key=lambda x: x[0]):
             with open(filename, 'r') as f:
                 # print("Working: {}".format(filename))
@@ -308,6 +311,9 @@ class KoineCommand(Command):
                 book = html.find('span', attrs={'id': 'h2'})
                 if hasattr(book, 'text'):
                     book_name = book.text.split(' ')[1]
+                    if previous_book != book_name:
+                        previous_book = book_name
+                        chapter_cnt_exp = 0
                 greek = html.find('span', attrs={'id': 'gr22'})
                 if hasattr(greek, 'text'):
                     greek_name = html.find('span', attrs={'id': 'gr22'}).text
@@ -325,11 +331,16 @@ class KoineCommand(Command):
                 #for span in spans:
                 #    print(span.get('id'))
                 verse = html.find_all('span', attrs={'id': 'h4'})
-                print(filename)
+                # print(filename)
                 if chapter_num == '_':
                     chapter_cnt = 1
+                    verse_cnt_exp = 0
                 else:
                     chapter_cnt = int(chapter_num)
+                    verse_cnt_exp = 0
+                chapter_cnt_exp += 1
+                if chapter_cnt_exp != chapter_cnt:
+                    print("Chapter {} != {} not consistent: {}".format(chapter_cnt_exp, chapter_cnt, filename))
                 for v in verse:
                     v2 = v.text.split(' ')[1].strip()
                     split_index = v2.find('-')
@@ -338,23 +349,20 @@ class KoineCommand(Command):
                         v_to = int(v2[split_index + 1:])
                         for v3 in range(v_from, v_to+1):
                             verse_cnt = int(v3)
-                            print(greek_name, book_name, chapter_cnt, verse_cnt)
+                            #print(greek_name, book_name, chapter_cnt, verse_cnt)
                     else:
                         if isalpha(v2[-1]):
                             verse_cnt = int(v2[:-1])
                             subv_cnt = ord(v2[-1]) - 96
-                            print(greek_name, book_name, chapter_cnt, verse_cnt, subv_cnt)
+                            #print(greek_name, book_name, chapter_cnt, verse_cnt, subv_cnt)
                         else:
                             verse_cnt = int(v2)
                             subv_cnt = 0
-                            print(greek_name, book_name, chapter_cnt, verse_cnt)
-
-                #if hasattr(header, 'text'):
-                #    # print(html.find('h2').text)
-                #    if int(header.text.split(' ')[-1]) != chapter:
-                #        print("Header chapter not consistent: {}".format(filename))
-                #else:
-                #    print("No header found: {}".format(filename))
+                            #print(greek_name, book_name, chapter_cnt, verse_cnt)
+                    verse_cnt_exp += 1
+                    if verse_cnt_exp != verse_cnt:
+                        # print("Verse {} != {} not consistent: {}".format(verse_cnt_exp, verse_cnt, filename))
+                        pass
 
 
 class ListVerify:
