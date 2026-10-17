@@ -20,15 +20,17 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Module containing the LOAD command class."""
+import itertools
 from argparse import Namespace
 
+from bs4 import BeautifulSoup
 from lxml.etree import XMLSyntaxError
 from numpy.matlib import empty
 
 from greektextify.nlp.contextual import NlpContext
 from biblebuilder.scan.nocrvt import NocrVtScanner
 from . import Command
-from ..app import Config
+from ..app import Config, logging
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import AbstractTeiTraverser
@@ -185,8 +187,108 @@ class KoineCommand(Command):
             pass
 
     def _rgnt(self):
-        filename = self.target.joinpath("bible-analyzer-corpora/corpora/")
-        #for token in RockTraverser(filename).traverse():
-        #    print(token)
-        for token in NocrVtScanner(filename, self.logger).iter():
-            print(token)
+
+        OFFICIAL = [
+            'Gen', 'Exo', 'Lev', 'Num', 'Deu', 'Jsa', 'Jos', 'Jda', 'Jdg', 'Rut', '1Sa', '2Sa', '1Ki', '2Ki', '1Ch',
+            '2Ch', '1Es', 'Ezr', 'Neh', 'Est', 'Jdt', 'Tob', 'Tbs', '1Ma', '2Ma', '3Ma', '4Ma', 'Psa', 'Ode', 'Pro',
+            'Ecc', 'Sol', 'Job', 'Wis', 'Sip', 'Sir', 'Pss', 'Hos', 'Amo', 'Mic', 'Joe', 'Oba', 'Jon', 'Nah', 'Hab',
+            'Zep', 'Hag', 'Zec', 'Mal', 'Isa', 'Jer', 'Bar', 'Lam', 'Epj', 'Eze', 'Sus', 'Sut', 'Dan', 'Dat', 'Bel',
+            'Bet'
+        ]
+
+        LOWER_OFFICIAL = [x.lower() for x in OFFICIAL]
+
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
+
+        #for filename in RecursiveIterator(filename):
+        #    print(filename.stem)
+
+        files = [filename for filename in RecursiveIterator(filename)]
+
+        books_index = dict()
+        #num_order = dict()
+        for filename in sorted(files, key=lambda x: x.stem):
+            parts = filename.stem.split('.')
+            book = parts[0]
+            chapter = int(parts[1])
+            if book not in books_index:
+                books_index[book] = dict()
+            books_index[book][chapter] = filename
+        #    num_order[int(parts[2])] = filename
+
+        abbr_set = set([x.lower() for x in OFFICIAL])
+
+        if set(books_index.keys()) != abbr_set:
+            raise RuntimeError("Book OT abbreviations not valid: {}".format(books_index))
+
+        for book, chapters in books_index.items():
+            chapter_index = set(chapters.keys())
+            chapter_set = set(range(1, len(chapters) + 1))
+
+            if chapter_index != chapter_set:
+                raise RuntimeError("Chapter OT index not valid: {}".format(chapter_set))
+
+        for book, chapters in sorted(books_index.items(), key=lambda x: LOWER_OFFICIAL.index(x[0])):
+            chapter_verify = CountVerify(len(chapters))
+            for chapter, filename in sorted(chapters.items()):
+                chapter_verify.verify(chapter)
+                with open(filename, 'r') as f:
+                    # print("Working: {}".format(filename))
+                    html = BeautifulSoup(f, 'html.parser')
+                    header = html.find('h2')
+                    if hasattr(header, 'text'):
+                        #print(html.find('h2').text)
+                        if int(header.text.split(' ')[-1]) != chapter:
+                            print("Header chapter not consistend: {}".format(filename))
+                    else:
+                        print("No header found: {}".format(filename))
+
+                    verses = html.find_all('sup')
+                    verses_verify = CountVerify(len(verses))
+                    last_v_num = -1
+                    for verse in verses:
+                        if hasattr(verse, 'text'):
+                            c_num, v_num = verse.text.strip().split(':')
+                            if int(c_num) != chapter:
+                                print("Verse chapter {}  not consistent: {}".format(chapter, filename))
+                            if not verses_verify.verify_no_exc(int(v_num)):
+                                print("Expected verse {} but got {}: {}".format(last_v_num, v_num, filename))
+                            else:
+                                last_v_num = v_num
+                        else:
+                            print("No verse {} found: {}".format(verses_verify.show_cur(), filename))
+
+        #for key, data in VETUSJG.items():
+        #    if data[0]:
+        #        for chapter, filename in book_order[data[1]].items():
+        #            for token in self.token_iter(VetusTraverser(filename, key, chapter)):
+        #                yield token
+        #    else:
+        #        chapter_cnt = 0
+        #        for num in range(int(data[2]), int(data[3] + 1)):
+        #            chapter_cnt += 1
+        #            for token in self.token_iter(VetusTraverser(num_order[num], key, chapter_cnt)):
+        #                yield token
+
+class ListVerify:
+    def __init__(self, target: list):
+        self._target = target
+        self._index = 0
+
+    def verify(self, item):
+        if self.verify_no_exc(item):
+            raise RuntimeError("Verified item not in lieu: {}".format(item))
+
+    def verify_no_exc(self, item) -> bool:
+        result = item != self.show_cur()
+        self._index += 1
+        return result
+
+    def show_cur(self):
+        return self._target[self._index]
+
+
+class CountVerify(ListVerify):
+    def __init__(self, length: int,):
+        super().__init__(list(range(1, length + 1)))
+

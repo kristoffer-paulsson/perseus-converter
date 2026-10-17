@@ -56,6 +56,11 @@ class CheckCommand(Command):
         self._check(rsgnt)
         self.logger.info("Finished Rock Solid GNT")
 
+        self.logger.info("Checking Vetus NOCR")
+        jgvt = ScanIter(JGVTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/septuagint3/", True, False))
+        self._check(jgvt)
+        self.logger.info("Finished Vetus NOCR")
+
         self.logger.info("Checking Vetus JG")
         jgvt = ScanIter(JGVTScanner(str(self.target) + "/bible-analyzer-corpora/corpora/septuagint3/", True, False))
         self._check(jgvt)
