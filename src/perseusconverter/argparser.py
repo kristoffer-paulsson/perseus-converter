@@ -49,4 +49,4 @@ class CLI:
 
     def _koine(self, subparser):
         koine = subparser.add_parser(name="koine", help="Imports the corpora and caches them as \"parsings.\"")
-        koine.add_argument('corpora', choices=['pdl', 'bib', 'lex', 'rock'])
+        koine.add_argument('corpora', choices=['pdl', 'bib', 'lex', 'nocr', 'sept3', 'catss'])

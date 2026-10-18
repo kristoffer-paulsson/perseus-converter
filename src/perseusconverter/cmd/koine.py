@@ -23,11 +23,10 @@
 import itertools
 import re
 from argparse import Namespace
-from curses.ascii import isblank, isalpha
+from curses.ascii import isalpha
 
 from bs4 import BeautifulSoup
 from lxml.etree import XMLSyntaxError
-from numpy.matlib import empty
 
 from greektextify.nlp.contextual import NlpContext
 from biblebuilder.scan.nocrvt import NocrVtScanner
@@ -191,10 +190,97 @@ class KoineCommand(Command):
             self._pdl()
         elif self._args.corpora == 'lex':
             self._lex_lsj()
-        elif self._args.corpora == 'rock':
-            self._rgnt()
+        elif self._args.corpora == 'nocr':
+            self._nocr()
+        elif self._args.corpora == 'sept3':
+            self._sept3()
+        elif self._args.corpora == 'catss':
+            self._catss()
         else:
             pass
+
+    def _catss(self):
+
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
+
+        files = [filename for filename in RecursiveIterator(filename)]
+
+        books_index = dict()
+        num_order = dict()
+        for filename in sorted(files, key=lambda x: x.stem):
+            parts = filename.stem.split('.')
+            num = parts[0]
+            # book = parts[1]
+            #if book not in books_index:
+            #    books_index[book] = dict()
+            #books_index[book][chapter] = filename
+            num_order[int(num)] = filename
+
+            cur_book = ''
+            cur_chapter = 0
+            cur_verse = 0
+
+            for idx, filename in sorted(num_order.items(), key=lambda x: x[0]):
+                with open(filename, 'r') as f:
+                    after_empty = False
+                    before_verse = True
+                    refs = list()
+                    # print(filename)
+                    for lines in f.read().split('\n\n'):
+                        lines = lines.strip()
+                        line = lines.split('\n')[0].strip()
+
+                        if line == '':  # Unnatural empty row
+                            continue
+                        elif ' ' not in line:  # Unnatural row without ref part
+                            # We assume this only happens before the coming 1st verse of next chapter
+                            # Hopefully this only happens as a chapter prologue
+                            cur_verse = 0
+                            cur_chapter += 1
+                            book = line
+                            if book != cur_book:
+                                cur_chapter = 1
+                                cur_book = book
+                            print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
+                            continue
+
+                        if line.startswith('Sir Prolog'):  # Correcting sirach prolog refs
+                            book, chapter_verse = line.split(':')
+                        else:  # Normal Book chapter:verse
+                            book, chapter_verse = line.split(' ')
+                        if book != cur_book:  # Reset chapter and verse
+                            cur_verse = 1
+                            cur_chapter = 1
+                            cur_book = book
+                        if ':' in chapter_verse:  # Normal chapter:verse ref
+                            chapter, verse = chapter_verse.split(':')
+                            cur_chapter = int(chapter)
+                        else:  # For books with one implicit chapter
+                            verse = chapter_verse
+                            cur_chapter = 1
+                        if '/' in verse:
+                            cur_verse = int(verse.split('/')[0])
+                            print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
+                        elif '-' in verse:
+                            cur_verse = int(verse.split('-')[0])
+                            print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
+                        elif len(verse) > 0 and isalpha(chapter_verse[-1]):
+                            cur_verse = int(verse[:-1])
+                            sub_verse = ord(verse[-1]) - 96
+                            print("({}), {} {}:{}({})".format(line, cur_book, cur_chapter, cur_verse, sub_verse))
+                        else:
+                            cur_verse = int(verse)
+                            # print("{} {}:{}".format(cur_book, cur_chapter, cur_verse))
+                        #refs.append(line)
+
+                        # print(line)
+                        #if line == '':
+                        #    before_verse = True
+                        #if before_verse:
+                        #    before_verse = False
+                        #else:
+                        #    pass
+                    #print(refs)
 
     def _nocr(self):
 
@@ -282,7 +368,7 @@ class KoineCommand(Command):
                                         if subv_cnt > 0:
                                             print("Verse contains {} sub-verse(s) in {} {}, {}".format(subv_cnt, MAP_OFFICIAL[book], ref_txt, filename))
 
-    def _rgnt(self):
+    def _sept3(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3")
 
         files = [filename for filename in RecursiveIterator(filename)]
@@ -301,14 +387,91 @@ class KoineCommand(Command):
             books_index[book][chapter] = filename
             num_order[num] = filename
 
-        previous_book = None
-        chapter_cnt_exp = 0
-        verse_cnt_exp = 0
+        jos_a = {1: 15, 2: 18, 3: 19}
+
+        chapter_cnt = Counter()
+        sub_chapter_cnt = Counter()
+        verse_cnt = Counter()
+        subverse_cnt = Counter()
         for idx, filename in sorted(num_order.items(), key=lambda x: x[0]):
             with open(filename, 'r') as f:
                 # print("Working: {}".format(filename))
                 html = BeautifulSoup(f, 'html.parser')
-                book = html.find('span', attrs={'id': 'h2'})
+
+                spans = html.find_all('span')
+                for span in spans:
+                    span_id = span.get('id')
+                    if span_id == 'h2':
+                        b_part = span.text.split(' ')
+                        book_abbr = b_part[1].strip()
+                        print(book_abbr)
+                        if book_abbr == 'Sir.':
+                            chapter_cnt.reset(-1)
+                        else:
+                            chapter_cnt.reset()
+                        if book_abbr in ('Od.', '-') and verse_num in (1,): # 9a
+                            verse_cnt.reset(-1)
+                        else:
+                            verse_cnt.reset()
+                    elif span_id == 'h3':
+                        c_part = span.text.split(' ')
+                        chapter = c_part[1].strip()
+                        if chapter.find('_') != -1 and len(chapter) > 1:
+                            chapter = chapter.split('_')[0].strip()
+                        if chapter == '_':
+                            chapter_num = 1
+                        elif len(chapter) > 0 and isalpha(chapter[-1]): # Od 9 specific
+                            if sub_chapter_cnt.current() == 0:
+                                chapter_cnt.increment()
+                            sub_chapter_cnt.increment()
+                            chapter_num = int(chapter[:-1])
+                        else:
+                            if sub_chapter_cnt.current() != 0:
+                                sub_chapter_cnt.reset()
+                            chapter_num = int(chapter)
+                        if sub_chapter_cnt.current() == 0:
+                            if book_abbr in ('Jos._A', '-'):
+                                if jos_a[chapter_cnt.increment()] != chapter_num:
+                                    print("Chapter {} not consistent with {}: {}".format(chapter, chapter_cnt.current(), filename, idx))
+                            elif chapter_cnt.increment() != chapter_num:
+                                print("Chapter {} not consistent with {}: {}".format(chapter, chapter_cnt.current(), filename, idx))
+                        else:
+                            if chapter_cnt.current() != chapter_num:
+                                print("Chapter {} not consistent with {}: {}".format(chapter, chapter_cnt.current(), filename, idx))
+                        if book_abbr in ('Od.', '-') and verse_num in (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14): # 9a
+                            verse_cnt.reset(-1)
+                        else:
+                            verse_cnt.reset()
+                        # print(chapter_num)
+                    elif span_id == 'h4':
+                        v_parts = span.text.split(' ')
+                        verse = v_parts[1].strip()
+                        if '/' in verse:
+                            verse = verse.split('/')[0]
+                            subverse_cnt.reset()
+                        elif '-' in verse:
+                            verse = verse.split('-')[0]
+                            subverse_cnt.reset()
+                        if len(verse) > 0 and isalpha(verse[-1]):
+                            verse_num = int(verse[:-1])
+                            sub_verse = ord(verse[-1]) - 96
+                            while subverse_cnt.increment() < sub_verse:
+                                print("Sub-verse {}:{}({}) is missing: {}".format(chapter_num, verse_num, subverse_cnt.current(), filename))
+                            print("{} {}:{}({})".format(book_abbr, chapter_num, verse_num, sub_verse))
+                        else:
+                            verse_num = int(verse)
+                            subverse_cnt.reset()
+                            while verse_cnt.increment() < verse_num:
+                                print("Verse {}:{} is missing: {}".format(chapter_num, verse_cnt.current(), filename))
+
+                        #print(span.text)
+                    elif span_id == 'gr16':
+                        pass
+                        # print(span.text)
+                    else:
+                        pass
+
+                """book = html.find('span', attrs={'id': 'h2'})
                 if hasattr(book, 'text'):
                     book_name = book.text.split(' ')[1]
                     if previous_book != book_name:
@@ -362,7 +525,7 @@ class KoineCommand(Command):
                     verse_cnt_exp += 1
                     if verse_cnt_exp != verse_cnt:
                         # print("Verse {} != {} not consistent: {}".format(verse_cnt_exp, verse_cnt, filename))
-                        pass
+                        pass"""
 
 
 class ListVerify:
@@ -387,3 +550,19 @@ class CountVerify(ListVerify):
     def __init__(self, length: int,):
         super().__init__(list(range(1, length + 1)))
 
+
+class Counter:
+    def __init__(self, start: int = 0):
+        self._start = start
+        self._count = self._start
+
+    def increment(self) -> int:
+        self._count += 1
+        return self._count
+
+    def current(self) -> int:
+        return self._count
+
+    def reset(self, start: int = 0) -> None:
+        self._start = start
+        self._count = start
