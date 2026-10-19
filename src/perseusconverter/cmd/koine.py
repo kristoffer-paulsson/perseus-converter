@@ -23,7 +23,7 @@
 import itertools
 import re
 from argparse import Namespace
-from curses.ascii import isalpha
+from curses.ascii import isalpha, isdigit
 
 from bs4 import BeautifulSoup
 from lxml.etree import XMLSyntaxError
@@ -172,7 +172,7 @@ class KoineCommand(Command):
         for number in range(1, 27+1):
             filename = self.target.joinpath("lexica/CTS_XML_TEI/perseus/pdllex/grc/lsj/grc.lsj.perseus-eng{}.xml".format(number))
             if not filename.is_file():
-                raise RuntimeError("Dictionaru file missing: {}".format(str(filename)))
+                raise RuntimeError("Dictionary file missing: {}".format(str(filename)))
             try:
                 with NlpContext(LsjTraverser.open(filename), self.logger) as xml:
                     xml.traverse()
@@ -190,6 +190,8 @@ class KoineCommand(Command):
             self._pdl()
         elif self._args.corpora == 'lex':
             self._lex_lsj()
+        elif self._args.corpora == 'sinai':
+            self._sinai()
         elif self._args.corpora == 'nocr':
             self._nocr()
         elif self._args.corpora == 'sept3':
@@ -198,6 +200,93 @@ class KoineCommand(Command):
             self._catss()
         else:
             pass
+
+    def _sinai(self):
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/FINAL_TRANSCRIPTION_version104.xml")
+
+        books = dict()
+        marked = set()
+
+        with open(filename, 'r') as f:
+            xml = BeautifulSoup(f, 'xml')
+
+            chapter_num = 0
+            verse_num = 0
+            sub_verse = ''
+            last_word = ''
+            chapter_changed = True
+            for book in xml.find_all('div', attrs={'type': 'book'}):
+                # for chapter in book.find_all('div', attrs={'type': 'chapter'}):
+                book_title = book.get('title')
+                if book_title == 'Fragments':
+                    continue
+                books[book_title] = dict()
+                print('\n\n', book_title)
+                for chapter in book.find_all('div', attrs={'type': 'chapter'}):
+                    chapter_cnt = chapter.get('n')
+                    chapter_changed = True
+                    for ab in chapter.find_all('ab'):
+                        verse_cnt = ab.get('n')
+                        if chapter_changed:
+                            print('\n{' + chapter_cnt + ':' + verse_cnt + '}', end=' ')
+                            chapter_changed = False
+                        else:
+                            print('{' + verse_cnt + '}', end=' ')
+
+                        for child in ab.find_all('w'):
+                            if child.find_parent('app') is not None:
+                                if child.find_parent('rdg', attrs={'type': 'main-corr'}) is not None:
+                                    continue
+                            note = child.find('note')
+                            if note:
+                                note.decompose()
+                            nomina = child.find('hi', attrs={'rend': 'ol2'})
+                            text = child.text.strip()
+                            if nomina:
+                                marked.add(text.replace('\n', ''))
+                            word = text.replace('\n', ' ')
+                            if word == '':
+                                continue
+                            print(word, end=' ')
+
+                for verse in book.find_all('lb', attrs={'vnumber': True}):
+                    chapter_verse = verse.get('vnumber').strip()
+
+                    if chapter_verse.find('/'):
+                        chapter_verse = chapter_verse.split('/')[0].strip()
+
+                    if chapter_verse.find(':') != -1:
+                        r_parts = chapter_verse.split(':')
+                        chapter_num = int(r_parts[0].strip())
+                        if r_parts[1].find('-') != -1:
+                            verse_num = int(r_parts[1].split('-')[0])
+                        elif len(r_parts[1]) > 1 and not isdigit(r_parts[1][-1]):
+                            sub_verse = ord(r_parts[1][-1]) - 96
+                            verse_num = int(r_parts[1][:-1])
+                        else:
+                            verse_num = int(r_parts[1].strip())
+                    else:
+                        if chapter_verse.find('-') != -1:
+                            verse_num = int(chapter_verse.split('-')[0])
+                        elif len(chapter_verse) > 1 and not isdigit(chapter_verse[-1]):
+                            sub_verse = ord(chapter_verse[-1]) - 96
+                            verse_num = int(chapter_verse[:-1])
+                        else:
+                            verse_num = int(chapter_verse.strip())
+
+                    if books[book_title].get(chapter_num) is None:
+                        books[book_title][chapter_num] = dict()
+                    if books[book_title][chapter_num].get(verse_num) is None:
+                        books[book_title][chapter_num][verse_num] = list()
+                    if sub_verse != 0:
+                        books[book_title][chapter_num][verse_num].append(sub_verse)
+                        sub_verse = 0
+
+                    #print(book_title, "{}:{}".format(chapter_num, verse_num))
+        print(books)
+        for marking in sorted(marked, key=lambda x: len(x)):
+            print(marking, end='" - "')
+
 
     def _catss(self):
 
@@ -337,7 +426,7 @@ class KoineCommand(Command):
                         if hasattr(verse, 'text'):
                             c_num, v_num = verse.text.strip().split(':')
                             if int(c_num) != chapter:
-                                print("Verse chapter {}  not consistent: {}".format(chapter, filename))
+                                print("Verse chapter {} not consistent: {}".format(chapter, filename))
                             if verses_verify.verify_no_exc(int(v_num)):
                                 last_v_num = v_num
                             else:
