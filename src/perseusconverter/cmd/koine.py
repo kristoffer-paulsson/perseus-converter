@@ -234,8 +234,11 @@ class KoineCommand(Command):
                             print('{' + verse_cnt + '}', end=' ')
 
                         for child in ab.find_all('w'):
-                            if child.find_parent('app') is not None:
-                                if child.find_parent('rdg', attrs={'type': 'main-corr'}) is not None:
+                            app = child.find_parent('app')
+                            if app is not None:
+                                rdgs = app.find_all('rdg', attrs={'type': 'corr'})
+                                rdg = child.find_parent('rdg')
+                                if rdgs[-1] is not rdg:
                                     continue
                             note = child.find('note')
                             if note:
