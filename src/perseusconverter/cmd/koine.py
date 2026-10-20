@@ -30,13 +30,16 @@ from lxml.etree import XMLSyntaxError
 
 from greektextify.nlp.contextual import NlpContext
 from biblebuilder.scan.nocrvt import NocrVtScanner
+from greektextify.text.word import GreekWord
 from . import Command
 from ..app import Config, logging
+from ..iter.bgmiter import IterBGM, BRef
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import AbstractTeiTraverser
 from ..traverse.lsjlex import LsjTraverser
 from ..traverse.rgnt import RockTraverser
+from ..util.collector import Counter, Collector
 
 BETACODE = (
     'tlg2003.tlg008.perseus-grc1.xml',
@@ -127,6 +130,29 @@ OFFICIAL_VETUS = [
     'Bet'
 ]
 
+BOOK_NAME = [
+            'Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua (A)', 'Joshua', 'Judges (A)', 'Judges',
+            'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', '1 Esdras', 'Ezra',
+            'Nehemiah', 'Esther', 'Judith', 'Tobit', 'Tobit (S)', '1 Maccabees', '2 Maccabees', '3 Maccabees',
+            '4 Maccabees', 'Psalm', 'Odes', 'Proverbs', 'Ecclesiastes', 'Song of Solomon', 'Job', 'Wisdom',
+            'Sirach Prolog', 'Sirach', 'Psalms of Solomon', 'Hosea', 'Amos', 'Micah', 'Joel', 'Obadiah', 'Jonah',
+            'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi', 'Isaiah', 'Jeremiah', 'Baruch',
+            'Lamentations', 'Epistle of Jeremiah', 'Ezekiel', 'Susanna', 'Susanna (TH)', 'Daniel', 'Daniel (TH)', 'Bel',
+            'Bel (TH)', 'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
+            'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians', '1 Timothy',
+            '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1 Peter', '2 Peter', '1 John', '2 John', '3 John',
+            'Jude', 'Revelation'
+        ]
+
+BOOK_ABBR = [
+            'Gen', 'Exo', 'Lev', 'Num', 'Deu', 'Jsa', 'Jos', 'Jda', 'Jdg', 'Rut', '1Sa', '2Sa', '1Ki', '2Ki', '1Ch',
+            '2Ch', '1Es', 'Ezr', 'Neh', 'Est', 'Jdt', 'Tob', 'Tbs', '1Ma', '2Ma', '3Ma', '4Ma', 'Psa', 'Ode', 'Pro',
+            'Ecc', 'Sol', 'Job', 'Wis', 'Sip', 'Sir', 'Pss', 'Hos', 'Amo', 'Mic', 'Joe', 'Oba', 'Jon', 'Nah', 'Hab',
+            'Zep', 'Hag', 'Zec', 'Mal', 'Isa', 'Jer', 'Bar', 'Lam', 'Epj', 'Eze', 'Sus', 'Sut', 'Dan', 'Dat', 'Bel',
+            'Bet', 'Mat', 'Mar', 'Luk', 'Joh', 'Act', 'Rom', '1Co', '2Co', 'Gal', 'Eph', 'Phi', 'Col', '1Th', '2Th',
+            '1Ti', '2Ti', 'Tit', 'Phm', 'Heb', 'Jam', '1Pe', '2Pe', '1Jo', '2Jo', '3Jo', 'Jud', 'Rev'
+        ]
+
 
 class KoineCommand(Command):
 
@@ -189,7 +215,7 @@ class KoineCommand(Command):
         elif self._args.corpora == 'pdl':
             self._pdl()
         elif self._args.corpora == 'lex':
-            self._lex_lsj()
+            self._bgm()
         elif self._args.corpora == 'sinai':
             self._sinai()
         elif self._args.corpora == 'nocr':
@@ -234,12 +260,14 @@ class KoineCommand(Command):
                             print('{' + verse_cnt + '}', end=' ')
 
                         for child in ab.find_all('w'):
+                            # choosing last correction of an apparatus to avoid doubles
                             app = child.find_parent('app')
                             if app is not None:
                                 rdgs = app.find_all('rdg', attrs={'type': 'corr'})
                                 rdg = child.find_parent('rdg')
                                 if rdgs[-1] is not rdg:
                                     continue
+
                             note = child.find('note')
                             if note:
                                 note.decompose()
@@ -290,6 +318,42 @@ class KoineCommand(Command):
         for marking in sorted(marked, key=lambda x: len(x)):
             print(marking, end='" - "')
 
+    def _bgm(self):
+        dictionary = dict()
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
+        with filename.open('r') as f:
+            viter = IterBGM(f)
+            collect = Collector(viter)
+            collect.collect()
+            collect.analyze()
+
+            exit()
+            for line in f:
+                line = line.strip()
+                fst = line.find(' ')+1
+                idx = line.find(':')
+                idy = line.find(' ', idx)
+                idv = line.rfind(' ', fst, idx)
+                book_abbr = BOOK_ABBR[BOOK_NAME.index(line[fst:idv])]
+                chapter_num, verse_num = line[idv:idy].split(':')
+                ref = "{} {}:{}".format(book_abbr, chapter_num.strip(), verse_num.strip())
+                # print('\n', ref, end=' ')
+                sub_verse = -1
+                sref = ref
+                for t in line[idy:].strip().split(' '):
+                    svs = t.find('[')
+                    if svs != -1:
+                        sve = t.find(']')
+                        sub_verse = int(t[(svs+1):(sve)])
+                        sref = "{}({})".format(ref, sub_verse)
+                    else:
+                        tag = t.split('@')[0]
+                        if tag not in dictionary:
+                            dictionary[tag] = list()
+                        dictionary[tag].append(sref)
+
+        for key in sorted(dictionary, key=lambda x: x):
+            print(key, len(dictionary[key]))
 
     def _catss(self):
 
@@ -643,18 +707,20 @@ class CountVerify(ListVerify):
         super().__init__(list(range(1, length + 1)))
 
 
-class Counter:
-    def __init__(self, start: int = 0):
-        self._start = start
-        self._count = self._start
+def format_bible_diff(ref1: BRef, ref2: BRef) -> str:
+    # 1. Sortera så vi alltid har start (a) och slut (b)
+    a, b = min(ref1, ref2), max(ref1, ref2)
 
-    def increment(self) -> int:
-        self._count += 1
-        return self._count
+    if a == b:
+        return str(a)
 
-    def current(self) -> int:
-        return self._count
+    # 2. Skapa strängar för verserna inklusive eventuella sub-verser
+    a_v = f"{a.verse}({a.sub})" if a.sub > 0 else f"{a.verse}"
+    b_v = f"{b.verse}({b.sub})" if b.sub > 0 else f"{b.verse}"
 
-    def reset(self, start: int = 0) -> None:
-        self._start = start
-        self._count = start
+    # 3. Om kapitlen är olika -> Format: Bok Kap1:Vers1-Kap2:Vers2
+    if a.chapter != b.chapter:
+        return f"{a.book} {a.chapter}:{a_v}-{b.chapter}:{b_v}"
+
+    # 4. Om samma kapitel -> Format: Bok Kap:Vers1-Vers2
+    return f"{a.book} {a.chapter}:{a_v}-{b_v}"
