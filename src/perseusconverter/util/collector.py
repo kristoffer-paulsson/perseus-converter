@@ -44,9 +44,10 @@ class Collector:
                     while bref.chapter - chapter_cnt.current() > 1:
                         chapter_cnt.increment()
                         self._add_missing(BRef(bref.book, chapter_cnt.current(), -1, -1))
-                    self._bible[bref.book][bref.chapter] = list()
-                    verse_cnt.reset()
                     chapter_cnt.increment()
+                    if chapter_cnt.current() != bref.chapter:
+                        raise RuntimeError("Chapter mismatch {} / {}".format(chapter_cnt.current(), bref.chapter))
+                    verse_cnt.reset()
                 if verse_cnt.current() < bref.verse and bref.sub == -1:
                     while bref.verse - verse_cnt.current() > 1:
                         verse_cnt.increment()

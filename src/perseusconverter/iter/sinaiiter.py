@@ -21,11 +21,8 @@
 #
 """Module containing the LOAD command class."""
 from curses.ascii import isdigit
-from io import TextIOWrapper
-import regex
 from bs4 import BeautifulSoup
 
-from perseusconverter.util.books import BOOK_ABBR, BOOK_NAME
 from perseusconverter.util.utils import BRef
 
 
@@ -35,24 +32,32 @@ class IterSinai:
         self._xml = xml
 
     def __iter__(self):
-        return self.iter_sub()
+        return self.iter_verse()
 
     def iter_verse(self):
-        for line in self._line():
-            cont, fst, idx, idy, idv, book_abbr, chapter_num, verse_num, text = self._extract(line)
-            if cont:
+        for book in self._xml.find_all('div', attrs={'type': 'book'}):
+            # for chapter in book.find_all('div', attrs={'type': 'chapter'}):
+            book_title = book.get('title')
+            if book_title == 'Fragments':
                 continue
-            yield BRef(book_abbr, int(chapter_num.strip()), int(verse_num.strip()), -1)
+            for chapter in book.find_all('div', attrs={'type': 'chapter'}):
+                chapter_cnt = chapter.get('n')
+                for ab in chapter.find_all('ab'):
+                    verse_cnt = ab.get('n')
+                    if len(verse_cnt) > 1 and not isdigit(verse_cnt[-1]):
+                        verse_num = int(verse_cnt[:-1])
+                        sub_verse = int(ord(verse_cnt[-1])) - 96
+                    else:
+                        verse_num = int(verse_cnt)
+                        sub_verse = -1
+                    yield BRef(book_title, int(chapter_cnt), verse_num, sub_verse)
 
     def iter_sub(self):
         books = dict()
-        marked = set()
 
         chapter_num = 0
         verse_num = 0
         sub_verse = -1
-        last_word = ''
-        chapter_changed = True
         for book in self._xml.find_all('div', attrs={'type': 'book'}):
             book_title = book.get('title')
             if book_title == 'Fragments':
@@ -84,8 +89,6 @@ class IterSinai:
                     else:
                         verse_num = int(chapter_verse.strip())
 
-                #print(book_title, chapter_num, verse_num, sub_verse)
-
                 if sub_verse != -1:
                     ref = BRef(book_title, chapter_num, verse_num, sub_verse)
                     sub_verse = -1
@@ -95,21 +98,4 @@ class IterSinai:
 
 
     def iter(self):
-        for line in self._line():
-            cont, fst, idx, idy, idv, book_abbr, chapter_num, verse_num, text = self._extract(line)
-            if cont:
-                continue
-            bref = BRef(book_abbr, int(chapter_num.strip()), int(verse_num.strip()), -1)
-            yield bref
-
-            for t in text.split(' '):
-                svs = t.find('[')
-                if svs != -1:
-                    sve = t.find(']')
-                    sub_verse = int(t[(svs + 1):(sve)])
-                    yield BRef(bref.book, bref.chapter, bref.verse, sub_verse)
-                else:
-                    tag = t.split('@')[0]
-                    yield tag
-
-
+        pass
