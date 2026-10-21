@@ -20,24 +20,7 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Module containing the LOAD command class."""
-from perseusconverter.iter.bgmiter import BRef
-
-
-class Counter:
-    def __init__(self, start: int = 0):
-        self._start = start
-        self._count = self._start
-
-    def increment(self) -> int:
-        self._count += 1
-        return self._count
-
-    def current(self) -> int:
-        return self._count
-
-    def reset(self, start: int = 0) -> None:
-        self._start = start
-        self._count = start
+from perseusconverter.util.utils import Counter, BRef
 
 
 class Collector:
@@ -58,6 +41,9 @@ class Collector:
                     self._bible[bref.book] = dict()
                     chapter_cnt.reset()
                 if chapter_cnt.current() < bref.chapter:
+                    while bref.chapter - chapter_cnt.current() > 1:
+                        chapter_cnt.increment()
+                        self._add_missing(BRef(bref.book, chapter_cnt.current(), -1, -1))
                     self._bible[bref.book][bref.chapter] = list()
                     verse_cnt.reset()
                     chapter_cnt.increment()
@@ -65,6 +51,8 @@ class Collector:
                     while bref.verse - verse_cnt.current() > 1:
                         verse_cnt.increment()
                         self._add_missing(BRef(bref.book, bref.chapter, verse_cnt.current(), -1))
+                    if bref.chapter not in self._bible[bref.book]:
+                        self._bible[bref.book][bref.chapter] = list()
                     self._bible[bref.book][bref.chapter].append(bref.verse)
                     verse_cnt.increment()
                 if bref.sub != -1:

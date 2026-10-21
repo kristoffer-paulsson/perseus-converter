@@ -21,24 +21,10 @@
 #
 """Module containing the LOAD command class."""
 from io import TextIOWrapper
-from typing import NamedTuple
-
 import regex
 
 from perseusconverter.util.books import BOOK_ABBR, BOOK_NAME
-
-
-class BRef(NamedTuple):
-    book: str
-    chapter: int
-    verse: int
-    sub: int
-
-    def __str__(self) -> str:
-        if self.sub > 0:
-            return "{} {}:{}({})".format(self.book, self.chapter, self.verse, self.sub)
-        else:
-            return "{} {}:{}".format(self.book, self.chapter, self.verse)
+from perseusconverter.util.utils import BRef
 
 
 class IterBGM:
