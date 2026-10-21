@@ -20,6 +20,8 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Module containing the LOAD command class."""
+from typing import Dict, Set, Tuple
+
 from perseusconverter.util.utils import Counter, BRef
 
 
@@ -78,61 +80,73 @@ class Collector:
         print(self._sub_verses)
         print(self._missing)
 
-    def diff(self, other=None):
-        # 1. Befintlig logik för att hitta högsta versen per kapitel i self
-        bible_max = self._bible.copy()
-        for book in bible_max.keys():
-            for chapter in bible_max[book].keys():
-                if bible_max[book][chapter]:
-                    bible_max[book][chapter] = max(bible_max[book][chapter])
+    def _normalize(self) -> Dict[str, Dict[int, Set[int]]]:
+        """book → chapter → set of verses.
+        Accepts both the original list-of-verses form and the
+        post-analyze integer-max form.
+        """
+        norm: Dict[str, Dict[int, Set[int]]] = {}
+        for book, chapters in self._bible.items():
+            norm[book] = {}
+            for ch, verses in chapters.items():
+                if isinstance(verses, (list, set, tuple)):
+                    norm[book][ch] = set(verses)
+                elif isinstance(verses, int):
+                    # already reduced to max-verse
+                    norm[book][ch] = {verses} if verses > 0 else set()
+                else:
+                    raise TypeError(
+                        f"Unexpected type for {book} {ch}: {type(verses)}"
+                    )
+        return norm
 
-        print("--- Analys av Self ---")
-        print("Högsta verser per kapitel:", bible_max)
-        print("Sub-verser:", self._sub_verses)
-        print("Saknade verser:", self._missing)
 
-        # 2. Om en annan Collector skickas med -> Utför subtraktion (self - other)
-        if other is not None and isinstance(other, Collector):
-            print("\n--- Differens (Self minus Other) ---")
 
-            # A. Diffa vanliga verser i _bible
-            bible_diff = dict()
-            for book, chapters in self._bible.items():
-                for chapter, verses in chapters.items():
-                    # Hämta verser som finns i self men inte i other
-                    other_verses = other._bible.get(book, {}).get(chapter, [])
-                    diff_verses = [v for v in verses if v not in other_verses]
+    def intersect(self, other: "Collector") -> Dict[str, Dict[int, Set[int]]]:
+        """
+        Return the intersection: books → chapters → verses that exist in both.
+        """
+        a = self._normalize()
+        b = other._normalize()
+        result: Dict[str, Dict[int, Set[int]]] = {}
 
-                    if diff_verses:
-                        if book not in bible_diff:
-                            bible_diff[book] = dict()
-                        bible_diff[book][chapter] = diff_verses
-            print("Verser unika för Self:", bible_diff)
+        for book in a.keys() & b.keys():
+            result[book] = {}
+            for ch in a[book].keys() & b[book].keys():
+                common_verses = a[book][ch] & b[book][ch]
+                if common_verses:
+                    result[book][ch] = common_verses
+            if not result[book]:
+                del result[book]
 
-            # B. Diffa sub-verser (konverterar till set för snabb och ren mängdlära)
-            self_subs = set(self._sub_verses)
-            other_subs = set(other._sub_verses)
-            sub_diff = sorted(list(self_subs - other_subs))
-            print("Sub-verser unika för Self:", sub_diff)
+        return result
 
-            # C. Diffa saknade verser i _missing
-            missing_diff = dict()
-            for book, chapters in self._missing.items():
-                for chapter, verses in chapters.items():
-                    other_missing_verses = other._missing.get(book, {}).get(chapter, [])
-                    diff_missing = [v for v in verses if v not in other_missing_verses]
+    def difference(self, other: "Collector") -> Dict[str, Dict[int, Set[int]]]:
+        """
+        Self − other: books → chapters → verses that exist in self but not in other.
+        Same return shape as intersect().
+        """
+        a = self._normalize()
+        b = other._normalize()
+        result: Dict[str, Dict[int, Set[int]]] = {}
 
-                    if diff_missing:
-                        if book not in missing_diff:
-                            missing_diff[book] = dict()
-                        missing_diff[book][chapter] = diff_missing
-            print("Saknade verser unika för Self (ej markerade som saknade i Other):", missing_diff)
+        # books only in self
+        for book in a.keys() - b.keys():
+            result[book] = {ch: set(verses) for ch, verses in a[book].items()}
 
-            # Returnera resultatet som en dictionary om det behövs i koden
-            return {
-                "bible_diff": bible_diff,
-                "sub_diff": sub_diff,
-                "missing_diff": missing_diff
-            }
+        # common books
+        for book in a.keys() & b.keys():
+            result[book] = {}
+            # chapters only in self
+            for ch in a[book].keys() - b[book].keys():
+                result[book][ch] = set(a[book][ch])
+            # common chapters → verse difference
+            for ch in a[book].keys() & b[book].keys():
+                diff_verses = a[book][ch] - b[book][ch]
+                if diff_verses:
+                    result[book][ch] = diff_verses
+            if not result[book]:
+                del result[book]
 
+        return result
 

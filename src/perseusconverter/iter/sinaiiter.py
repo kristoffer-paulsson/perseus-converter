@@ -23,28 +23,14 @@
 from curses.ascii import isdigit
 from bs4 import BeautifulSoup
 
+from perseusconverter.util.books import BOOK_ABBR
 from perseusconverter.util.utils import BRef
 
 
-_BOOK_NAME = (
-            'Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',  'Joshua (A)', 'Joshua', 'Judges (A)', 'Judges',
-            'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', '1 Esdras', 'Ezra',
-            'Nehemiah', 'Esther', 'Judith', 'Tobit', 'Tobit (S)', '1 Maccabees', '2 Maccabees', '3 Maccabees',
-            '4 Maccabees', 'Psalm', 'Odes', 'Proverbs', 'Ecclesiastes', 'Song of Solomon', 'Job', 'Wisdom',
-            'Sirach Prolog', 'Sirach', 'Psalms of Solomon', 'Hosea', 'Amos', 'Micah', 'Joel', 'Obadiah', 'Jonah',
-            'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi', 'Isaiah', 'Jeremiah', 'Baruch',
-            'Lamentations', 'Epistle of Jeremiah', 'Ezekiel', 'Susanna', 'Susanna (TH)', 'Daniel', 'Daniel (TH)', 'Bel',
-            'Bel (TH)', 'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
-            'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians', '1 Timothy',
-            '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1 Peter', '2 Peter', '1 John', '2 John', '3 John',
-            'Jude', 'Revelation'
-)
-
-
-SINAI_BOOK_NAMES = (
+_SINAI_BOOK_NAMES = [
     'Γένεϲιϲ', 'Exodus', 'Λευϊτικόν', 'Ἀριθμοί', 'Δευτερονόμιον', 'Joshua', 'Ἰηϲοῦϲ', 'Κρίται', 'Judges',
-    'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', 'Παραλειπομένων Α', '2 Chronicles', '1 Esdras', {'Ἔϲδραϲ β': ['Ezra',
-    'Nehemiah']}, 'Ἐϲθήρ', 'Ἰουδίθ', 'Tobit', 'Τωβείθ', 'Μακκαβαίων Α', '2 Maccabees', '3 Maccabees',
+    'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', 'Παραλειπομένων Α', '2 Chronicles', '1 Esdras', 'Ἔϲδραϲ β', # ['Ezra',
+    'Nehemiah', 'Ἐϲθήρ', 'Ἰουδίθ', 'Tobit', 'Τωβείθ', 'Μακκαβαίων Α', '2 Maccabees', '3 Maccabees',
     'Μακκαβαίων Δ', 'Ψαλμοί', 'Odes', 'Παροιμίαι', 'Ἐκκληϲιαϲτήϲ', 'Ἄϲμα', 'Ἰώβ', 'Σοφία Σαλoμῶντοϲ',
     'Sirach Prolog', 'Σοφία Σειράχ', 'Psalms of Solomon', 'Hosea', 'Amos', 'Micah', 'Ἰωήλ', 'Ὀβδιού', 'Ἰωνᾶϲ',
     'Ναούμ','Ἀμβακούμ', 'Σοφονίασ', 'Ἀγγαῖοϲ', 'Ζαχαρίαϲ', 'Μαλαχίαϲ', 'Ἠϲαΐαϲ','Ιερεμίαϲ', 'Baruch',
@@ -53,7 +39,22 @@ SINAI_BOOK_NAMES = (
     'Πρὸϲ Γαλατάϲ','Πρὸϲ Εφεϲίουϲ', 'Πρὸϲ Φιλιππηϲίουϲ', 'Πρὸϲ Κολοϲϲαεῖϲ',"Πρὸϲ Θεϲϲαλονικεῖϲ Α'", "Πρὸϲ Θεϲϲαλονικεῖϲ Β'", "Πρὸϲ Τιμόθεον Α'",
     "Πρὸϲ Τιμόθεον Β'", 'Πρὸϲ Τίτον', 'Πρὸϲ Φιλήμονα', 'Πρὸϲ Ἑβραίουϲ','Ἰακώβου', 'Πέτρου α´', 'Πέτρου β´',  'Ἰωάννου α', 'Ἰωάννου β',  'Ἰωάννου γ',
     'Ἰούδα', 'Ἀποκάλυψιϲ Ἰωάννου',  'βαρναβα επιϲτολη', 'Ὁ Ποιμήν του Ἑρμά'
-)
+]
+
+
+SINAI_BOOK_NAMES = [
+    'Γένεϲιϲ', 'Exodus', 'Λευϊτικόν', 'Ἀριθμοί', 'Δευτερονόμιον', 'Joshua', 'Ἰηϲοῦϲ', 'Κρίται', 'Judges',
+    'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', 'Παραλειπομένων Α', '2 Chronicles', '1 Esdras', 'Ἔϲδραϲ β', # ['Ezra',
+    'Nehemiah', 'Ἐϲθήρ', 'Ἰουδίθ', 'Tobit', 'Τωβείθ', 'Μακκαβαίων Α', '2 Maccabees', '3 Maccabees',
+    'Μακκαβαίων Δ', 'Ψαλμοί', 'Odes', 'Παροιμίαι', 'Ἐκκληϲιαϲτήϲ', 'Ἄϲμα', 'Ἰώβ', 'Σοφία Σαλoμῶντοϲ',
+    'Sirach Prolog', 'Σοφία Σειράχ', 'Psalms of Solomon', 'Hosea', 'Amos', 'Micah', 'Ἰωήλ', 'Ὀβδιού', 'Ἰωνᾶϲ',
+    'Ναούμ','Ἀμβακούμ', 'Σοφονίασ', 'Ἀγγαῖοϲ', 'Ζαχαρίαϲ', 'Μαλαχίαϲ', 'Ἠϲαΐαϲ','Ιερεμίαϲ', 'Baruch',
+    'Θρῆνοι Ἰερεμίου', 'Epistle of Jeremiah', 'Ezekiel', 'Susanna', 'Susanna (TH)', 'Daniel', 'Daniel (TH)', 'Bel',
+    'Bel (TH)', 'Κατὰ Μαθθαῖον', 'Κατὰ Μάρκον', 'Κατὰ Λουκᾶν','Κατὰ Ἰωάννην', 'Πράξειϲ Ἀποϲτόλων','Προϲ Ρωμαίουϲ', 'Προϲ Κορινθίουϲ Α', 'Προϲ Κορινθίουϲ Β',
+    'Πρὸϲ Γαλατάϲ','Πρὸϲ Εφεϲίουϲ', 'Πρὸϲ Φιλιππηϲίουϲ', 'Πρὸϲ Κολοϲϲαεῖϲ',"Πρὸϲ Θεϲϲαλονικεῖϲ Α'", "Πρὸϲ Θεϲϲαλονικεῖϲ Β'", "Πρὸϲ Τιμόθεον Α'",
+    "Πρὸϲ Τιμόθεον Β'", 'Πρὸϲ Τίτον', 'Πρὸϲ Φιλήμονα', 'Πρὸϲ Ἑβραίουϲ','Ἰακώβου', 'Πέτρου α', 'Πέτρου β',  'Ἰωάννου α', 'Ἰωάννου β',  'Ἰωάννου γ',
+    'Ἰούδα', 'Ἀποκάλυψιϲ Ἰωάννου',  'βαρναβα επιϲτολη', 'Ὁ Ποιμήν του Ἑρμά'
+]
 
 class IterSinai:
 
@@ -61,7 +62,7 @@ class IterSinai:
         self._xml = xml
 
     def __iter__(self):
-        return self.iter_verse()
+        return self.iter_verse_alt()
 
     def iter_verse(self):
         for book in self._xml.find_all('div', attrs={'type': 'book'}):
@@ -70,7 +71,7 @@ class IterSinai:
             if book_title == 'Fragments':
                 continue
             for chapter in book.find_all('div', attrs={'type': 'chapter'}):
-                chapter_cnt = chapter.get('n')
+                chapter_cnt = int(chapter.get('n'))
                 for ab in chapter.find_all('ab'):
                     verse_cnt = ab.get('n')
                     if len(verse_cnt) > 1 and not isdigit(verse_cnt[-1]):
@@ -79,7 +80,31 @@ class IterSinai:
                     else:
                         verse_num = int(verse_cnt)
                         sub_verse = -1
-                    yield BRef(book_title, int(chapter_cnt), verse_num, sub_verse)
+                    yield BRef(book_title, chapter_cnt, verse_num, sub_verse)
+
+    def iter_verse_alt(self):
+        for book in self._xml.find_all('div', attrs={'type': 'book'}):
+            book_title = book.get('title')
+            if book_title == 'Fragments':
+                continue
+            if int(ord(book_title[-1])) == 8189: # Peter epistles workaround
+                book_title = book_title[:-1]
+            abbr_idx = SINAI_BOOK_NAMES.index(book_title)  # Abbreviating
+            book_abbr = BOOK_ABBR[abbr_idx] if abbr_idx < len(BOOK_ABBR) else book_title
+            for chapter in book.find_all('div', attrs={'type': 'chapter'}):
+                chapter_cnt = int(chapter.get('n'))
+                if book_abbr == 'Ezr' and chapter_cnt > 10: # Fixing Ezra and Nehemiah split
+                    book_abbr = BOOK_ABBR[abbr_idx+1]
+                    chapter_cnt = chapter_cnt - 10
+                for ab in chapter.find_all('ab'):
+                    verse_cnt = ab.get('n')
+                    if len(verse_cnt) > 1 and not isdigit(verse_cnt[-1]):
+                        verse_num = int(verse_cnt[:-1])
+                        sub_verse = int(ord(verse_cnt[-1])) - 96
+                    else:
+                        verse_num = int(verse_cnt)
+                        sub_verse = -1
+                    yield BRef(book_abbr, chapter_cnt, verse_num, sub_verse)
 
     def iter_sub(self):
         books = dict()
