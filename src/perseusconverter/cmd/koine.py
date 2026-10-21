@@ -34,6 +34,7 @@ from greektextify.text.word import GreekWord
 from . import Command
 from ..app import Config, logging
 from ..iter.bgmiter import IterBGM, BRef
+from ..iter.sinaiiter import IterSinai
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import AbstractTeiTraverser
@@ -230,12 +231,16 @@ class KoineCommand(Command):
     def _sinai(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/FINAL_TRANSCRIPTION_version104.xml")
 
-        books = dict()
-        marked = set()
+        #books = dict()
+        #marked = set()
 
         with open(filename, 'r') as f:
-            xml = BeautifulSoup(f, 'xml')
+            siter = IterSinai(BeautifulSoup(f, 'xml'))
+            collect = Collector(siter)
+            collect.collect()
+            collect.analyze()
 
+            exit()
             chapter_num = 0
             verse_num = 0
             sub_verse = ''

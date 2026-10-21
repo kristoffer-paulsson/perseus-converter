@@ -100,28 +100,7 @@ class Collector:
                     )
         return norm
 
-
-
-    def intersect(self, other: "Collector") -> Dict[str, Dict[int, Set[int]]]:
-        """
-        Return the intersection: books → chapters → verses that exist in both.
-        """
-        a = self._normalize()
-        b = other._normalize()
-        result: Dict[str, Dict[int, Set[int]]] = {}
-
-        for book in a.keys() & b.keys():
-            result[book] = {}
-            for ch in a[book].keys() & b[book].keys():
-                common_verses = a[book][ch] & b[book][ch]
-                if common_verses:
-                    result[book][ch] = common_verses
-            if not result[book]:
-                del result[book]
-
-        return result
-
-    def difference(self, other: "Collector") -> Dict[str, Dict[int, Set[int]]]:
+    def difference(self, other: "Collector") -> Tuple[Dict[str, Dict[int, Set[int]]], Set[str]]:
         """
         Self − other: books → chapters → verses that exist in self but not in other.
         Same return shape as intersect().
@@ -148,5 +127,4 @@ class Collector:
             if not result[book]:
                 del result[book]
 
-        return result
-
+        return result, set(self._sub_verses) - set(other._sub_verses)
