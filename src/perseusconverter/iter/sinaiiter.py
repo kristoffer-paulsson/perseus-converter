@@ -26,6 +26,35 @@ from bs4 import BeautifulSoup
 from perseusconverter.util.utils import BRef
 
 
+_BOOK_NAME = (
+            'Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',  'Joshua (A)', 'Joshua', 'Judges (A)', 'Judges',
+            'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', '1 Esdras', 'Ezra',
+            'Nehemiah', 'Esther', 'Judith', 'Tobit', 'Tobit (S)', '1 Maccabees', '2 Maccabees', '3 Maccabees',
+            '4 Maccabees', 'Psalm', 'Odes', 'Proverbs', 'Ecclesiastes', 'Song of Solomon', 'Job', 'Wisdom',
+            'Sirach Prolog', 'Sirach', 'Psalms of Solomon', 'Hosea', 'Amos', 'Micah', 'Joel', 'Obadiah', 'Jonah',
+            'Nahum', 'Habakkuk', 'Zephaniah', 'Haggai', 'Zechariah', 'Malachi', 'Isaiah', 'Jeremiah', 'Baruch',
+            'Lamentations', 'Epistle of Jeremiah', 'Ezekiel', 'Susanna', 'Susanna (TH)', 'Daniel', 'Daniel (TH)', 'Bel',
+            'Bel (TH)', 'Matthew', 'Mark', 'Luke', 'John', 'Acts', 'Romans', '1 Corinthians', '2 Corinthians',
+            'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians', '1 Timothy',
+            '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1 Peter', '2 Peter', '1 John', '2 John', '3 John',
+            'Jude', 'Revelation'
+)
+
+
+SINAI_BOOK_NAMES = (
+    'Γένεϲιϲ', 'Exodus', 'Λευϊτικόν', 'Ἀριθμοί', 'Δευτερονόμιον', 'Joshua', 'Ἰηϲοῦϲ', 'Κρίται', 'Judges',
+    'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings', 'Παραλειπομένων Α', '2 Chronicles', '1 Esdras', {'Ἔϲδραϲ β': ['Ezra',
+    'Nehemiah']}, 'Ἐϲθήρ', 'Ἰουδίθ', 'Tobit', 'Τωβείθ', 'Μακκαβαίων Α', '2 Maccabees', '3 Maccabees',
+    'Μακκαβαίων Δ', 'Ψαλμοί', 'Odes', 'Παροιμίαι', 'Ἐκκληϲιαϲτήϲ', 'Ἄϲμα', 'Ἰώβ', 'Σοφία Σαλoμῶντοϲ',
+    'Sirach Prolog', 'Σοφία Σειράχ', 'Psalms of Solomon', 'Hosea', 'Amos', 'Micah', 'Ἰωήλ', 'Ὀβδιού', 'Ἰωνᾶϲ',
+    'Ναούμ','Ἀμβακούμ', 'Σοφονίασ', 'Ἀγγαῖοϲ', 'Ζαχαρίαϲ', 'Μαλαχίαϲ', 'Ἠϲαΐαϲ','Ιερεμίαϲ', 'Baruch',
+    'Θρῆνοι Ἰερεμίου', 'Epistle of Jeremiah', 'Ezekiel', 'Susanna', 'Susanna (TH)', 'Daniel', 'Daniel (TH)', 'Bel',
+    'Bel (TH)', 'Κατὰ Μαθθαῖον', 'Κατὰ Μάρκον', 'Κατὰ Λουκᾶν','Κατὰ Ἰωάννην', 'Πράξειϲ Ἀποϲτόλων','Προϲ Ρωμαίουϲ', 'Προϲ Κορινθίουϲ Α', 'Προϲ Κορινθίουϲ Β',
+    'Πρὸϲ Γαλατάϲ','Πρὸϲ Εφεϲίουϲ', 'Πρὸϲ Φιλιππηϲίουϲ', 'Πρὸϲ Κολοϲϲαεῖϲ',"Πρὸϲ Θεϲϲαλονικεῖϲ Α'", "Πρὸϲ Θεϲϲαλονικεῖϲ Β'", "Πρὸϲ Τιμόθεον Α'",
+    "Πρὸϲ Τιμόθεον Β'", 'Πρὸϲ Τίτον', 'Πρὸϲ Φιλήμονα', 'Πρὸϲ Ἑβραίουϲ','Ἰακώβου', 'Πέτρου α´', 'Πέτρου β´',  'Ἰωάννου α', 'Ἰωάννου β',  'Ἰωάννου γ',
+    'Ἰούδα', 'Ἀποκάλυψιϲ Ἰωάννου',  'βαρναβα επιϲτολη', 'Ὁ Ποιμήν του Ἑρμά'
+)
+
 class IterSinai:
 
     def __init__(self, xml: BeautifulSoup):

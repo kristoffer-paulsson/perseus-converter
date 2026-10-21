@@ -72,6 +72,8 @@ class Collector:
         for book in bible.keys():
             for chapter in bible[book].keys():
                 bible[book][chapter] = max(bible[book][chapter])
+
+        print(list(bible.keys()))
         print(self._bible)
         print(self._sub_verses)
         print(self._missing)
