@@ -81,6 +81,10 @@ class GreekWord(TokenImmaterializableMixin):
     def apostrophe(self) -> bool:
         return self._word[-1] == GreekMidway.APOSTROPHE
 
+    @property
+    def lunate(self) -> bool:
+        return GreekAlphabet.UPPER_LUNATE in self._word or GreekAlphabet.LOWER_LUNATE in self._word
+
     @classmethod
     def immaterialize(cls, text: str) -> Tuple[str, ...]:
         token = list()

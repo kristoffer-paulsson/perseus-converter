@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+# Copyright (c) 2026 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
@@ -21,6 +21,8 @@
 #
 """Module containing the LOAD command class."""
 from curses.ascii import isdigit
+from typing import Tuple
+
 from bs4 import BeautifulSoup
 
 from perseusconverter.util.books import BOOK_ABBR
@@ -64,35 +66,51 @@ class IterSinai:
     def __iter__(self):
         return self.iter_verse_alt()
 
-    def iter_verse(self):
+    @classmethod
+    def _abbreviate(cls, name: str) -> Tuple[str, int]:
+        if int(ord(name[-1])) == 8189:  # Peter epistles workaround
+            name = name[:-1]
+        idx = SINAI_BOOK_NAMES.index(name)  # Abbreviating
+        abbr = BOOK_ABBR[idx] if idx < len(BOOK_ABBR) else name
+        return abbr, idx
+
+    def _book_element_iter(self):
         for book in self._xml.find_all('div', attrs={'type': 'book'}):
             # for chapter in book.find_all('div', attrs={'type': 'chapter'}):
             book_title = book.get('title')
             if book_title == 'Fragments':
                 continue
-            for chapter in book.find_all('div', attrs={'type': 'chapter'}):
-                chapter_cnt = int(chapter.get('n'))
-                for ab in chapter.find_all('ab'):
-                    verse_cnt = ab.get('n')
-                    if len(verse_cnt) > 1 and not isdigit(verse_cnt[-1]):
-                        verse_num = int(verse_cnt[:-1])
-                        sub_verse = int(ord(verse_cnt[-1])) - 96
-                    else:
-                        verse_num = int(verse_cnt)
-                        sub_verse = -1
-                    yield BRef(book_title, chapter_cnt, verse_num, sub_verse)
+            yield book, book_title
+
+    @classmethod
+    def _chapter_element_iter(cls, b_element):
+        for chapter in b_element.find_all('div', attrs={'type': 'chapter'}):
+            chapter_cnt = int(chapter.get('n'))
+            yield chapter, chapter_cnt
+
+    @classmethod
+    def _verse_element_iter(cls, c_element):
+        for ab in c_element.find_all('ab'):
+            verse_cnt = ab.get('n')
+            if len(verse_cnt) > 1 and not isdigit(verse_cnt[-1]):
+                verse_num = int(verse_cnt[:-1])
+                sub_verse = int(ord(verse_cnt[-1])) - 96
+            else:
+                verse_num = int(verse_cnt)
+                sub_verse = -1
+            yield ab, verse_num, sub_verse
+
+    def iter_verse(self):
+        for book, book_title in self._book_element_iter():
+            book_abbr, abbr_idx = self._abbreviate(book_title)
+            for chapter, chapter_cnt in self._chapter_element_iter(book):
+                for _, verse_cnt, sub_verse in self._verse_element_iter(chapter):
+                    yield BRef(book_abbr, chapter_cnt, verse_cnt, sub_verse)
 
     def iter_verse_alt(self):
-        for book in self._xml.find_all('div', attrs={'type': 'book'}):
-            book_title = book.get('title')
-            if book_title == 'Fragments':
-                continue
-            if int(ord(book_title[-1])) == 8189: # Peter epistles workaround
-                book_title = book_title[:-1]
-            abbr_idx = SINAI_BOOK_NAMES.index(book_title)  # Abbreviating
-            book_abbr = BOOK_ABBR[abbr_idx] if abbr_idx < len(BOOK_ABBR) else book_title
-            for chapter in book.find_all('div', attrs={'type': 'chapter'}):
-                chapter_cnt = int(chapter.get('n'))
+        for book, book_title in self._book_element_iter():
+            book_abbr, abbr_idx = self._abbreviate(book_title)
+            for chapter, chapter_cnt in self._chapter_element_iter(book):
                 if book_abbr == 'Ezr' and chapter_cnt > 10: # Fixing Ezra and Nehemiah split
                     book_abbr = BOOK_ABBR[abbr_idx+1]
                     chapter_cnt = chapter_cnt - 10
@@ -104,6 +122,8 @@ class IterSinai:
                     else:
                         verse_num = int(verse_cnt)
                         sub_verse = -1
+                    if sub_verse != -1:
+                        continue
                     yield BRef(book_abbr, chapter_cnt, verse_num, sub_verse)
 
     def iter_sub(self):

@@ -20,6 +20,7 @@
 #     Kristoffer Paulsson - initial implementation
 #
 """Module containing the LOAD command class."""
+import collections
 import itertools
 import re
 from argparse import Namespace
@@ -328,9 +329,16 @@ class KoineCommand(Command):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
         with filename.open('r') as f:
             viter = IterBGM(f)
-            collect = Collector(viter)
-            collect.collect()
-            collect.analyze()
+            for token in viter.iter():
+                if isinstance(token, str):
+                    if token not in dictionary:
+                        dictionary[token] = 1
+                    else:
+                        dictionary[token] += 1
+
+            ordered = collections.OrderedDict(sorted(dictionary.items()))
+            print(ordered)
+            print(len(ordered))
 
             exit()
             for line in f:

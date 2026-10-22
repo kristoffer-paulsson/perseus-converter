@@ -196,6 +196,13 @@ class GreekDatabase:
     UPPER_MU = (GreekAlphabet.UPPER_MU,
                 GreekGlyph(ch=GreekAlphabet.UPPER_MU, psili=False, dasia=False, ypogegrammeni=False, varia=False,
                            oxia=False, perispomeni=False, dialytika=False, vrachy=False, macron=False))
+
+    LOWER_LUNATE = (GreekAlphabet.LOWER_LUNATE, GreekGlyph(ch=GreekAlphabet.LOWER_LUNATE, psili=False, dasia=False, ypogegrammeni=False, varia=False,
+                              oxia=False, perispomeni=False, dialytika=False, vrachy=False, macron=False))
+
+    UPPER_LUNATE = (GreekAlphabet.UPPER_LUNATE, GreekGlyph(ch=GreekAlphabet.UPPER_LUNATE, psili=False, dasia=False, ypogegrammeni=False, varia=False,
+                              oxia=False, perispomeni=False, dialytika=False, vrachy=False, macron=False))
+
     SMALL_ALPHA_PSILI = (GreekExtended.SMALL_ALPHA_PSILI,
                          GreekGlyph(ch=GreekAlphabet.LOWER_ALPHA, psili=True, dasia=False, ypogegrammeni=False,
                                     varia=False, oxia=False, perispomeni=False, dialytika=False, vrachy=False,
@@ -1162,7 +1169,7 @@ class GreekDatabase:
         UPPER_ZETA, UPPER_LAMDA, UPPER_TAU, LOWER_FINAL_SIGMA, UPPER_ALPHA, LOWER_OMICRON, LOWER_TAU, LOWER_BETA,
         UPPER_RHO, UPPER_OMEGA, LOWER_KAPPA, LOWER_UPSILON, UPPER_PHI, LOWER_NU, DIGAMMA, UPPER_BETA, LOWER_OMEGA,
         UPPER_KAPPA, UPPER_THETA, UPPER_XI, UPPER_IOTA, UPPER_PSI, LOWER_MU, LOWER_DIGAMMA, LOWER_RHO, LOWER_THETA,
-        UPPER_UPSILON, UPPER_MU, SMALL_ALPHA_PSILI, SMALL_ALPHA_DASIA, SMALL_ALPHA_PSILI_VARIA,
+        UPPER_UPSILON, UPPER_MU, LOWER_LUNATE, UPPER_LUNATE, SMALL_ALPHA_PSILI, SMALL_ALPHA_DASIA, SMALL_ALPHA_PSILI_VARIA,
         SMALL_ALPHA_DASIA_VARIA, SMALL_ALPHA_PSILI_OXIA, SMALL_ALPHA_DASIA_OXIA, SMALL_ALPHA_PSILI_PERISPOMENI,
         SMALL_ALPHA_DASIA_PERISPOMENI, CAPITAL_ALPHA_PSILI, CAPITAL_ALPHA_DASIA, CAPITAL_ALPHA_PSILI_VARIA,
         CAPITAL_ALPHA_DASIA_VARIA, CAPITAL_ALPHA_PSILI_OXIA, CAPITAL_ALPHA_DASIA_OXIA,
@@ -1239,3 +1246,7 @@ class GreekDatabase:
                                macron=False))
 
     LEGAL = frozenset(dict(ALL_UTF_LETTERS).values())
+
+    @staticmethod
+    def isvalid(glyph: GreekGlyph) -> bool:
+        return glyph in GreekDatabase.LEGAL
