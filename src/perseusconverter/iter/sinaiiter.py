@@ -25,6 +25,10 @@ from typing import Tuple
 
 from bs4 import BeautifulSoup
 
+from greektextify.nlp.debug import Debugger
+from greektextify.text.modify import WordModifier
+from greektextify.text.prnt import PrintGreek
+from greektextify.text.word import GreekWord
 from perseusconverter.util.books import BOOK_ABBR
 from perseusconverter.util.utils import BRef
 
@@ -70,8 +74,8 @@ class IterSinai:
     def _abbreviate(cls, name: str) -> Tuple[str, int]:
         if int(ord(name[-1])) == 8189:  # Peter epistles workaround
             name = name[:-1]
-        idx = SINAI_BOOK_NAMES.index(name)  # Abbreviating
-        abbr = BOOK_ABBR[idx] if idx < len(BOOK_ABBR) else name
+        idx = SINAI_BOOK_NAMES.index(name) if name in SINAI_BOOK_NAMES else -1  # Abbreviating
+        abbr = BOOK_ABBR[idx] if idx < len(BOOK_ABBR) and idx != -1 else name
         return abbr, idx
 
     def _book_element_iter(self):
@@ -172,4 +176,27 @@ class IterSinai:
 
 
     def iter(self):
-        pass
+        for book, book_title in self._book_element_iter():
+            for chapter, chapter_cnt in self._chapter_element_iter(book):
+                for verse, verse_cnt, sub_verse in self._verse_element_iter(chapter):
+                    yield BRef(book_title, chapter_cnt, verse_cnt, sub_verse)
+                    for child in verse.find_all('w'):
+                        # choosing last correction of an apparatus to avoid doubles
+                        app = child.find_parent('app')
+                        if app is not None:
+                            rdgs = app.find_all('rdg', attrs={'type': 'corr'})
+                            rdg = child.find_parent('rdg')
+                            if rdgs[-1] is not rdg:
+                                continue
+
+                        note = child.find('note')
+                        if note:
+                            note.decompose()
+                        nomina = child.find('hi', attrs={'rend': 'ol2'})
+                        text = child.text.strip()
+                        # if nomina:
+                        #    marked.add(text.replace('\n', ''))
+                        word = text.replace('\n', ' ')
+                        if word == '':
+                            continue
+                        # print(word, end=' ')
