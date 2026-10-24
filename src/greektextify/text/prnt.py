@@ -39,4 +39,4 @@ class PrintGreek:
 
     @classmethod
     def format(cls, word: Tuple[GreekGlyph]) -> str:
-        return ''.join([cls.DICT[l] for l in word])
+        return ''.join([chr(cls.DICT[l]) for l in word])

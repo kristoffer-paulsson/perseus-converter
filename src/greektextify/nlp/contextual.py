@@ -42,8 +42,8 @@ class ContextObject(metaclass=ABCMeta):
     def err(self) -> List:
         return self.__err
 
-    #@abstractmethod
-    def location(self) -> Tuple:
+    @abstractmethod
+    def location(self) -> Tuple[str, ...]:
         return NotImplemented
 
 

@@ -34,8 +34,8 @@ class PdlBetaStandard(TokenStandardizerMixin):
     EM_DASH = '\u2014'
 
     PDL_TRANSFORM = {
-        ord(GreekPunctuation.QUESTION_MARK): ord(BetaPunctuation.QUESTION_MARK),
-        ord(GreekPunctuation.EM_DASH): ord(BetaPunctuation.EM_DASH),
+        GreekPunctuation.QUESTION_MARK: ord(BetaPunctuation.QUESTION_MARK),
+        GreekPunctuation.EM_DASH: ord(BetaPunctuation.EM_DASH),
     }
 
     @classmethod

@@ -28,13 +28,13 @@ from greektextify.text.immaterializer import TokenImmaterializableMixin
 class GreekQuotation(TokenImmaterializableMixin):
     """Greek quotation parser."""
 
-    QUOTATION_MARK = '\u0022'
-    LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = '\u00AB'
-    RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = '\u00BB'
-    LEFT_SINGLE_QUOTATION_MARK = '\u2018'
-    RIGHT_SINGLE_QUOTATION_MARK = '\u2019'
-    LEFT_DOUBLE_QUOTATION_MARK = '\u201C'
-    RIGHT_DOUBLE_QUOTATION_MARK = '\u201D'
+    QUOTATION_MARK = ord('\u0022')
+    LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = ord('\u00AB')
+    RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK = ord('\u00BB')
+    LEFT_SINGLE_QUOTATION_MARK = ord('\u2018')
+    RIGHT_SINGLE_QUOTATION_MARK = ord('\u2019')
+    LEFT_DOUBLE_QUOTATION_MARK = ord('\u201C')
+    RIGHT_DOUBLE_QUOTATION_MARK = ord('\u201D')
 
     QUOTE_MARKS = frozenset([
         QUOTATION_MARK, LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK, RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK,
@@ -48,5 +48,5 @@ class GreekQuotation(TokenImmaterializableMixin):
     @classmethod
     def immaterialize(cls, text: str) -> Tuple[str, ...]:
         if len(text) > 0:
-            return tuple(text[0]) if text[0] in cls.QUOTE_MARKS else tuple()
+            return tuple(text[0]) if ord(text[0]) in cls.QUOTE_MARKS else tuple()
         return tuple()

@@ -28,10 +28,10 @@ from greektextify.text.immaterializer import TokenImmaterializableMixin
 class GreekHeard(TokenImmaterializableMixin):
     """Bracketing parser."""
 
-    BREVE = '\u02D8'
-    GREEK_LUNATE_SIGMA_SYMBOL = '\u03F2'
-    GREEK_SMALL_LETTER_DIGAMMA = '\u03DD'
-    GREEK_SMALL_LETTER_STIGMA = '\u03DB'
+    BREVE = ord('\u02D8')
+    GREEK_LUNATE_SIGMA_SYMBOL = ord('\u03F2')
+    GREEK_SMALL_LETTER_DIGAMMA = ord('\u03DD')
+    GREEK_SMALL_LETTER_STIGMA = ord('\u03DB')
 
     HEARD_OF = frozenset([
         BREVE, GREEK_LUNATE_SIGMA_SYMBOL, GREEK_SMALL_LETTER_DIGAMMA, GREEK_SMALL_LETTER_STIGMA
@@ -44,8 +44,10 @@ class GreekHeard(TokenImmaterializableMixin):
     def immaterialize(cls, text: str) -> Tuple[str, ...]:
         token = list()
         for ch in text:
-            if ch in cls.HEARD_OF:
+            cp = ord(ch)
+            if cp in cls.HEARD_OF:
                 token.append(ch)
             else:
                 break
+
         return tuple(token)

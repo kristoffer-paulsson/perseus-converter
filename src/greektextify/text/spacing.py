@@ -26,14 +26,14 @@ from greektextify.text.immaterializer import TokenImmaterializableMixin
 
 
 class Spacing(TokenImmaterializableMixin):
-    CHARACTER_TABULATION = '\t'
-    LINE_FEED = '\n'
-    LINE_TABULATION = '\v'
-    FORM_FEED = '\f'
-    CARRIAGE_RETURN = '\r'
-    SPACE = '\x20'
+    CHARACTER_TABULATION = ord('\t')
+    LINE_FEED = ord('\n')
+    LINE_TABULATION = ord('\v')
+    FORM_FEED = ord('\f')
+    CARRIAGE_RETURN = ord('\r')
+    SPACE = ord('\x20')
 
-    DEBUG_SPACE = '\u20DF'  # Symbol for invisible space characters
+    DEBUG_SPACE = ord('\u20DF')  # Symbol for invisible space characters
 
     BLANK_SPACE = frozenset([
         CHARACTER_TABULATION, LINE_FEED, LINE_TABULATION, FORM_FEED, CARRIAGE_RETURN, SPACE
@@ -43,7 +43,8 @@ class Spacing(TokenImmaterializableMixin):
     def immaterialize(cls, text: str) -> Tuple[str, ...]:
         token = list()
         for ch in text:
-            if ch in cls.BLANK_SPACE:
+            cp = ord(ch)
+            if cp in cls.BLANK_SPACE:
                 token.append(ch)
             else:
                 break

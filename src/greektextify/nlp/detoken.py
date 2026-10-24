@@ -32,6 +32,7 @@ from greektextify.text.pdl_standard import PdlUtfStandard
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.quotation import GreekQuotation
 from greektextify.text.spacing import Spacing
+from greektextify.text.standardizer import TokenStandardizerMixin
 from greektextify.text.token import Tokenize
 from greektextify.text.word import GreekWord
 
@@ -46,18 +47,23 @@ class Detokenizer:
             if glyph.ch is None:
                 raise ValueError("Empty glyph, must be set, exchange for NLP exception to throw.")
 
-            word += glyph.ch
-            word += GreekDiacritic.COMBINING_PSILI if glyph.psili else ''
-            word += GreekDiacritic.COMBINING_DASIA if glyph.dasia else ''
-            word += GreekDiacritic.COMBINING_YPOGEGRAMMENI if glyph.ypogegrammeni else ''
-            word += GreekDiacritic.COMBINING_VARIA if glyph.varia else ''
-            word += GreekDiacritic.COMBINING_OXIA if glyph.oxia else ''
-            word += GreekDiacritic.COMBINING_PERISPOMENI if glyph.perispomeni else ''
-            word += GreekDiacritic.COMBINING_DIALYTIKA if glyph.dialytika else ''
-            word += GreekDiacritic.COMBINING_VRACHY if glyph.vrachy else ''
-            word += GreekDiacritic.COMBINING_MACRON if glyph.macron else ''
+            word += chr(glyph.ch)
+            word += chr(GreekDiacritic.COMBINING_PSILI) if glyph.psili else ''
+            word += chr(GreekDiacritic.COMBINING_DASIA) if glyph.dasia else ''
+            word += chr(GreekDiacritic.COMBINING_YPOGEGRAMMENI) if glyph.ypogegrammeni else ''
+            word += chr(GreekDiacritic.COMBINING_VARIA) if glyph.varia else ''
+            word += chr(GreekDiacritic.COMBINING_OXIA) if glyph.oxia else ''
+            word += chr(GreekDiacritic.COMBINING_PERISPOMENI) if glyph.perispomeni else ''
+            word += chr(GreekDiacritic.COMBINING_DIALYTIKA) if glyph.dialytika else ''
+            word += chr(GreekDiacritic.COMBINING_VRACHY) if glyph.vrachy else ''
+            word += chr(GreekDiacritic.COMBINING_MACRON) if glyph.macron else ''
 
         return word
+
+    @staticmethod
+    def build_hard():
+        """Build a word with glyphs only used in the database"""
+        pass # TODO
 
 
 class Tokenizer:
@@ -66,23 +72,21 @@ class Tokenizer:
         pass
 
     @staticmethod
-    def utf_tokenizer():
+    def utf_tokenizer(standardizer: TokenStandardizerMixin = PdlUtfStandard()) -> Tokenize:
         return Tokenize([
             GreekWord,
             Bracketing,
             GreekPunctuation,
             GreekQuotation,
             Spacing,
-            # GreekHeard,
-            # GreekUnheard,
-        ], PdlUtfStandard())
+        ], standardizer)
 
     @staticmethod
     def beta_tokenizer():
         return Tokenize([
-            BetaWord,  # GreekWord,
+            BetaWord,
             Bracketing,
-            BetaPunctuation,  # GreekPunctuation,
+            BetaPunctuation,
             GreekQuotation,
             Spacing,
         ], PdlBetaStandard())

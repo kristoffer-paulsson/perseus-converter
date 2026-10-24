@@ -30,21 +30,21 @@ from greektextify.text.standardizer import TokenStandardizerMixin
 
 
 class PdlUtfStandard(TokenStandardizerMixin):
-    MIDDLE_DOT = '\u00B7'
-    SEMICOLON = '\u003B'
-    MODIFIER_LETTER_REVERSED_COMMA = '\u02BD'
-    HYPHEN_MINUS = '\u002D'
-    EM_DASH = '\u2014'
+    MIDDLE_DOT = ord('\u00B7')
+    SEMICOLON = ord('\u003B')
+    MODIFIER_LETTER_REVERSED_COMMA = ord('\u02BD')
+    HYPHEN_MINUS = ord('\u002D')
+    EM_DASH = ord('\u2014')
 
     PDL_TRANSFORM = {
-        ord(GreekHalfway.MODIFIER_APOSTROPHE): ord(GreekMidway.APOSTROPHE),
-        ord(MIDDLE_DOT): ord(GreekPunctuation.ANO_TELEIA),
-        ord(SEMICOLON): ord(GreekPunctuation.QUESTION_MARK),
-        ord(MODIFIER_LETTER_REVERSED_COMMA): ord(GreekExtended.DASIA),
+        GreekHalfway.MODIFIER_APOSTROPHE: GreekMidway.APOSTROPHE,
+        MIDDLE_DOT: GreekPunctuation.ANO_TELEIA,
+        SEMICOLON: GreekPunctuation.QUESTION_MARK,
+        MODIFIER_LETTER_REVERSED_COMMA: GreekExtended.DASIA,
     }
 
     @classmethod
     def standardize(cls, text: str) -> str:
-        text = regex.sub(r'--', cls.EM_DASH, text)  # Translates two HYPHEN MINUS as EM DASH
-        text = regex.sub(r'-(?!\S)|(?<!\S)-', cls.EM_DASH, text)  # Translates HYPHEN MINUS not between two words as EM DASH
+        text = regex.sub(r'--', chr(cls.EM_DASH), text)  # Translates two HYPHEN MINUS as EM DASH
+        text = regex.sub(r'-(?!\S)|(?<!\S)-', chr(cls.EM_DASH), text)  # Translates HYPHEN MINUS not between two words as EM DASH
         return text.translate(cls.PDL_TRANSFORM)  # Translates the rest

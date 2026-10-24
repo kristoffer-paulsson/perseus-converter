@@ -27,12 +27,12 @@ from greektextify.text.standardizer import TokenStandardizerMixin
 
 
 class DbgUtfStandard(TokenStandardizerMixin):
-    MODIFIER_LETTER_APOSTROPHE = '\u2019'
-    SEMICOLON = '\u003B'
+    MODIFIER_LETTER_APOSTROPHE = ord('\u2019')
+    SEMICOLON = ord('\u003B')
 
     DBG_TRANSFORM = {
-        ord(GreekExtended.KORONIS): ord(GreekMidway.APOSTROPHE),
-        ord(SEMICOLON): ord(GreekPunctuation.QUESTION_MARK),
+        GreekExtended.KORONIS: GreekMidway.APOSTROPHE,
+        SEMICOLON: GreekPunctuation.QUESTION_MARK,
     }
 
     @classmethod

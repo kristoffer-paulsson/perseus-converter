@@ -28,11 +28,11 @@ from greektextify.text.immaterializer import TokenImmaterializableMixin
 class GreekPunctuation(TokenImmaterializableMixin):
     """Greek punctuations."""
 
-    FULL_STOP = '\u002E'
-    COMMA = '\u002C'
-    QUESTION_MARK = '\u037E'
-    ANO_TELEIA = '\u0387'
-    EM_DASH = '\u2014'
+    FULL_STOP = ord('\u002E')
+    COMMA = ord('\u002C')
+    QUESTION_MARK = ord('\u037E')
+    ANO_TELEIA = ord('\u0387')
+    EM_DASH = ord('\u2014')
 
     PUNCT_MARKS = frozenset([
         FULL_STOP, COMMA, QUESTION_MARK, ANO_TELEIA, EM_DASH
@@ -41,5 +41,5 @@ class GreekPunctuation(TokenImmaterializableMixin):
     @classmethod
     def immaterialize(cls, text: str) -> Tuple[str, ...]:
         if len(text) > 0:
-            return tuple(text[0]) if text[0] in cls.PUNCT_MARKS else tuple()
+            return tuple(text[0]) if ord(text[0]) in cls.PUNCT_MARKS else tuple()
         return tuple()

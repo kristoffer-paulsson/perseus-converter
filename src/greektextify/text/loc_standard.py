@@ -27,12 +27,12 @@ from greektextify.text.standardizer import TokenStandardizerMixin
 
 
 class LocUtfStandard(TokenStandardizerMixin):
-    MODIFIER_LETTER_APOSTROPHE = '\u2019'
-    SEMICOLON = '\u003B'
+    MODIFIER_LETTER_APOSTROPHE = ord('\u2019')
+    SEMICOLON = ord('\u003B')
 
     LOC_TRANSFORM = {
-        ord(MODIFIER_LETTER_APOSTROPHE): ord(GreekMidway.APOSTROPHE),
-        ord(SEMICOLON): ord(GreekPunctuation.QUESTION_MARK),
+        MODIFIER_LETTER_APOSTROPHE: GreekMidway.APOSTROPHE,
+        SEMICOLON: GreekPunctuation.QUESTION_MARK,
     }
 
     @classmethod

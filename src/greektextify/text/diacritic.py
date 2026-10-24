@@ -30,24 +30,24 @@ https://www.unicode.org/charts/PDF/U0370.pdf
 class GreekDiacritic:
     """Koine combining accent."""
 
-    COMBINING_VARIA = '\u0300'
-    COMBINING_OXIA = '\u0301'
+    COMBINING_VARIA = ord('\u0300')
+    COMBINING_OXIA = ord('\u0301')
     COMBINING_TONOS = COMBINING_OXIA  # Backward compatability
-    COMBINING_MACRON = '\u0304'
-    COMBINING_VRACHY = '\u0306'
-    COMBINING_DIALYTIKA = '\u0308'
+    COMBINING_MACRON = ord('\u0304')
+    COMBINING_VRACHY = ord('\u0306')
+    COMBINING_DIALYTIKA = ord('\u0308')
     COMBINING_DIAERESIS = COMBINING_DIALYTIKA  # Backwards comaptability
 
-    COMBINING_PSILI = '\u0313'  # Greek psili, smooth breathing mark (spiritus lenis)
-    COMBINING_DASIA = '\u0314'  # Greek dasia, rough breathing mark (spiritus asper)
+    COMBINING_PSILI = ord('\u0313')  # Greek psili, smooth breathing mark (spiritus lenis)
+    COMBINING_DASIA = ord('\u0314')  # Greek dasia, rough breathing mark (spiritus asper)
 
-    COMBINING_PERISPOMENI = '\u0342'
+    COMBINING_PERISPOMENI = ord('\u0342')
     COMBINING_KORONIS = COMBINING_PSILI  # Backward compatability
-    COMBINING_DIALYTIKA_TONOS = '\u0344'
-    COMBINING_YPOGEGRAMMENI = '\u0345'
+    COMBINING_DIALYTIKA_TONOS = ord('\u0344')
+    COMBINING_YPOGEGRAMMENI = ord('\u0345')
     COMBINING_PROSGEGRAMMENI = COMBINING_YPOGEGRAMMENI  # Backward compatibility
 
-    DEBUG_CIRCLE = '\u20DD'  # Symbol for combining unicode character debugging
+    DEBUG_CIRCLE = ord('\u20DD')  # Symbol for combining unicode character debugging
 
     DIACRITICS = frozenset([
         COMBINING_VARIA, COMBINING_OXIA, COMBINING_MACRON, COMBINING_VRACHY, COMBINING_DIALYTIKA,

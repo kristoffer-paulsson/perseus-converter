@@ -28,13 +28,13 @@ from greektextify.text.immaterializer import TokenImmaterializableMixin
 class Bracketing(TokenImmaterializableMixin):
     """Bracketing parser."""
 
-    LEFT_PARENTHESIS = '\u0028'
-    RIGHT_PARENTHESIS = '\u0029'
-    LEFT_SQUARE_BRACKET = '\u005B'
-    RIGHT_SQUARE_BRACKET = '\u005D'
-    LEFT_CURLY_BRACKET = '\u007B'
-    LEFT_ANGLE_BRACKET = '\u3008'
-    RIGHT_ANGLE_BRACKET = '\u3009'
+    LEFT_PARENTHESIS = ord('\u0028')
+    RIGHT_PARENTHESIS = ord('\u0029')
+    LEFT_SQUARE_BRACKET = ord('\u005B')
+    RIGHT_SQUARE_BRACKET = ord('\u005D')
+    LEFT_CURLY_BRACKET = ord('\u007B')
+    LEFT_ANGLE_BRACKET = ord('\u3008')
+    RIGHT_ANGLE_BRACKET = ord('\u3009')
 
     BRACKETS = frozenset([
         LEFT_PARENTHESIS, RIGHT_PARENTHESIS, LEFT_SQUARE_BRACKET, RIGHT_SQUARE_BRACKET, LEFT_CURLY_BRACKET,
@@ -47,5 +47,5 @@ class Bracketing(TokenImmaterializableMixin):
     @classmethod
     def immaterialize(cls, text: str) -> Tuple[str]:
         if len(text) > 0:
-            return tuple(text[0]) if text[0] in cls.BRACKETS else tuple()
+            return tuple(text[0]) if ord(text[0]) in cls.BRACKETS else tuple()
         return tuple()

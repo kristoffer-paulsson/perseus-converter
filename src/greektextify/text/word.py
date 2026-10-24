@@ -89,23 +89,24 @@ class GreekWord(TokenImmaterializableMixin):
     def immaterialize(cls, text: str) -> Tuple[str, ...]:
         token = list()
         for ch in text:
-            if ch in cls.WORD_CHARS:
+            cp = ord(ch)
+            if cp in cls.WORD_CHARS:
                 token.append(ch)
             else:
                 break
 
         if len(token) == 0:
             return tuple()
-        elif token[-1] == GreekAlphabet.HYPHEN_MINUS:
+        elif ord(token[-1]) == GreekAlphabet.HYPHEN_MINUS:
             return tuple(token[:-1])
-        elif token[0] == GreekAlphabet.HYPHEN_MINUS:
+        elif ord(token[0]) == GreekAlphabet.HYPHEN_MINUS:
             return tuple()
         else:
             return tuple(token)
 
     @classmethod
     def glyphen(cls, word: str) -> Tuple[GreekGlyph]:
-        apostrophe = word[-1] == GreekMidway.APOSTROPHE
+        apostrophe = ord(word[-1]) == GreekMidway.APOSTROPHE
         position = 0
         length = len(word)-1 if apostrophe else len(word)
         glyphs = list()

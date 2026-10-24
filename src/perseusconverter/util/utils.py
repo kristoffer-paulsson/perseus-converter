@@ -51,3 +51,26 @@ class Counter:
     def reset(self, start: int = 0) -> None:
         self._start = start
         self._count = start
+
+
+class ListVerify:
+    def __init__(self, target: list):
+        self._target = target
+        self._index = 0
+
+    def verify(self, item):
+        if not self.verify_no_exc(item):
+            raise RuntimeError("Verified item not in lieu: {}".format(item))
+
+    def verify_no_exc(self, item) -> bool:
+        result = item == self.show_cur()
+        self._index += 1
+        return result
+
+    def show_cur(self):
+        return self._target[self._index]
+
+
+class CountVerify(ListVerify):
+    def __init__(self, length: int,):
+        super().__init__(list(range(1, length + 1)))

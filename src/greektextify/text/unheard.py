@@ -28,26 +28,26 @@ from greektextify.text.immaterializer import TokenImmaterializableMixin
 class GreekUnheard(TokenImmaterializableMixin):
     """Bracketing parser."""
 
-    DIGIT_ZERO = '\u0030'
-    DIGIT_ONE = '\u0031'
-    DIGIT_TWO = '\u0032'
-    DIGIT_THREE = '\u0033'
-    DIGIT_FOUR = '\u0034'
-    DIGIT_FIVE = '\u0035'
-    DIGIT_SIX = '\u0036'
-    DIGIT_SEVEN = '\u0037'
-    DIGIT_EIGHT = '\u0038'
-    DIGIT_NINE = '\u0039'
-    PERCENT_SIGN = '\u0025'
-    DAGGER = '\u2020'
-    MACRON = '\u00AF'
-    QUESTION_MARK = '\u003F'
-    COMBINING_DOT_BELOW = '\u0323'
-    ZERO_WIDTH_NO_BREAK_SPACE = '\uFEFF'
-    ASTERISK = '\u002A'
-    COMMERCIAL_AT = '\u0040'
-    NUMBER_SIGN = '\u0023'
-    LATIN_SMALL_LETTER_I = '\u0069'
+    DIGIT_ZERO = ord('\u0030')
+    DIGIT_ONE = ord('\u0031')
+    DIGIT_TWO = ord('\u0032')
+    DIGIT_THREE = ord('\u0033')
+    DIGIT_FOUR = ord('\u0034')
+    DIGIT_FIVE = ord('\u0035')
+    DIGIT_SIX = ord('\u0036')
+    DIGIT_SEVEN = ord('\u0037')
+    DIGIT_EIGHT = ord('\u0038')
+    DIGIT_NINE = ord('\u0039')
+    PERCENT_SIGN = ord('\u0025')
+    DAGGER = ord('\u2020')
+    MACRON = ord('\u00AF')
+    QUESTION_MARK = ord('\u003F')
+    COMBINING_DOT_BELOW = ord('\u0323')
+    ZERO_WIDTH_NO_BREAK_SPACE = ord('\uFEFF')
+    ASTERISK = ord('\u002A')
+    COMMERCIAL_AT = ord('\u0040')
+    NUMBER_SIGN = ord('\u0023')
+    LATIN_SMALL_LETTER_I = ord('\u0069')
 
     UNHEARD = frozenset([
         DIGIT_ZERO, DIGIT_ONE, DIGIT_TWO, DIGIT_THREE, DIGIT_FOUR, DIGIT_FIVE, DIGIT_SIX, DIGIT_SEVEN, DIGIT_EIGHT,
@@ -63,6 +63,7 @@ class GreekUnheard(TokenImmaterializableMixin):
         token = list()
 
         for ch in text:
+            cp = ord(ch)
             if ch in cls.UNHEARD:
                 token.append(ch)
             else:

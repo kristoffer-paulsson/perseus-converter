@@ -36,14 +36,14 @@ class WordModifier:
 
         for glyph in token:
             if glyph.ch == GreekAlphabet.LOWER_LUNATE:
-                out.append(GreekDatabase.LOWER_SIGMA)
+                out.append(GreekDatabase.LOWER_SIGMA[1])
             elif glyph.ch == GreekAlphabet.UPPER_LUNATE:
-                out.append(GreekDatabase.UPPER_SIGMA)
+                out.append(GreekDatabase.UPPER_SIGMA[1])
             else:
                 out.append(glyph)
 
         if out[-1].ch == GreekAlphabet.LOWER_SIGMA:
-            out[-1] = GreekDatabase.LOWER_FINAL_SIGMA
+            out[-1] = GreekDatabase.LOWER_FINAL_SIGMA[1]
 
         return tuple(out)
 

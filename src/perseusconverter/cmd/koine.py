@@ -21,8 +21,8 @@
 #
 """Module containing the LOAD command class."""
 import collections
-import itertools
 import re
+import string
 from argparse import Namespace
 from curses.ascii import isalpha, isdigit
 
@@ -30,11 +30,16 @@ from bs4 import BeautifulSoup
 from lxml.etree import XMLSyntaxError
 
 from greektextify.nlp.contextual import NlpContext
-from biblebuilder.scan.nocrvt import NocrVtScanner
-from greektextify.text.word import GreekWord
+from greektextify.text.alphabet import GreekAlphabet
+from greektextify.text.bracket import Bracketing
+from greektextify.text.database import GreekDatabase
+from greektextify.text.diacritic import GreekDiacritic
+from greektextify.text.extended import GreekExtended
+from greektextify.text.midway import GreekMidway
 from . import Command
 from ..app import Config, logging
 from ..iter.bgmiter import IterBGM, BRef
+from ..iter.fileiter import NocrFileIter, IterNocr
 from ..iter.sinaiiter import IterSinai
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
@@ -42,6 +47,7 @@ from ..traverse.general import AbstractTeiTraverser
 from ..traverse.lsjlex import LsjTraverser
 from ..traverse.rgnt import RockTraverser
 from ..util.collector import Counter, Collector
+from ..util.utils import ListVerify, CountVerify
 
 BETACODE = (
     'tlg2003.tlg008.perseus-grc1.xml',
@@ -226,6 +232,8 @@ class KoineCommand(Command):
             self._sept3()
         elif self._args.corpora == 'catss':
             self._catss()
+        elif self._args.corpora == 'check':
+            self._meta()
         else:
             pass
 
@@ -336,9 +344,12 @@ class KoineCommand(Command):
                     else:
                         dictionary[token] += 1
 
+            #filter(dictionary, )
+
             ordered = collections.OrderedDict(sorted(dictionary.items()))
             print(ordered)
             print(len(ordered))
+            print(sum(dictionary.values()))
 
             exit()
             for line in f:
@@ -452,90 +463,12 @@ class KoineCommand(Command):
                     #print(refs)
 
     def _nocr(self):
-
-        LOWER_OFFICIAL = [x.lower() for x in OFFICIAL_VETUS]
-
-        MAP_OFFICIAL = dict(zip(LOWER_OFFICIAL, OFFICIAL_VETUS))
-
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
+        niter = IterNocr(NocrFileIter(filename))
+        collect = Collector(niter)
+        collect.collect()
+        collect.analyze()
 
-        files = [filename for filename in RecursiveIterator(filename)]
-
-        books_index = dict()
-        #num_order = dict()
-        for filename in sorted(files, key=lambda x: x.stem):
-            parts = filename.stem.split('.')
-            book = parts[0]
-            chapter = int(parts[1])
-            if book not in books_index:
-                books_index[book] = dict()
-            books_index[book][chapter] = filename
-        #    num_order[int(parts[2])] = filename
-
-        abbr_set = set([x.lower() for x in OFFICIAL_VETUS])
-
-        if set(books_index.keys()) != abbr_set:
-            raise RuntimeError("Book OT abbreviations not valid: {}".format(books_index))
-
-        for book, chapters in books_index.items():
-            chapter_index = set(chapters.keys())
-            chapter_set = set(range(1, len(chapters) + 1))
-
-            if chapter_index != chapter_set:
-                raise RuntimeError("Chapter OT index not valid: {}".format(chapter_set))
-
-        for book, chapters in sorted(books_index.items(), key=lambda x: LOWER_OFFICIAL.index(x[0])):
-            chapter_verify = CountVerify(len(chapters))
-            for chapter, filename in sorted(chapters.items()):
-                chapter_verify.verify(chapter)
-                with open(filename, 'r') as f:
-                    # print("Working: {}".format(filename))
-                    html = BeautifulSoup(f, 'html.parser')
-                    header = html.find('h2')
-                    if hasattr(header, 'text'):
-                        #print(html.find('h2').text)
-                        if int(header.text.split(' ')[-1]) != chapter:
-                            print("Header chapter not consistent: {}".format(filename))
-                    else:
-                        print("No header found: {}".format(filename))
-
-                    verses = html.find_all('sup')
-                    verses_verify = CountVerify(len(verses))
-                    last_v_num = -1
-                    for verse in verses:
-                        if hasattr(verse, 'text'):
-                            c_num, v_num = verse.text.strip().split(':')
-                            if int(c_num) != chapter:
-                                print("Verse chapter {} not consistent: {}".format(chapter, filename))
-                            if verses_verify.verify_no_exc(int(v_num)):
-                                last_v_num = v_num
-                            else:
-                                print("Expected verse {} but got {}: {}".format(last_v_num, v_num, filename))
-                        else:
-                            print("No verse {} found: {}".format(last_v_num, filename))
-
-                    #data = html.find('td', attrs={'width': '75%', 'border': '0'})
-                    data = html.find_all('table', attrs={'width': '75%', 'border': '0'})
-                    if len(data) < 3:
-                        print("No verse corpus found (1): {}".format(filename))
-                    else:
-                        if not hasattr(data[2], 'text'):
-                            print("No verse corpus found (2): {}".format(filename))
-                        else:
-                            rows = list()
-                            for row in data[2].text.strip().split('\n'):
-                                row = row.strip()
-                                if row != '':
-                                    rows.append(row)
-                                    first_space_idx = row.find(' ')
-                                    if first_space_idx == -1:
-                                        print("Verse without corpus found {} {}, {}".format(MAP_OFFICIAL[book], row, filename))
-                                    else:
-                                        ref_txt = row[:first_space_idx].strip()
-                                        v_txt = row[first_space_idx:].strip()
-                                        subv_cnt = len(re.findall(r"\[\d+\]", v_txt))
-                                        if subv_cnt > 0:
-                                            print("Verse contains {} sub-verse(s) in {} {}, {}".format(subv_cnt, MAP_OFFICIAL[book], ref_txt, filename))
 
     def _sept3(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3")
@@ -696,44 +629,57 @@ class KoineCommand(Command):
                         # print("Verse {} != {} not consistent: {}".format(verse_cnt_exp, verse_cnt, filename))
                         pass"""
 
+    def _meta(self):
+        greek_dict = dict(GreekDatabase.ALL_UTF_LETTERS)
+        for letter in GreekAlphabet.ALPHABET:
+            if letter not in greek_dict:
+                print("Letter {} is missing in GreekDatabase".format(letter))
 
-class ListVerify:
-    def __init__(self, target: list):
-        self._target = target
-        self._index = 0
+        for letter in GreekExtended.LETTERS:
+            if letter not in greek_dict:
+                print("Letter {} is missing in GreekDatabase".format(letter))
 
-    def verify(self, item):
-        if not self.verify_no_exc(item):
-            raise RuntimeError("Verified item not in lieu: {}".format(item))
+        for letter in GreekMidway.LETTERS:
+            if letter not in greek_dict:
+                print("Letter {} is missing in GreekDatabase".format(letter))
 
-    def verify_no_exc(self, item) -> bool:
-        result = item == self.show_cur()
-        self._index += 1
-        return result
+        combined_letters = set(
+            list(GreekAlphabet.ALPHABET) + list(GreekExtended.LETTERS) +
+            list(GreekMidway.LETTERS) + list(GreekMidway.MODIFIERS)
+        )
+        dict_letters = set(greek_dict.keys())
+        if dict_letters - combined_letters:
+            print("Combined letters {}".format(dict_letters - combined_letters))
 
-    def show_cur(self):
-        return self._target[self._index]
+        if combined_letters - dict_letters:
+            print("Combined letters {}".format(combined_letters - dict_letters))
 
+        combined_others = set(
+            list(GreekDiacritic.DIACRITICS) + list(GreekExtended.DIACRITICS) +
+            list(Bracketing.BRACKETS) # + list(GreekMidway.MODIFIERS)
+        )
+        if dict_letters & combined_others:
+            print("Combined others {}".format(dict_letters & combined_others))
 
-class CountVerify(ListVerify):
-    def __init__(self, length: int,):
-        super().__init__(list(range(1, length + 1)))
+        for diacritic in GreekDiacritic.DIACRITICS:
+            if diacritic in greek_dict:
+                print("Diacritic {} is missing in GreekDatabase".format(diacritic))
 
+        for diacritic in GreekExtended.DIACRITICS:
+            if diacritic in greek_dict:
+                print("Diacritic {} is missing in GreekDatabase".format(diacritic))
 
-def format_bible_diff(ref1: BRef, ref2: BRef) -> str:
-    # 1. Sortera så vi alltid har start (a) och slut (b)
-    a, b = min(ref1, ref2), max(ref1, ref2)
+        upper = string.ascii_uppercase + '_'
+        valid_attr = set()
+        remove = ('ALL_UTF_LETTERS', 'LEGAL', 'DEBUG_CIRCLE')
+        for attr in GreekDatabase.__dict__.keys():
+            if all(char in upper for char in attr):
+                if attr not in remove:
+                    valid_attr.add(attr)
 
-    if a == b:
-        return str(a)
+        for attr in valid_attr:
+            if GreekDatabase.__dict__[attr][0] not in dict_letters:
+                print("{} not in GreekDatabase".format(GreekDatabase.__dict__[attr][0]))
 
-    # 2. Skapa strängar för verserna inklusive eventuella sub-verser
-    a_v = f"{a.verse}({a.sub})" if a.sub > 0 else f"{a.verse}"
-    b_v = f"{b.verse}({b.sub})" if b.sub > 0 else f"{b.verse}"
+        print(len(GreekAlphabet.FROM_LOWER), len(GreekAlphabet.FROM_UPPER), len(GreekAlphabet.CASE_LOWER), len(GreekAlphabet.CASE_UPPER))
 
-    # 3. Om kapitlen är olika -> Format: Bok Kap1:Vers1-Kap2:Vers2
-    if a.chapter != b.chapter:
-        return f"{a.book} {a.chapter}:{a_v}-{b.chapter}:{b_v}"
-
-    # 4. Om samma kapitel -> Format: Bok Kap:Vers1-Vers2
-    return f"{a.book} {a.chapter}:{a_v}-{b_v}"
