@@ -87,10 +87,9 @@ class IterBGM:
             yield bref
 
             for t in text.split(' '):
-                svs = t.find('[')
-                if svs != -1:
+                if t[0] == '[' and t[-1] == ']':
                     sve = t.find(']')
-                    sub_verse = int(t[(svs + 1):(sve)])
+                    sub_verse = int(t[1:sve])
                     yield BRef(bref.book, bref.chapter, bref.verse, sub_verse)
                 else:
                     tag = t.split('@')[0]
