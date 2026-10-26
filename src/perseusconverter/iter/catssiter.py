@@ -129,6 +129,32 @@ class CatSSFileIter(BasicIterFile):
 
 class IterCatSS(ContextObject):
 
+    OMITTED = (
+        'Pro 24', 'Pro 25', 'Pro 26', 'Pro 27', 'Pro 28', 'Pro 29', 'Pro 30',
+        'Pro 31', 'Pro 33', 'Pro 33', 'Pro 34', 'Pro 35', 'Pro 36' # Disorder
+        'Dat 3', # Five verses removed that exists in other editions of LXX
+    )
+
+    MAP = {
+        'Gen': 'Gen', 'Exod': 'Exo', 'Lev': 'Lev', 'Num': 'Num', 'Deut': 'Deu',
+        'JoshB': 'Jos', 'JoshA': 'Jsa', # Matched by chapter 15 for A version
+        'JudgB': 'Jdg', 'JudgA': 'Jda', # Matched on having 11:4 for A version
+        # later RH seems to prefer A version
+        'Ruth': 'Rut',
+        '1Sam/K': '1Sa', '2Sam/K': '2Sa', '1/3Kgs': '1Ki', '2/4Kgs': '2Ki', '1Chr': '1Ch',
+        '2Chr': '2Ch', '1Esdr': '1Es', '2Esdr': '2Es', 'Esth': 'Est', 'Jdt': 'Jdt',
+        'TobBA': 'Tob', 'TobS': 'Tbs', '1Mac': '1Ma', '2Mac': '2Ma', '3Mac': '3Ma',
+        '4Mac': '4Ma', 'Ps': 'Psa', 'Od': 'Ode', 'Prov': 'Pro', 'Qoh': 'Ecc',
+        'Cant': 'Sol', 'Job': 'Job', 'Wis': 'Wis', 'Sir Prolog': 'Sip', 'Sir': 'Sir',
+        'PsSol': 'Pss', 'Hos': 'Hos', 'Mic': 'Mic', 'Amos': 'Amo', 'Joel': 'Joe',
+        'Jonah': 'Jon', 'Obad': 'Oba', 'Nah': 'Nah', 'Hab': 'Hab', 'Zeph': 'Zep',
+        'Hag': 'Hag', 'Zech': 'Zec', 'Mal': 'Mal', 'Isa': 'Isa', 'Jer': 'Jer',
+        'Bar': 'Bar', 'EpJer': 'Epj', 'Lam': 'Lam', 'Ezek': 'Eze', 'Bel': 'Bel',
+        'BelTh': 'Bet', 'Dan': 'Dan', 'DanTh': 'Dat', 'Sus': 'Sus', 'SusTh': 'Sut'
+    }
+
+
+
     def __init__(self, file_iter: CatSSFileIter):
         super().__init__()
         self._file_iter = file_iter
@@ -280,9 +306,21 @@ class IterCatSS(ContextObject):
                             cur_verse = int(verse)
                         self._current = (filename, cur_book, cur_chapter, cur_verse)
 
-                        yield BRef(book, cur_chapter, cur_verse, sub_verse)
+                        corr_chap = cur_chapter
+                        if self.MAP[book] == '2Es':
+                            if cur_chapter <= 10:
+                                corr_book = BOOK_ABBR[17]  #'Ezr'
+                            else:
+                                corr_book = BOOK_ABBR[18]  #'Neh'
+                                corr_chap = cur_chapter - 10
+                        else:
+                            corr_book = self.MAP[book]
+
+                        yield BRef(corr_book, corr_chap, cur_verse, sub_verse)
 
                         for line in sublines[1:]:
                             end = line.find(' ')
                             for token in self._tokenize(line[:end]):
                                 yield token
+
+        # print(dict(zip(self.MAP, BOOK_ABBR[:61])))
