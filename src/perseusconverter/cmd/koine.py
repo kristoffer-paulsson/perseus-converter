@@ -39,6 +39,7 @@ from greektextify.text.midway import GreekMidway
 from . import Command
 from ..app import Config, logging
 from ..iter.bgmiter import IterBGM, BRef
+from ..iter.bgtiter import IterBGT
 from ..iter.catssiter import IterCatSS, CatSSFileIter
 from ..iter.fileiter import NocrFileIter, IterNocr
 from ..iter.sinaiiter import IterSinai
@@ -225,6 +226,8 @@ class KoineCommand(Command):
             self._pdl()
         elif self._args.corpora == 'lex':
             self._bgm()
+        elif self._args.corpora == 'bgt':
+            self._bgt()
         elif self._args.corpora == 'sinai':
             self._sinai()
         elif self._args.corpora == 'nocr':
@@ -333,6 +336,23 @@ class KoineCommand(Command):
         for marking in sorted(marked, key=lambda x: len(x)):
             print(marking, end='" - "')
 
+    def _bgt(self):
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
+        with filename.open('r') as f:
+            viter = IterBGT(f)
+            collect = Collector(viter)
+            collect.collect()
+            #collect.analyze()
+
+            filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
+            with filename2.open('r') as f:
+                viter2 = IterBGM(f)
+                collect2 = Collector(viter2)
+                collect2.collect()
+                #collect2.analyze()
+
+                print(collect.difference(collect2))
+
     def _bgm(self):
         dictionary = dict()
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
@@ -385,7 +405,15 @@ class KoineCommand(Command):
         citer = IterCatSS(CatSSFileIter(filename))
         collect = Collector(citer)
         collect.collect()
-        collect.analyze()
+        #collect.analyze()
+
+        filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
+        niter = IterNocr(NocrFileIter(filename2))
+        collect2 = Collector(niter)
+        collect2.collect()
+        #collect2.analyze()
+
+        print(collect.difference(collect2))
         exit()
 
 
@@ -473,8 +501,15 @@ class KoineCommand(Command):
         niter = IterNocr(NocrFileIter(filename))
         collect = Collector(niter)
         collect.collect()
-        collect.analyze()
+        #collect.analyze()
 
+        filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
+        citer = IterCatSS(CatSSFileIter(filename2))
+        collect2 = Collector(citer)
+        collect2.collect()
+        # collect.analyze()
+
+        print(collect.difference(collect2))
         exit()
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
         with filename.open('r') as f:
