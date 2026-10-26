@@ -48,6 +48,7 @@ from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import AbstractTeiTraverser
 from ..traverse.lsjlex import LsjTraverser
 from ..traverse.rgnt import RockTraverser
+from ..util.books import OLD_ABBR
 from ..util.collector import Counter, Collector
 from ..util.utils import ListVerify, CountVerify
 
@@ -66,71 +67,6 @@ BETACODE = (
     'tlg2003.tlg007.perseus-grc1.xml',
     'tlg2040.tlg002.perseus-grc1.xml',
 )
-
-
-VETUS = {
-    'Gen': (True, 'gen', 1, 50),
-    'Exo': (True, 'ex', 1, 40),
-    'Lev': (True, 'lev', 1, 27),
-    'Num': (True, 'num', 1, 36),
-    'Deu': (True, 'deut', 1, 34),
-    'Jsa': (False, 'jos', 212, 214),
-    'Jos': (False, 'jos', 188, 211),
-    'Jda': (False, 'ju', 236, 256),
-    'Jdg': (False, 'ju', 215, 235),
-    'Rut': (True, 'ru', 1, 4),
-    '1Sa': (True, 'regi', 1, 31),
-    '2Sa': (True, 'regii', 1, 24),
-    '1Ki': (True, 'regiii', 1, 22),
-    '2Ki': (True, 'regiv', 1, 25),
-    '1Ch': (True, 'chri', 1, 29),
-    '2Ch': (True, 'chrii', 1, 36),
-    '1Es': (True, 'esri', 1, 9),
-    'Ezr': (False, 'esrii', 437, 446),
-    'Neh': (False, 'esrii', 447, 459),
-    'Est': (True, 'esth', 1, 10),
-    'Jdt': (True, 'jud', 1, 16),
-    'Tob': (True, 'tob', 1, 14),
-    'Tbs': (True, 'tobs', 1, 14),
-    '1Ma': (True, 'macci', 1, 16),
-    '2Ma': (True, 'maccii', 1, 15),
-    '3Ma': (True, 'macciii', 1, 7),
-    '4Ma': (True, 'macciv', 1, 18),
-    'Psa': (True, 'ps', 1, 151),
-    'Ode': (True, 'od', 1, 15),
-    'Pro': (True, 'prov', 1, 34),
-    'Ecc': (True, 'eccl', 1, 12),
-    'Sol': (True, 'cant', 1, 8),
-    'Job': (True, 'hiob', 1, 42),
-    'Wis': (False, 'sapsal', 832, 850),
-    'Sip': (False, 'sapsal', 851, 851),
-    'Sir': (False, 'sapsal', 852, 902),
-    'Pss': (True, 'pssal', 1, 18),
-    'Hos': (True, 'hos', 1, 14),
-    'Amo': (True, 'am', 1, 9),
-    'Mic': (True, 'mich', 1, 7),
-    'Joe': (False, 'joel', 951, 954),
-    'Oba': (False, 'joel', 955, 955),
-    'Jon': (True, 'jon', 1, 4),
-    'Nah': (True, 'nah', 1, 3),
-    'Hab': (True, 'hab', 1, 3),
-    'Zep': (True, 'soph', 1, 3),
-    'Hag': (False, 'agg', 1, 2),
-    'Zec': (True, 'zach', 1, 14),
-    'Mal': (True, 'mal', 1, 3),
-    'Isa': (True, 'is', 1, 66),
-    'Jer': (True, 'jer', 1, 52),
-    'Bar': (True, 'bar', 1, 5),
-    'Lam': (False, 'lamjer', 1111, 1115),
-    'Epj': (False, 'lamjer', 1116, 1116),
-    'Eze': (False, 'ez', 1117, 1164),
-    'Sus': (False, 'ez', 1165, 1165),
-    'Sut': (False, 'ez', 1166, 1166),
-    'Dan': (True, 'dans', 1, 12),
-    'Dat': (False, 'danth', 1179, 1190),
-    'Bel': (False, 'danth', 1191, 1191),
-    'Bet': (False, 'danth', 1192, 1192)
-}
 
 OFFICIAL_VETUS = [
     'Gen', 'Exo', 'Lev', 'Num', 'Deu', 'Jsa', 'Jos', 'Jda', 'Jdg', 'Rut', '1Sa', '2Sa', '1Ki', '2Ki', '1Ch',
@@ -152,15 +88,6 @@ BOOK_NAME = [
             'Galatians', 'Ephesians', 'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians', '1 Timothy',
             '2 Timothy', 'Titus', 'Philemon', 'Hebrews', 'James', '1 Peter', '2 Peter', '1 John', '2 John', '3 John',
             'Jude', 'Revelation'
-        ]
-
-BOOK_ABBR = [
-            'Gen', 'Exo', 'Lev', 'Num', 'Deu', 'Jsa', 'Jos', 'Jda', 'Jdg', 'Rut', '1Sa', '2Sa', '1Ki', '2Ki', '1Ch',
-            '2Ch', '1Es', 'Ezr', 'Neh', 'Est', 'Jdt', 'Tob', 'Tbs', '1Ma', '2Ma', '3Ma', '4Ma', 'Psa', 'Ode', 'Pro',
-            'Ecc', 'Sol', 'Job', 'Wis', 'Sip', 'Sir', 'Pss', 'Hos', 'Amo', 'Mic', 'Joe', 'Oba', 'Jon', 'Nah', 'Hab',
-            'Zep', 'Hag', 'Zec', 'Mal', 'Isa', 'Jer', 'Bar', 'Lam', 'Epj', 'Eze', 'Sus', 'Sut', 'Dan', 'Dat', 'Bel',
-            'Bet', 'Mat', 'Mar', 'Luk', 'Joh', 'Act', 'Rom', '1Co', '2Co', 'Gal', 'Eph', 'Phi', 'Col', '1Th', '2Th',
-            '1Ti', '2Ti', 'Tit', 'Phm', 'Heb', 'Jam', '1Pe', '2Pe', '1Jo', '2Jo', '3Jo', 'Jud', 'Rev'
         ]
 
 
@@ -236,6 +163,8 @@ class KoineCommand(Command):
             self._sept3()
         elif self._args.corpora == 'catss':
             self._catss()
+        elif self._args.corpora == 'rock':
+            self._rock()
         elif self._args.corpora == 'check':
             self._meta()
         else:
@@ -401,20 +330,26 @@ class KoineCommand(Command):
             print(key, len(dictionary[key]))
 
     def _catss(self):
-        filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
-        citer = IterCatSS(CatSSFileIter(filename))
-        collect = Collector(citer)
-        collect.collect()
-        #collect.analyze()
+        #filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
+        #niter = IterNocr(NocrFileIter(filename2))
+        filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
+        with filename2.open('r') as f:
+            citer = IterBGT(f, OLD_ABBR)
+            collect2 = Collector(citer)
+            collect2.collect()
+            collect2.analyze()
 
-        filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-        niter = IterNocr(NocrFileIter(filename2))
-        collect2 = Collector(niter)
-        collect2.collect()
-        #collect2.analyze()
+            print()
+            print()
 
-        print(collect.difference(collect2))
-        exit()
+            filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
+            citer = IterCatSS(CatSSFileIter(filename))
+            collect = Collector(citer)
+            collect.collect()
+            collect.analyze()
+
+            #print(collect2.difference(collect))
+            exit()
 
 
         files = [filename for filename in RecursiveIterator(filename)]
@@ -496,6 +431,9 @@ class KoineCommand(Command):
                         #    pass
                     #print(refs)
 
+    def _rock(self):
+        pass
+
     def _nocr(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
         niter = IterNocr(NocrFileIter(filename))
@@ -503,14 +441,17 @@ class KoineCommand(Command):
         collect.collect()
         #collect.analyze()
 
-        filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
-        citer = IterCatSS(CatSSFileIter(filename2))
-        collect2 = Collector(citer)
-        collect2.collect()
-        # collect.analyze()
+        #filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
+        # citer = IterCatSS(CatSSFileIter(filename2))
+        filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
+        with filename2.open('r') as f:
+            citer = IterBGT(f, OLD_ABBR)
+            collect2 = Collector(citer)
+            collect2.collect()
+            # collect.analyze()
 
-        print(collect.difference(collect2))
-        exit()
+            print(collect.difference(collect2))
+            exit()
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
         with filename.open('r') as f:
             viter = IterBGM(f)

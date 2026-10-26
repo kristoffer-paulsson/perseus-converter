@@ -29,12 +29,10 @@ import regex
 from greektextify.nlp.contextual import ContextObject, NlpOperation, NlpContext
 from greektextify.nlp.detoken import Tokenizer
 from greektextify.text.extended import GreekExtended
-from greektextify.text.halfway import GreekHalfway
 from greektextify.text.midway import GreekMidway
-from greektextify.text.prnt import PrintGreek
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.standardizer import TokenStandardizerMixin
-from greektextify.text.word import GreekWord
+from perseusconverter.util.books import BOOK_ABBR
 from perseusconverter.util.utils import BRef
 
 
@@ -57,8 +55,9 @@ class BgtUtfStandard(TokenStandardizerMixin):
 
 class IterBGT(ContextObject):
 
-    def __init__(self, stream: TextIOWrapper):
+    def __init__(self, stream: TextIOWrapper, part: Tuple[str, ...] = BOOK_ABBR):
         super().__init__()
+        self._part = part
         self._stream = stream
         self._tokenizer = Tokenizer.utf_tokenizer(BgtUtfStandard())
         self._current = 'n/a'
@@ -82,6 +81,7 @@ class IterBGT(ContextObject):
         book_abbr = line[fst:idv]
         text = line[idy:].strip()
         cont = True if not text or idy == -1 else False
+        cont = True if book_abbr not in self._part else cont
         if cont:
             return cont, fst, idx, idy, idv, book_abbr, '', '', ''
         else:

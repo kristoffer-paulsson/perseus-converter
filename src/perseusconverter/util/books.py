@@ -42,3 +42,7 @@ BOOK_ABBR = (
             'Bet', 'Mat', 'Mar', 'Luk', 'Joh', 'Act', 'Rom', '1Co', '2Co', 'Gal', 'Eph', 'Phi', 'Col', '1Th', '2Th',
             '1Ti', '2Ti', 'Tit', 'Phm', 'Heb', 'Jam', '1Pe', '2Pe', '1Jo', '2Jo', '3Jo', 'Jud', 'Rev'
 )
+
+OLD_ABBR = BOOK_ABBR[:61]
+
+NEW_ABBR = BOOK_ABBR[61:]
