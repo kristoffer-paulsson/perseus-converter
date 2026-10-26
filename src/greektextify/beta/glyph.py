@@ -67,35 +67,39 @@ class BetaGlyph(GreekGlyph):
     def glyphen(cls, chs: str) -> Tuple["GreekGlyph", int]:
         position = 0
         combine = list()
-        letter = ''
+        letter = list()
         upper = False
 
-        if chs[position] == BetaAlphabet.UPPER_CASE:
+        if ord(chs[position]) == BetaAlphabet.UPPER_CASE:
             upper = True
             position += 1
 
             for ch in chs[position:]:
-                if ch in BetaDiacritic.DIACRITICS:
-                    combine.append(cls.diacritic(BetaDiacritic.BETA_DIACRITICS[ch]))
+                cp = ord(ch)
+                if cp in BetaDiacritic.DIACRITICS:
+                    combine.append(cls.diacritic(BetaDiacritic.BETA_DIACRITICS[cp]))
                     position += 1
                 else:
                     break
-
-        if chs[position] in BetaAlphabet.LATIN_CHARS:
-            letter += chs[position]
+        cp = ord(chs[position])
+        if cp in BetaAlphabet.LATIN_CHARS:
+            letter.append(cp)
             position += 1
 
         if position < len(chs):
-            if chs[position] in BetaAlphabet.LATIN_NUMBERS:
-                letter += chs[position]
+            cp = ord(chs[position])
+            if cp in BetaAlphabet.LATIN_NUMBERS:
+                letter.append(cp)
                 position += 1
 
-        if letter in BetaAlphabet.BETA_LETTERS:
-            combine.append(cls.diacritic(BetaAlphabet.BETA_LETTERS[letter][0 if upper else 1]))
+        t = tuple(letter)
+        if t in BetaAlphabet.BETA_LETTERS:
+            combine.append(cls.diacritic((BetaAlphabet.BETA_LETTERS[t][0 if upper else 1], )))
 
         for ch in chs[position:]:
-            if ch in BetaDiacritic.DIACRITICS:
-                combine.append(cls.diacritic(BetaDiacritic.BETA_DIACRITICS[ch]))
+            cp = ord(ch)
+            if cp in BetaDiacritic.DIACRITICS:
+                combine.append(cls.diacritic((BetaDiacritic.BETA_DIACRITICS[cp], )))
                 position += 1
             else:
                 break

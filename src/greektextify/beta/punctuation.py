@@ -25,11 +25,11 @@ from greektextify.text.punctuation import GreekPunctuation
 
 class BetaPunctuation(GreekPunctuation):
 
-    FULL_STOP = '\u002E'
-    COMMA = '\u002C'
-    ANO_TELEIA = '\u003A'
-    QUESTION_MARK = '\u003B'
-    EM_DASH = '\u005F'
+    FULL_STOP = ord('\u002E')
+    COMMA = ord('\u002C')
+    ANO_TELEIA = ord('\u003A')
+    QUESTION_MARK = ord('\u003B')
+    EM_DASH = ord('\u005F')
 
     PUNCT_MARKS = frozenset([
         FULL_STOP, COMMA, ANO_TELEIA, QUESTION_MARK, EM_DASH

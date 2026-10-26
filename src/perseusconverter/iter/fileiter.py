@@ -28,18 +28,14 @@ from bs4 import BeautifulSoup
 import regex
 
 from greektextify.nlp.contextual import NlpOperation, NlpContext, ContextObject
-from greektextify.nlp.detoken import Tokenizer, Detokenizer
-from greektextify.text import immaterializer
-from greektextify.text.dbg_standard import DbgUtfStandard
+from greektextify.nlp.detoken import Tokenizer
 from greektextify.text.extended import GreekExtended
 from greektextify.text.midway import GreekMidway
-from greektextify.text.prnt import PrintGreek
 from greektextify.text.punctuation import GreekPunctuation
 from greektextify.text.standardizer import TokenStandardizerMixin
-from greektextify.text.word import GreekWord
 from perseusconverter.recursiveiterator import RecursiveIterator
 from perseusconverter.util.books import BOOK_ABBR
-from perseusconverter.util.utils import CountVerify, BRef
+from perseusconverter.util.utils import BRef
 
 
 class BasicIterFile(ABC):
@@ -71,7 +67,11 @@ class BasicIterFile(ABC):
 
 class NocrFileIter(BasicIterFile):
 
-    OMITTED = ('1ki.002', '2ma.013', 'mic.007')
+    OMITTED = (
+        '1ki.002',  # Malformed sub verses in 2:46, unparsable
+        '2ma.013',  # Malformed hyphen and semicolon at 13:15, unparsable
+        'mic.001', 'mic.002', 'mic.003', 'mic.004', 'mic.005', 'mic.006', 'mic.007'  # Doubles of most verses
+    )
 
     BOOK_LEN = (61, )
 

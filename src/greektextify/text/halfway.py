@@ -26,5 +26,4 @@ class GreekHalfway:
 
     MODIFIER_APOSTROPHE = ord('\u02BC')  # PSILI
     MODIFIER_REVERSED_COMMA = ord('\u02BD')  # DASIA
-    MODIFIER_PRIME = ord('\u02B9')  # APOSTROPHE
 

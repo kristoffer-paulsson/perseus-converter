@@ -29,6 +29,7 @@ from greektextify.beta.alphabet import BetaAlphabet
 from greektextify.beta.diacritic import BetaDiacritic
 from greektextify.beta.glyph import BetaGlyph
 from greektextify.beta.midway import BetaMidway
+from greektextify.text.alphabet import GreekAlphabet
 from greektextify.text.glyph import GreekGlyph
 from greektextify.text.midway import GreekMidway
 from greektextify.text.word import GreekWord
@@ -60,8 +61,9 @@ class BetaWord(GreekWord):
     def immaterialize(cls, text: str) -> Tuple[str]:
         token = list()
         for ch in text.upper():
-            if ch in cls.WORD_CHARS:
-                token.append(ch)
+            cp = ord(ch)
+            if cp in cls.WORD_CHARS:
+                token.append(cp)
             else:
                 break
 
@@ -75,10 +77,11 @@ class BetaWord(GreekWord):
             return tuple(token)
 
     @classmethod
-    def glyphen(cls, word: str) -> Tuple[GreekGlyph]:
-        apostrophe = word[-1] == BetaMidway.APOSTROPHE
+    def glyphen2(cls, word: str) -> Tuple[GreekGlyph]:
+        apostrophe = ord(word[-1]) == BetaMidway.APOSTROPHE
+        prime = ord(word[-1]) == BetaMidway.HASH
         position = 0
-        length = len(word)-1 if apostrophe else len(word)
+        length = len(word)-1 if apostrophe or prime else len(word)
         glyphs = list()
 
         while position != length:
@@ -88,5 +91,32 @@ class BetaWord(GreekWord):
 
         if apostrophe:
             glyphs.append(GreekGlyph(GreekMidway.APOSTROPHE, False, False, False, False, False, False, False, False, False))
+        elif prime:
+            glyphs.append(GreekGlyph(GreekMidway.MODIFIER_PRIME, False, False, False, False, False, False, False, False, False))
+
+        return tuple(glyphs)
+
+    @classmethod
+    def glyphen(cls, word: str) -> Tuple[GreekGlyph]:
+        modifier = ord(word[-1]) if ord(word[-1]) in BetaMidway.MODIFIERS else -1
+        length = len(word)-1 if modifier != -1 else len(word)
+        glyphs = list()
+
+        word = word[:length]
+        parts = word.split(chr(BetaAlphabet.HYPHEN_MINUS))
+        num = len(parts) - 1
+        for part in parts:
+            length = len(part)
+            position = 0
+            while position != length:
+                glyph, size = BetaGlyph.glyphen(part[position:])
+                glyphs.append(glyph)
+                position += size
+            if num > 0:
+                glyphs.append(GreekGlyph(GreekAlphabet.HYPHEN_MINUS, False, False, False, False, False, False, False, False, False))
+                num -= 1
+
+        if modifier != -1:
+            glyphs.append(GreekGlyph(BetaMidway.BETA_MODIFIERS[modifier], False, False, False, False, False, False, False, False, False))
 
         return tuple(glyphs)

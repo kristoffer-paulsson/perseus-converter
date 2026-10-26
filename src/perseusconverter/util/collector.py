@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2022 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+# Copyright (c) 2026 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any purpose with
 # or without fee is hereby granted, provided that the above copyright notice and this
@@ -32,6 +32,8 @@ class Collector:
         self._bible = dict()
         self._sub_verses = list()
         self._missing = dict()
+        self._duplicates = list()
+        self._malplaced = list()
 
     def collect(self):
         chapter_cnt = Counter()
@@ -50,16 +52,34 @@ class Collector:
                     if chapter_cnt.current() != bref.chapter:
                         raise RuntimeError("Chapter mismatch {} / {}".format(chapter_cnt.current(), bref.chapter))
                     verse_cnt.reset()
-                if verse_cnt.current() < bref.verse and bref.sub == -1:
+                if bref.sub != -1:
+                    self._add_subverse(bref)
+                elif bref.verse == 0:
+                    if bref.chapter not in self._bible[bref.book]:
+                        self._bible[bref.book][bref.chapter] = list()
+                    self._bible[bref.book][bref.chapter].append(bref.verse)
+                elif verse_cnt.current() < bref.verse:
                     while bref.verse - verse_cnt.current() > 1:
                         verse_cnt.increment()
                         self._add_missing(BRef(bref.book, bref.chapter, verse_cnt.current(), -1))
                     if bref.chapter not in self._bible[bref.book]:
                         self._bible[bref.book][bref.chapter] = list()
-                    self._bible[bref.book][bref.chapter].append(bref.verse)
+                    else:
+                        self._bible[bref.book][bref.chapter].append(bref.verse)
                     verse_cnt.increment()
-                if bref.sub != -1:
-                    self._sub_verses.append(str(bref))
+                elif bref.verse in self._bible[bref.book][bref.chapter]:
+                     self._add_duplicate(bref)
+                else:
+                    self._add_malplaced(bref)
+
+    def _add_malplaced(self, ref: BRef):
+        self._malplaced.append(str(ref))
+
+    def _add_duplicate(self, ref: BRef):
+        self._duplicates.append(str(ref))
+
+    def _add_subverse(self, ref: BRef):
+        self._sub_verses.append(str(ref))
 
     def _add_missing(self, ref: BRef):
         if ref.book not in self._missing:
@@ -79,6 +99,8 @@ class Collector:
         print(self._bible)
         print(self._sub_verses)
         print(self._missing)
+        print(self._duplicates)
+        print(self._malplaced)
 
     def _normalize(self) -> Dict[str, Dict[int, Set[int]]]:
         """book → chapter → set of verses.

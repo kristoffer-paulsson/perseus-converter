@@ -28,14 +28,14 @@ from greektextify.text.standardizer import TokenStandardizerMixin
 
 
 class PdlBetaStandard(TokenStandardizerMixin):
-    SEMICOLON = '\u003B'
-    HYPHEN_MINUS = '\u002D'
-    LOW_LINE = '\u005F'
-    EM_DASH = '\u2014'
+    SEMICOLON = ord('\u003B')
+    HYPHEN_MINUS = ord('\u002D')
+    LOW_LINE = ord('\u005F')
+    EM_DASH = ord('\u2014')
 
     PDL_TRANSFORM = {
-        GreekPunctuation.QUESTION_MARK: ord(BetaPunctuation.QUESTION_MARK),
-        GreekPunctuation.EM_DASH: ord(BetaPunctuation.EM_DASH),
+        GreekPunctuation.QUESTION_MARK: BetaPunctuation.QUESTION_MARK,
+        GreekPunctuation.EM_DASH: BetaPunctuation.EM_DASH,
     }
 
     @classmethod

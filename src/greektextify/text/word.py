@@ -106,18 +106,26 @@ class GreekWord(TokenImmaterializableMixin):
 
     @classmethod
     def glyphen(cls, word: str) -> Tuple[GreekGlyph]:
-        apostrophe = ord(word[-1]) == GreekMidway.APOSTROPHE
-        position = 0
-        length = len(word)-1 if apostrophe else len(word)
+        modifier = ord(word[-1]) if ord(word[-1]) in GreekMidway.MODIFIERS else -1
+        length = len(word)-1 if modifier != -1 else len(word)
         glyphs = list()
 
-        while position != length:
-            glyph, size = GreekGlyph.glyphen(word[position:])
-            glyphs.append(glyph)
-            position += size
+        word = word[:length]
+        parts = word.split(chr(GreekAlphabet.HYPHEN_MINUS))
+        num = len(parts) - 1
+        for part in parts:
+            length = len(part)
+            position = 0
+            while position != length:
+                glyph, size = GreekGlyph.glyphen(part[position:])
+                glyphs.append(glyph)
+                position += size
+            if num > 0:
+                glyphs.append(GreekGlyph(GreekAlphabet.HYPHEN_MINUS, False, False, False, False, False, False, False, False, False))
+                num -= 1
 
-        if apostrophe:
-            glyphs.append(GreekGlyph(GreekMidway.APOSTROPHE, False, False, False, False, False, False, False, False, False))
+        if modifier != -1:
+            glyphs.append(GreekGlyph(modifier, False, False, False, False, False, False, False, False, False))
 
         return tuple(glyphs)
 

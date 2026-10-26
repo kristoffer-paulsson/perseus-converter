@@ -34,6 +34,10 @@ class GreekDatabase:
     HYPHEN_MINUS = (GreekAlphabet.HYPHEN_MINUS,
                     GreekGlyph(ch=GreekAlphabet.HYPHEN_MINUS, psili=False, dasia=False, ypogegrammeni=False,
                                varia=False, oxia=False, perispomeni=False, dialytika=False, vrachy=False, macron=False))
+    MODIFIER_PRIME = (GreekMidway.MODIFIER_PRIME,
+                      GreekGlyph(ch=GreekMidway.MODIFIER_PRIME, psili=False, dasia=False, ypogegrammeni=False,
+                                 varia=False, oxia=False, perispomeni=False, dialytika=False, vrachy=False,
+                                 macron=False))
 
     LOWER_IOTA = (GreekAlphabet.LOWER_IOTA,
                   GreekGlyph(ch=GreekAlphabet.LOWER_IOTA, psili=False, dasia=False, ypogegrammeni=False, varia=False,
@@ -1163,7 +1167,7 @@ class GreekDatabase:
                                     macron=False))
 
     ALL_UTF_LETTERS = (
-        APOSTROPHE, HYPHEN_MINUS, LOWER_ZETA, LOWER_ALPHA, UPPER_EPSILON, LOWER_DELTA, LOWER_ETA,
+        APOSTROPHE, HYPHEN_MINUS, MODIFIER_PRIME, LOWER_ZETA, LOWER_ALPHA, UPPER_EPSILON, LOWER_DELTA, LOWER_ETA,
         UPPER_CHI, LOWER_PSI, UPPER_PI, LOWER_GAMMA, LOWER_XI, LOWER_EPSILON, LOWER_CHI, UPPER_DELTA, UPPER_NU,
         UPPER_SIGMA, UPPER_OMICRON, LOWER_PHI, LOWER_PI, UPPER_GAMMA, UPPER_ETA, LOWER_SIGMA, LOWER_LAMDA, LOWER_IOTA,
         UPPER_ZETA, UPPER_LAMDA, UPPER_TAU, LOWER_FINAL_SIGMA, UPPER_ALPHA, LOWER_OMICRON, LOWER_TAU, LOWER_BETA,

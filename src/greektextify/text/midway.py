@@ -73,6 +73,7 @@ class GreekMidway:
     LETTERS = frozenset(EXPANDABLE_LETTERS.keys())
 
     APOSTROPHE = ord('\u0027')
+    MODIFIER_PRIME = ord('\u02B9')
 
-    MODIFIERS = frozenset([APOSTROPHE])
+    MODIFIERS = frozenset([APOSTROPHE, MODIFIER_PRIME])
 

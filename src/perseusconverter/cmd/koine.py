@@ -39,6 +39,7 @@ from greektextify.text.midway import GreekMidway
 from . import Command
 from ..app import Config, logging
 from ..iter.bgmiter import IterBGM, BRef
+from ..iter.catssiter import IterCatSS, CatSSFileIter
 from ..iter.fileiter import NocrFileIter, IterNocr
 from ..iter.sinaiiter import IterSinai
 from ..recursiveiterator import RecursiveIterator
@@ -380,8 +381,13 @@ class KoineCommand(Command):
             print(key, len(dictionary[key]))
 
     def _catss(self):
-
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
+        citer = IterCatSS(CatSSFileIter(filename))
+        collect = Collector(citer)
+        collect.collect()
+        collect.analyze()
+        exit()
+
 
         files = [filename for filename in RecursiveIterator(filename)]
 
@@ -468,6 +474,16 @@ class KoineCommand(Command):
         collect = Collector(niter)
         collect.collect()
         collect.analyze()
+
+        exit()
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
+        with filename.open('r') as f:
+            viter = IterBGM(f)
+            collect2 = Collector(viter)
+            collect2.collect()
+
+            print(collect.difference(collect2))
+            print(collect2.difference(collect))
 
 
     def _sept3(self):
