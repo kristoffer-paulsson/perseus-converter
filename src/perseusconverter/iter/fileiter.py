@@ -70,12 +70,21 @@ class NocrFileIter(BasicIterFile):
     OMITTED = (
         '1ki.002',  # Malformed sub verses in 2:46, unparsable
         '1ki.005',  # Verse 14 removed but found in other editions of LXX
+        '1ki.010',  # Sub-verses in verse 22 modified
+        '1ki.012',  # Sub-verses in verse 24 modified
         '1ki.016',  # Verse 28 removed but found in other editions of LXX
         'job.042',  # Verse 17 removed but found in other editions of LXX
         'dan.004',  # Verse 31 removed but found in other editions of LXX
         '2ma.013',  # Malformed hyphen and semicolon at 13:15, unparsable
         'mic.001', 'mic.002', 'mic.003', 'mic.004', 'mic.005', 'mic.006', 'mic.007',  # Doubles of most verses
-        'sut.001'  # Corpora missing
+        'sut.001',  # Corpora missing
+        'est.001',  # Verse 1 removed but found in other editions of LXX
+        'est.003',  # Sub-verses in verse 13 modified
+        'est.004',  # Sub-verses in verse 17 modified
+        'est.005',  # Sub-verses in verse 1 modified
+        'est.008',  # Sub-verses in verse 12 modified
+        'jos.009',  # Sub-verses in verse 2 modified
+        'jsa.015',  # Sub-verses in verse 59 modified
     )
 
     BOOK_LEN = (61, )
