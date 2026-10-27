@@ -21,6 +21,7 @@
 #
 """Module containing the LOAD command class."""
 import collections
+import csv
 import re
 import string
 from argparse import Namespace
@@ -42,13 +43,14 @@ from ..iter.bgmiter import IterBGM, BRef
 from ..iter.bgtiter import IterBGT
 from ..iter.catssiter import IterCatSS, CatSSFileIter
 from ..iter.fileiter import NocrFileIter, IterNocr
+from ..iter.rockiter import IterRSGNT
 from ..iter.sinaiiter import IterSinai
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import AbstractTeiTraverser
 from ..traverse.lsjlex import LsjTraverser
 from ..traverse.rgnt import RockTraverser
-from ..util.books import OLD_ABBR
+from ..util.books import OLD_ABBR, NEW_ABBR, BOOK_ABBR
 from ..util.collector import Counter, Collector
 from ..util.utils import ListVerify, CountVerify
 
@@ -165,6 +167,8 @@ class KoineCommand(Command):
             self._catss()
         elif self._args.corpora == 'rock':
             self._rock()
+        elif self._args.corpora == 'ognt':
+            self._opengnt()
         elif self._args.corpora == 'check':
             self._meta()
         else:
@@ -268,10 +272,10 @@ class KoineCommand(Command):
     def _bgt(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
         with filename.open('r') as f:
-            viter = IterBGT(f)
+            viter = IterBGT(f, NEW_ABBR)
             collect = Collector(viter)
             collect.collect()
-            #collect.analyze()
+            collect.analyze()
 
             filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
             with filename2.open('r') as f:
@@ -337,18 +341,15 @@ class KoineCommand(Command):
             citer = IterBGT(f, OLD_ABBR)
             collect2 = Collector(citer)
             collect2.collect()
-            collect2.analyze()
-
-            print()
-            print()
+            #collect2.analyze()
 
             filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
             citer = IterCatSS(CatSSFileIter(filename))
             collect = Collector(citer)
             collect.collect()
-            collect.analyze()
+            #collect.analyze()
 
-            #print(collect2.difference(collect))
+            print(collect2.difference(collect))
             exit()
 
 
@@ -431,26 +432,147 @@ class KoineCommand(Command):
                         #    pass
                     #print(refs)
 
+    def find_digit(self, text: str, position: int = 0):
+        if position < 0 or position >= len(text):
+            raise IndexError()
+
+        pos = position
+        while not isdigit(text[pos]):
+            if pos < len(text)-1:
+                pos += 1
+            else:
+                return -1
+        return pos
+
+    def find_eo_ref(self, text: str, position: int = 0):
+        if position < 0 or position >= len(text):
+            raise IndexError()
+
+        pos = position
+        while isalpha(text[pos]) or isdigit(text[pos]) or text[pos] == ':':
+            if pos < len(text)-1:
+                pos += 1
+            else:
+                return -1
+        return pos
+
+    def find_ref(self, text: str):
+        el = list()
+        sdx = 0
+        idl = sdx
+        while (s := self.find_digit(text, idl)) != -1:
+            e = self.find_eo_ref(text, s)
+            if e == -1:
+                break
+            el.append(text[sdx:s])
+            el.append(text[s :e])
+            sdx = e # + 1
+            idl = sdx
+
+        el.append(text[sdx:])
+        return el
+
+    def _opengnt(self):
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
+        with filename.open('r') as f: # ,
+            # Skip header
+            last_verse = 0
+            current_index = 0
+
+            next(f)
+
+            for line in f:
+                parts = line.strip().split('\t')
+                if len(parts) >= 8:
+                    # Extract book/chapter/verse info: 〔40｜1｜1〕
+                    book_info = parts[6].strip('〔〕')
+                    book_parts = book_info.split('｜')
+                    if len(book_parts) >= 3:
+                        book_num = int(book_parts[0])
+                        chapter = int(book_parts[1])
+                        verse = int(book_parts[2])
+
+                        book = NEW_ABBR[book_num-40]
+
+                        if(verse != last_verse):
+                            current_index = 1
+                            last_verse = verse
+                            bref = BRef(book, chapter, verse, -1)
+                            print(bref)
+                            # yield bref
+                        else:
+                            current_index += 1
+
+                        word_info = parts[7].strip('〔〕')
+                        word_parts = word_info.split('｜')
+                        #print(word_parts[2])
+                        #word = DbgUtfStandard.standardize(word_parts[2])
+
+
     def _rock(self):
-        pass
+        ABBR = (
+            'Mt', 'Mk', 'Lk', 'Jn', 'Ac', 'Ro', '1Co', '2Co', 'Ga', 'Eph', 'Php', 'Col', '1Th', '2Th', '1Ti', '2Ti',
+            'Tit', 'Phm', 'Heb', 'Jas', '1Pe', '2Pe', '1Jn', '2Jn', '3Jn', 'Jud', 'Re'
+        )
+
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
+        with filename.open('r') as f:
+            collect = Collector(IterRSGNT(f))
+            collect.collect()
+            #collect.analyze()
+
+            filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
+            with filename2.open('r') as f:
+                viter = IterBGT(f, NEW_ABBR)
+                collect2 = Collector(viter)
+                collect2.collect()
+                #collect.analyze()
+
+                print(collect2.difference(collect))
+
+            exit()
+            book_abbr = 'n/a'
+            chapter_cnt = 0
+            verse_cnt = 0
+            for line in f:
+                line = line.strip()
+                if line in ABBR:
+                    book_abbr = NEW_ABBR[ABBR.index(line)]
+                else:
+                    for e in self.find_ref(line):
+                        if e == '':
+                            continue
+                        elif isdigit(e[0]):
+                            if ':' in e:
+                                chapter_num, verse_num = e.split(':')
+                                chapter_cnt = int(chapter_num)
+                                verse_cnt = int(verse_num)
+                            else:
+                                verse_cnt = int(e)
+                            print(BRef(book_abbr, chapter_cnt, verse_cnt, -1))
+                        else:
+                            print(e)
+
 
     def _nocr(self):
-        filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-        niter = IterNocr(NocrFileIter(filename))
-        collect = Collector(niter)
-        collect.collect()
-        #collect.analyze()
-
-        #filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
-        # citer = IterCatSS(CatSSFileIter(filename2))
         filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
         with filename2.open('r') as f:
             citer = IterBGT(f, OLD_ABBR)
             collect2 = Collector(citer)
             collect2.collect()
+
+            filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
+            niter = IterNocr(NocrFileIter(filename))
+            collect = Collector(niter)
+            collect.collect()
+            #collect.analyze()
+
+        #filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
+        # citer = IterCatSS(CatSSFileIter(filename2))
+
             # collect.analyze()
 
-            print(collect.difference(collect2))
+            print(collect2.difference(collect))
             exit()
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
         with filename.open('r') as f:
