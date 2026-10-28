@@ -43,6 +43,7 @@ from ..iter.bgmiter import IterBGM, BRef
 from ..iter.bgtiter import IterBGT
 from ..iter.catssiter import IterCatSS, CatSSFileIter
 from ..iter.fileiter import NocrFileIter, IterNocr
+from ..iter.openiter import IterOpenGNT
 from ..iter.rockiter import IterRSGNT
 from ..iter.sinaiiter import IterSinai
 from ..recursiveiterator import RecursiveIterator
@@ -475,6 +476,43 @@ class KoineCommand(Command):
     def _opengnt(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
         with filename.open('r') as f: # ,
+            #oiter = IterOpenGNT(csv.reader(f, delimiter='\t'))
+            #collect = Collector(oiter)
+            #collect.collect()
+            #collect.analyze()
+
+            csv.reader(f, delimiter='\t')
+            last_verse = 0
+            current_index = 0
+            v_text = None
+
+            reader = csv.reader(f, delimiter='\t')
+            next(reader)
+
+            for row in reader:
+                book_idx, chapter_num, verse_num = row[6].strip('〔〕').split('｜')
+                book_abbr = NEW_ABBR[int(book_idx) - 40]
+                chapter_cnt = int(chapter_num)
+                verse_cnt = int(verse_num)
+                if verse_cnt != last_verse:
+                    if v_text is not None:
+                        print(v_text)
+                    v_text = ''
+
+                    current_index = 1
+                    last_verse = verse_cnt
+                    bref = BRef(book_abbr, chapter_cnt, verse_cnt, -1)
+
+                    v_text = str(bref)
+                    # yield bref
+                else:
+                    current_index += 1
+
+                word = ' ' + row[7].strip('〔〕').split('｜')[2]
+                punctuation = ''.join(row[11].strip('〔〕').split('｜')).replace('<pm>', '').replace('</pm>', '')
+                v_text += word + punctuation
+
+            exit()
             # Skip header
             last_verse = 0
             current_index = 0
@@ -519,7 +557,8 @@ class KoineCommand(Command):
         with filename.open('r') as f:
             collect = Collector(IterRSGNT(f))
             collect.collect()
-            #collect.analyze()
+            # collect.analyze()
+
 
             filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
             with filename2.open('r') as f:
@@ -528,7 +567,21 @@ class KoineCommand(Command):
                 collect2.collect()
                 #collect.analyze()
 
-                print(collect2.difference(collect))
+                filename3 = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
+                with filename3.open('r') as f:  # ,
+                    oiter = IterOpenGNT(csv.reader(f, delimiter='\t'))
+                    collect3 = Collector(oiter)
+                    collect3.collect()
+                    #collect3.analyze()
+
+                    print('RSGNT-BGT', collect.difference(collect2))
+                    print('BGT-RSGNT', collect2.difference(collect))
+
+                    print('RSGNT-OpenGNT', collect.difference(collect3))
+                    print('OpenGNT-RSGNT', collect3.difference(collect))
+
+                    print('BGT-OpenGNT', collect2.difference(collect3))
+                    print('OpenGNT-BGT', collect3.difference(collect2))
 
             exit()
             book_abbr = 'n/a'
