@@ -23,6 +23,8 @@ from typing import Tuple
 
 from greektextify.nlp.contextual import ContextObject, NlpOperation, NlpContext
 from greektextify.nlp.detoken import Tokenizer
+from greektextify.text.extended import GreekExtended
+from greektextify.text.midway import GreekMidway
 from greektextify.text.standardizer import TokenStandardizerMixin
 from perseusconverter.util.books import NEW_ABBR
 from perseusconverter.util.utils import BRef
@@ -35,6 +37,7 @@ class OpenUtfStandard(TokenStandardizerMixin):
     TRANSFORM = {
         PILCROW_SIGN: '',
         NOT_SIGN: '',
+        GreekExtended.KORONIS: GreekMidway.APOSTROPHE,
     }
 
     @classmethod
@@ -96,7 +99,7 @@ class IterOpenGNT(ContextObject):
                     current_index += 1
 
                 row_idx += 1
-                self._current += " row :{}".format(row_idx)
+                self._current += " row: {}".format(row_idx)
 
                 word = ' ' + row[7].strip('〔〕').split('｜')[2]
                 punctuation = ''.join(row[11].strip('〔〕').split('｜')).replace('<pm>', '').replace('</pm>', '')

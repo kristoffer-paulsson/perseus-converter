@@ -22,12 +22,8 @@
 from curses.ascii import isdigit, isalpha
 from typing import Tuple
 
-import regex
-
-from greektextify.beta.word import BetaWord
 from greektextify.nlp.contextual import ContextObject, NlpOperation, NlpContext
 from greektextify.nlp.detoken import Tokenizer
-from greektextify.text.prnt import PrintGreek
 from perseusconverter.iter.fileiter import BasicIterFile
 from perseusconverter.recursiveiterator import RecursiveIterator
 from perseusconverter.util.books import BOOK_ABBR

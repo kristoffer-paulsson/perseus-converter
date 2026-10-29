@@ -22,6 +22,7 @@
 """Module containing the LOAD command class."""
 import collections
 import csv
+import json
 import re
 import string
 from argparse import Namespace
@@ -172,6 +173,8 @@ class KoineCommand(Command):
             self._opengnt()
         elif self._args.corpora == 'check':
             self._meta()
+        elif self._args.corpora == 'fix':
+            self._lxxfix()
         else:
             pass
 
@@ -334,6 +337,62 @@ class KoineCommand(Command):
         for key in sorted(dictionary, key=lambda x: x):
             print(key, len(dictionary[key]))
 
+    def _lxxfix(self):
+        FINAL = [x.lower() for x in OLD_ABBR]
+
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/rhlxx")
+
+        files = [filename for filename in RecursiveIterator(filename)]
+
+        books_index = dict()
+        for filename in sorted(files, key=lambda x: x.stem):
+            parts = filename.stem.split('.')
+            book = parts[0]
+            if book in ('alt', 'lxx'):
+                continue
+            chapter = int(parts[1])
+            if book not in books_index:
+                books_index[book] = dict()
+            books_index[book][chapter] = filename
+
+        last_bref = ''
+        for book in books_index:
+            for chapter in books_index[book]:
+                print(books_index[book][chapter])
+                data = json.load(books_index[book][chapter].open('r'))
+                for paragraphs in data['data']['chapter']['content']:
+                    if 'content' not in paragraphs:
+                        print('Paragraph missing content')
+                    else:
+                        for content in paragraphs['content']:
+                            if content['type'] == 'verse-number':
+                                book_ref, chapter_num, verse_num = content['verseId'].split('.')
+                                if book_ref == 'DAG' and book == 'danth':
+                                    book_ref = 'DAT'
+                                elif book_ref == 'DAG' and book == 'dan':
+                                    book_ref = 'DAN'
+                                elif book_ref == 'ESG':
+                                    book_ref = 'EST'
+                                book_abbr = BOOK_ABBR[FINAL.index(book_ref.lower())]
+                                chapter_cnt = int(chapter_num)
+                                if isalpha(verse_num[-1]):
+                                    verse_cnt = int(verse_num[:-1])
+                                    sub_verse = ord(verse_num[-1]) - ord('a')
+                                else:
+                                    verse_cnt = int(verse_num)
+                                    sub_verse = -1
+                                bref = BRef(book_abbr, chapter_cnt, verse_cnt, sub_verse)
+                                if last_bref != str(bref):
+                                    last_bref = str(bref)
+                                    print(str(bref))
+                            elif content['type'] in ('verse-text', 'text'):
+                                print(content['content'])
+                            else:
+                                raise ValueError("Type: {}".format(content['type']))
+
+        exit()
+
+
     def _catss(self):
         #filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
         #niter = IterNocr(NocrFileIter(filename2))
@@ -476,11 +535,12 @@ class KoineCommand(Command):
     def _opengnt(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
         with filename.open('r') as f: # ,
-            #oiter = IterOpenGNT(csv.reader(f, delimiter='\t'))
-            #collect = Collector(oiter)
-            #collect.collect()
-            #collect.analyze()
+            oiter = IterOpenGNT(csv.reader(f, delimiter='\t'))
+            collect = Collector(oiter)
+            collect.collect()
+            collect.analyze()
 
+            exit()
             csv.reader(f, delimiter='\t')
             last_verse = 0
             current_index = 0
