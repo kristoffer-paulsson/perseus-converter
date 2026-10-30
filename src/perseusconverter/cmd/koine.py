@@ -44,6 +44,7 @@ from ..iter.bgmiter import IterBGM, BRef
 from ..iter.bgtiter import IterBGT
 from ..iter.catssiter import IterCatSS, CatSSFileIter
 from ..iter.fileiter import NocrFileIter, IterNocr
+from ..iter.fixiter import FixFileIter, IterFix
 from ..iter.openiter import IterOpenGNT
 from ..iter.rockiter import IterRSGNT
 from ..iter.sinaiiter import IterSinai
@@ -338,6 +339,12 @@ class KoineCommand(Command):
             print(key, len(dictionary[key]))
 
     def _lxxfix(self):
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/rhlxx")
+        fiter = IterFix(FixFileIter(filename))
+        collect = Collector(fiter)
+        collect.collect()
+
+        exit()
         FINAL = [x.lower() for x in OLD_ABBR]
 
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/rhlxx")
@@ -389,8 +396,6 @@ class KoineCommand(Command):
                                 print(content['content'])
                             else:
                                 raise ValueError("Type: {}".format(content['type']))
-
-        exit()
 
 
     def _catss(self):
