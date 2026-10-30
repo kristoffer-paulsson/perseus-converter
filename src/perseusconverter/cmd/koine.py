@@ -341,7 +341,7 @@ class KoineCommand(Command):
     def _lxxfix(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/rhlxx")
         fiter = IterFix(FixFileIter(filename))
-        collect = Collector(fiter)
+        collect = Collector(fiter.iter('mic', 7))
         collect.collect()
 
         exit()

@@ -106,10 +106,14 @@ class IterFix(ContextObject):
         text = self._tokenizer.standardize(text)
         return self._tokenizer.tokenize(text)
 
-    def iter(self):
+    def iter(self, book_code: str = None, chapter_sel: int = None):
         last_bref = ''
         with NlpContext(self):
             for filename, book, chapter in self._file_iter:
+                if book_code is not None and book_code != book:
+                    continue
+                if chapter_sel is not None and chapter_sel != chapter:
+                    continue
                 data = json.load(filename.open('r'))
                 for paragraphs in data['data']['chapter']['content']:
                     if 'content' not in paragraphs:
