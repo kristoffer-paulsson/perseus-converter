@@ -39,7 +39,7 @@ class Emitter:
 
     @property
     def same(self) -> bool:
-        return self._ref.book == self._last.book
+        return self._last is not None and self._last.book == self._ref.book
 
     @property
     def book(self) -> str:
@@ -91,13 +91,15 @@ class Emitter:
 
     def fast_forward(self):
         for token in self._iterator:
-            if hasattr(token, 'book'):
-                if token.book == self._ref.book:
+            if isinstance(token, BRef):
+                if token.book == self._ref.book and (token.chapter == self._ref.chapter or self._ref.chapter == -1):
                     self._update_model(token, self._chapter_cnt, self._verse_cnt, self._bible)
                     self._last = token
                     break
             elif isinstance(token, Tuple):
-                pass
+                if self.same:
+                    if self._filter(token[0]):
+                        self._token_counter.increment()
             else:
                 raise TypeError("Token type {} not supported".format(type(token)))
         else:
@@ -110,7 +112,7 @@ class Emitter:
         tokens = list()
         tokens.append(self._last)
         for token in self._iterator:
-            if hasattr(token, 'book'):
+            if isinstance(token, BRef):
                 if self._update_model(token, self._chapter_cnt, self._verse_cnt, self._bible):
                     self._last = token
                     break
@@ -121,5 +123,7 @@ class Emitter:
                     tokens.append((token[0], self._token_counter.current(), token[1]))
             else:
                 raise TypeError("Token type {} not supported".format(type(token)))
+        else:
+            self._last = None
 
         return tuple(tokens)
