@@ -96,7 +96,7 @@ class CatSSFileIter(BasicIterFile):
 class IterCatSS(ContextObject):
     OMITTED = (
         'Pro 24', 'Pro 25', 'Pro 26', 'Pro 27', 'Pro 28', 'Pro 29', 'Pro 30',
-        'Pro 31', 'Pro 33', 'Pro 33', 'Pro 34', 'Pro 35', 'Pro 36',  # Disorder
+        'Pro 31', 'Pro 32', 'Pro 33', 'Pro 34', 'Pro 35', 'Pro 36',  # Disorder
         'Dat 3', # Five verses removed that exists in other editions of LXX
     )
 
