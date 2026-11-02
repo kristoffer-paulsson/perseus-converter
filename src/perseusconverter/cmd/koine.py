@@ -23,10 +23,10 @@
 import collections
 import csv
 import json
-import re
 import string
 from argparse import Namespace
 from curses.ascii import isalpha, isdigit
+from pprint import pprint
 
 from bs4 import BeautifulSoup
 from lxml.etree import XMLSyntaxError
@@ -55,6 +55,7 @@ from ..traverse.lsjlex import LsjTraverser
 from ..traverse.rgnt import RockTraverser
 from ..util.books import OLD_ABBR, NEW_ABBR, BOOK_ABBR
 from ..util.collector import Counter, Collector
+from ..util.emitter import Emitter
 from ..util.utils import ListVerify, CountVerify
 
 BETACODE = (
@@ -277,11 +278,19 @@ class KoineCommand(Command):
     def _bgt(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
         with filename.open('r') as f:
-            viter = IterBGT(f, NEW_ABBR)
-            collect = Collector(viter)
-            collect.collect()
-            collect.analyze()
+            viter = IterBGT(f, BOOK_ABBR)
+            #collect = Collector(viter)
+            #collect.collect()
+            #collect.analyze()
+            #emitter = Emitter(viter, BRef('Jer', -1, -1, -1), lambda x: x == 0)
+            emitter = Emitter(viter, BOOK_ABBR, lambda x: x == 0)
+            emitter.fast_forward()
+            while emitter.valid:
+                last_chapter = emitter.get_chapter()
+                pprint(last_chapter)
 
+
+            exit()
             filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
             with filename2.open('r') as f:
                 viter2 = IterBGM(f)
@@ -410,6 +419,14 @@ class KoineCommand(Command):
 
             filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
             citer = IterCatSS(CatSSFileIter(filename))
+
+            emitter = Emitter(citer, OLD_ABBR, lambda x: x == 0)
+            emitter.fast_forward()
+            while emitter.valid:
+                last_chapter = emitter.get_chapter()
+                pprint(last_chapter)
+
+            exit()
             collect = Collector(citer)
             collect.collect()
             #collect.analyze()
@@ -541,9 +558,15 @@ class KoineCommand(Command):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
         with filename.open('r') as f: # ,
             oiter = IterOpenGNT(csv.reader(f, delimiter='\t'))
-            collect = Collector(oiter)
-            collect.collect()
-            collect.analyze()
+            #collect = Collector(oiter)
+            #collect.collect()
+            #collect.analyze()
+
+            emitter = Emitter(oiter, NEW_ABBR, lambda x: x == 0)
+            emitter.fast_forward()
+            while emitter.valid:
+                last_chapter = emitter.get_chapter()
+                pprint(last_chapter)
 
             exit()
             csv.reader(f, delimiter='\t')
@@ -620,9 +643,18 @@ class KoineCommand(Command):
 
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
         with filename.open('r') as f:
-            collect = Collector(IterRSGNT(f))
-            collect.collect()
+            riter = IterRSGNT(f)
+            #collect = Collector(riter)
+            #collect.collect()
             # collect.analyze()
+
+            emitter = Emitter(riter, NEW_ABBR, lambda x: x == 0)
+            emitter.fast_forward()
+            while emitter.valid:
+                last_chapter = emitter.get_chapter()
+                pprint(last_chapter)
+
+            exit()
 
 
             filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
@@ -681,6 +713,13 @@ class KoineCommand(Command):
 
             filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
             niter = IterNocr(NocrFileIter(filename))
+
+            emitter = Emitter(niter, OLD_ABBR, lambda x: x == 0)
+            emitter.fast_forward()
+            while emitter.valid:
+                last_chapter = emitter.get_chapter()
+                pprint(last_chapter)
+            exit()
             collect = Collector(niter)
             collect.collect()
             #collect.analyze()

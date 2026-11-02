@@ -50,7 +50,7 @@ class CatSSFileIter(BasicIterFile):
         '2Chron': '2Ch', '1Esdras': '1Es', '2Esdras': 'Ezr', 'Esther': 'Est', 'Judith': 'Jdt',
         'TobitBA': 'Tob', 'TobitS': 'Tbs', '1Macc': '1Ma', '2Macc': '2Ma', '3Macc': '3Ma',
         '4Macc': '4Ma', 'Psalms': 'Psa', 'Odes': 'Ode', 'Proverbs': 'Pro', 'Qoheleth': 'Ecc',
-        'Canticles': 'Sol', 'Job': 'Job', 'Wisdom': 'Wis', 'Sir Prolog': 'Sip', 'Sirach': 'Sir',
+        'Canticles': 'Sol', 'Job': 'Job', 'Wisdom': 'Wis', 'Sir Prolog': 'Sip', 'Sirach': 'Sir',  # Sip unused
         'PsSol': 'Pss', 'Hosea': 'Hos', 'Micah': 'Mic', 'Amos': 'Amo', 'Joel': 'Joe',
         'Jonah': 'Jon', 'Obadiah': 'Oba', 'Nahum': 'Nah', 'Habakkuk': 'Hab', 'Zeph': 'Zep',
         'Haggai': 'Hag', 'Zech': 'Zec', 'Malachi': 'Mal', 'Isaiah': 'Isa', 'Jer': 'Jer',
@@ -68,7 +68,7 @@ class CatSSFileIter(BasicIterFile):
 
         for book_abbr in filter(lambda x: x not in ('Neh', 'Sip'), BOOK_ABBR[:self.BOOK_LEN[0]]):
             for files in self._file_index[book_abbr]:
-                print('Emit: ', files[1], book_abbr)
+                #print('Emit: ', files[1], book_abbr)
                 yield files[1], files[0], -1
 
         # for idx, data in sorted(self._file_index.items(), key=lambda x: x[0]):
@@ -88,7 +88,7 @@ class CatSSFileIter(BasicIterFile):
             abbr = self.MAP[book if not isdigit(book[-1]) else book[:-1]]
             if abbr not in self._file_index:
                 self._file_index[abbr] = list()
-            print("Indx: ", filename, abbr, book)
+            #print("Indx: ", filename, abbr, book)
             self._file_index[abbr].append((parts[0], filename))
             # self._file_index[int(num)] = (parts[1], filename)
 
@@ -96,9 +96,8 @@ class CatSSFileIter(BasicIterFile):
 class IterCatSS(ContextObject):
     OMITTED = (
         'Pro 24', 'Pro 25', 'Pro 26', 'Pro 27', 'Pro 28', 'Pro 29', 'Pro 30',
-        'Pro 31', 'Pro 33', 'Pro 33', 'Pro 34', 'Pro 35', 'Pro 36'  # Disorder
-                                                          'Dat 3',
-    # Five verses removed that exists in other editions of LXX
+        'Pro 31', 'Pro 33', 'Pro 33', 'Pro 34', 'Pro 35', 'Pro 36',  # Disorder
+        'Dat 3', # Five verses removed that exists in other editions of LXX
     )
 
     MAP = {
@@ -191,7 +190,23 @@ class IterCatSS(ContextObject):
                             # print("({}), {} {}:{}({})".format(line, cur_book, cur_chapter, cur_verse, sub_verse))
                         else:
                             cur_verse = int(verse)
+
                         self._current = (filename, cur_book, cur_chapter, cur_verse)
+
+                        corr_chap = cur_chapter
+                        if self.MAP[book] == '2Es':
+                            if cur_chapter <= 10:
+                                corr_book = BOOK_ABBR[17]  # 'Ezr'
+                            else:
+                                corr_book = BOOK_ABBR[18]  # 'Neh'
+                                corr_chap = cur_chapter - 10
+                        else:
+                            corr_book = self.MAP[book]
+
+                        omit = "{} {}".format(corr_book, corr_chap)
+                        if omit in self.OMITTED:
+                            #print("Omitting", omit, BRef(corr_book, corr_chap, cur_verse, sub_verse))
+                            continue
 
                         yield book, cur_chapter, cur_verse, sub_verse, sublines
 
@@ -216,7 +231,7 @@ class IterCatSS(ContextObject):
         cur_verse = 0
 
         for filename, native_book_abbr, idx in self._file_iter:
-            print('Recv: ', filename, native_book_abbr, idx)
+            # print('Recv: ', filename, native_book_abbr, idx)
             with NlpContext(self):
                 with open(filename, 'r') as f:
                     for lines in f.read().split('\n\n'):
@@ -280,6 +295,11 @@ class IterCatSS(ContextObject):
                                 corr_chap = cur_chapter - 10
                         else:
                             corr_book = self.MAP[book]
+
+                        omit = "{} {}".format(corr_book, corr_chap)
+                        if omit in self.OMITTED:
+                            #print("Omitting", omit, BRef(corr_book, corr_chap, cur_verse, sub_verse))
+                            continue
 
                         yield BRef(corr_book, corr_chap, cur_verse, sub_verse)
 
