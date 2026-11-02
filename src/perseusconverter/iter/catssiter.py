@@ -20,6 +20,8 @@
 #     Kristoffer Paulsson - initial implementation
 #
 from curses.ascii import isdigit, isalpha
+from email import feedparser
+from pprint import pprint
 from typing import Tuple
 
 from greektextify.nlp.contextual import ContextObject, NlpOperation, NlpContext
@@ -31,87 +33,49 @@ from perseusconverter.util.utils import BRef
 
 
 class CatSSFileIter(BasicIterFile):
+    OMITTED = ('',)
 
-    OMITTED = ('', )
-
-    BOOK_LEN = (61, )
+    BOOK_LEN = (61,)
 
     LOWER = BOOK_ABBR[:BOOK_LEN[0]]
 
-    MAP = {'Gen': 'Gen',
-           'Exod': 'Exo',
-           'Lev': 'Lev',
-           'Num': 'Num',
-           'Deut': 'Deu',
-           'JoshB': 'Jsa', #
-           'JoshA': 'Jos', #
-           'JudgesB': 'Jda', #
-           'JudgesA': 'Jdg', #
-           'Ruth': 'Rut',
-           '1Sam': '1Sa',
-           '2Sam': '2Sa',
-           '1Kings': '1Ki',
-           '2Kings': '2Ki',
-           '1Chron': '1Ch',
-           '2Chron': '2Ch',
-           '1Esdras': '1Es',
-           '2Esdras': 'Ezr', # 2Es
-           'Esther': 'Est',
-           'Judith': 'Jdt',
-           'TobitBA': 'Tob',
-           'TobitS': 'Tbs',
-           '1Macc': '1Ma',
-           '2Macc': '2Ma',
-           '3Macc': '3Ma',
-           '4Macc': '4Ma',
-           'Psalms': 'Psa',
-           'Odes': 'Ode',
-           'Proverbs': 'Pro',
-           'Qoheleth': 'Ecc',  #?
-           'Canticles': 'Sol', #?
-           'Job': 'Job',
-           'Wisdom': 'Wis',
-           'Sirach': 'Sir',
-           'PsSol': 'Pss',
-           'Hosea': 'Hos',
-           'Micah': 'Amo', #
-           'Amos': 'Mic', #
-           'Joel': 'Joe',
-           'Jonah': 'Oba', #
-           'Obadiah': 'Jon', #
-           'Nahum': 'Nah',
-           'Habakkuk': 'Hab',
-           'Zeph': 'Zep',
-           'Haggai': 'Hag',
-           'Zech': 'Zec',
-           'Malachi': 'Mal',
-           'Isaiah': 'Isa',
-           'Jer': 'Jer',
-           'Baruch': 'Bar',
-           'EpJer': 'Lam', #
-           'Lam': 'Epj', #
-           'Ezek': 'Eze',
-           'BelOG': 'Sus', #
-           'BelTh': 'Sut', #
-           'DanielOG': 'Dan',
-           'DanielTh': 'Dat',
-           'SusOG': 'Bel', #
-           'SusTh': 'Bet' #
-        }
+    # Modified copy from IterCatSS, Ezr instead of 2Es
+    MAP = {
+        'Gen': 'Gen', 'Exod': 'Exo', 'Lev': 'Lev', 'Num': 'Num', 'Deut': 'Deu',
+        'JoshB': 'Jos', 'JoshA': 'Jsa',  # Matched by chapter 15 for A version
+        'JudgesB': 'Jdg', 'JudgesA': 'Jda',  # Matched on having 11:4 for A version
+        # later RH seems to prefer A version
+        'Ruth': 'Rut',
+        '1Sam': '1Sa', '2Sam': '2Sa', '1Kings': '1Ki', '2Kings': '2Ki', '1Chron': '1Ch',
+        '2Chron': '2Ch', '1Esdras': '1Es', '2Esdras': 'Ezr', 'Esther': 'Est', 'Judith': 'Jdt',
+        'TobitBA': 'Tob', 'TobitS': 'Tbs', '1Macc': '1Ma', '2Macc': '2Ma', '3Macc': '3Ma',
+        '4Macc': '4Ma', 'Psalms': 'Psa', 'Odes': 'Ode', 'Proverbs': 'Pro', 'Qoheleth': 'Ecc',
+        'Canticles': 'Sol', 'Job': 'Job', 'Wisdom': 'Wis', 'Sir Prolog': 'Sip', 'Sirach': 'Sir',
+        'PsSol': 'Pss', 'Hosea': 'Hos', 'Micah': 'Mic', 'Amos': 'Amo', 'Joel': 'Joe',
+        'Jonah': 'Jon', 'Obadiah': 'Oba', 'Nahum': 'Nah', 'Habakkuk': 'Hab', 'Zeph': 'Zep',
+        'Haggai': 'Hag', 'Zech': 'Zec', 'Malachi': 'Mal', 'Isaiah': 'Isa', 'Jer': 'Jer',
+        'Baruch': 'Bar', 'EpJer': 'Epj', 'Lam': 'Lam', 'Ezek': 'Eze', 'BelOG': 'Bel',
+        'BelTh': 'Bet', 'DanielOG': 'Dan', 'DanielTh': 'Dat', 'SusOG': 'Sus', 'SusTh': 'Sut'
+    }
 
     def _filename_emitter(self):
 
-        book_abbr = BOOK_ABBR[:self.BOOK_LEN[0]]
-        book_adapt = filter(lambda x: x not in ('Neh', 'Sip'), book_abbr)
+        # book_abbr = BOOK_ABBR[:self.BOOK_LEN[0]]
+        # book_adapt = filter(lambda x: x not in ('Neh', 'Sip'), book_abbr)
 
-        file_abbr = [v[0] if not isdigit(v[0][-1]) else v[0][:-1] for v in self._file_index.values()]
-        file_attr = list(dict.fromkeys(file_abbr))
+        # file_abbr = [v[0] if not isdigit(v[0][-1]) else v[0][:-1] for v in self._file_index.values()]
+        # file_attr = list(dict.fromkeys(file_abbr))
 
-        for idx, data in sorted(self._file_index.items(), key=lambda x: x[0]):
-            book, filename = data
-            if filename.stem in self.OMITTED:
-                continue
-            yield filename, book if not isdigit(book[-1]) else book[:-1], idx
+        for book_abbr in filter(lambda x: x not in ('Neh', 'Sip'), BOOK_ABBR[:self.BOOK_LEN[0]]):
+            for files in self._file_index[book_abbr]:
+                print('Emit: ', files[1], book_abbr)
+                yield files[1], files[0], -1
+
+        # for idx, data in sorted(self._file_index.items(), key=lambda x: x[0]):
+        #    book, filename = data
+        #    if filename.stem in self.OMITTED:
+        #        continue
+        #    yield filename, book if not isdigit(book[-1]) else book[:-1], idx
 
     def _filename_indexer(self):
         self._file_index = dict()
@@ -120,21 +84,27 @@ class CatSSFileIter(BasicIterFile):
         for filename in sorted(files, key=lambda x: x.stem):
             parts = filename.stem.split('.')
             num = parts[0]
-            self._file_index[int(num)] = (parts[1], filename)
+            book = parts[1]
+            abbr = self.MAP[book if not isdigit(book[-1]) else book[:-1]]
+            if abbr not in self._file_index:
+                self._file_index[abbr] = list()
+            print("Indx: ", filename, abbr, book)
+            self._file_index[abbr].append((parts[0], filename))
+            # self._file_index[int(num)] = (parts[1], filename)
 
 
 class IterCatSS(ContextObject):
-
     OMITTED = (
         'Pro 24', 'Pro 25', 'Pro 26', 'Pro 27', 'Pro 28', 'Pro 29', 'Pro 30',
-        'Pro 31', 'Pro 33', 'Pro 33', 'Pro 34', 'Pro 35', 'Pro 36' # Disorder
-        'Dat 3', # Five verses removed that exists in other editions of LXX
+        'Pro 31', 'Pro 33', 'Pro 33', 'Pro 34', 'Pro 35', 'Pro 36'  # Disorder
+                                                          'Dat 3',
+    # Five verses removed that exists in other editions of LXX
     )
 
     MAP = {
         'Gen': 'Gen', 'Exod': 'Exo', 'Lev': 'Lev', 'Num': 'Num', 'Deut': 'Deu',
-        'JoshB': 'Jos', 'JoshA': 'Jsa', # Matched by chapter 15 for A version
-        'JudgB': 'Jdg', 'JudgA': 'Jda', # Matched on having 11:4 for A version
+        'JoshB': 'Jos', 'JoshA': 'Jsa',  # Matched by chapter 15 for A version
+        'JudgB': 'Jdg', 'JudgA': 'Jda',  # Matched on having 11:4 for A version
         # later RH seems to prefer A version
         'Ruth': 'Rut',
         '1Sam/K': '1Sa', '2Sam/K': '2Sa', '1/3Kgs': '1Ki', '2/4Kgs': '2Ki', '1Chr': '1Ch',
@@ -149,13 +119,12 @@ class IterCatSS(ContextObject):
         'BelTh': 'Bet', 'Dan': 'Dan', 'DanTh': 'Dat', 'Sus': 'Sus', 'SusTh': 'Sut'
     }
 
-
-
     def __init__(self, file_iter: CatSSFileIter):
         super().__init__()
         self._file_iter = file_iter
         self._tokenizer = Tokenizer.beta_tokenizer()
         self._current = 'n/a'
+        # pprint({v: k for k, v in self.MAP.items()})
 
     def __iter__(self):
         return self.iter()
@@ -226,7 +195,6 @@ class IterCatSS(ContextObject):
 
                         yield book, cur_chapter, cur_verse, sub_verse, sublines
 
-
     def iter_verse(self):
         for book_abbr, chapter_cnt, verse_cnt, sub_verse, _ in self._iterator():
             if sub_verse != -1:
@@ -239,7 +207,8 @@ class IterCatSS(ContextObject):
     @NlpOperation()
     def _tokenize(self, text) -> list:
         text = self._tokenizer.standardize(text)
-        return self._tokenizer.tokenize(text) # [PrintGreek.format(BetaWord.glyphen(b)) for b in self._tokenizer.tokenize(text)]
+        return self._tokenizer.tokenize(
+            text)  # [PrintGreek.format(BetaWord.glyphen(b)) for b in self._tokenizer.tokenize(text)]
 
     def iter(self):
         cur_book = ''
@@ -247,7 +216,7 @@ class IterCatSS(ContextObject):
         cur_verse = 0
 
         for filename, native_book_abbr, idx in self._file_iter:
-            #print(filename, book, idx)
+            print('Recv: ', filename, native_book_abbr, idx)
             with NlpContext(self):
                 with open(filename, 'r') as f:
                     for lines in f.read().split('\n\n'):
@@ -267,8 +236,8 @@ class IterCatSS(ContextObject):
                             if book != cur_book:
                                 cur_chapter = 1
                                 cur_book = book
-                            #yield BRef(book, cur_chapter, cur_verse, -1)
-                            #print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
+                            # yield BRef(book, cur_chapter, cur_verse, -1)
+                            # print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
                             continue
 
                         if line.startswith('Sir Prolog'):  # Correcting sirach prolog refs
@@ -287,17 +256,17 @@ class IterCatSS(ContextObject):
                             cur_chapter = 1
                         if '/' in verse:
                             cur_verse = int(verse.split('/')[0])
-                            #yield BRef(book, cur_chapter, cur_verse, -1)
+                            # yield BRef(book, cur_chapter, cur_verse, -1)
                             # print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
                         elif '-' in verse:
                             cur_verse = int(verse.split('-')[0])
-                            #yield BRef(book, cur_chapter, cur_verse, -1)
+                            # yield BRef(book, cur_chapter, cur_verse, -1)
                             # print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
                         elif len(verse) > 0 and isalpha(chapter_verse[-1]):
                             cur_verse = int(verse[:-1])
                             sub_verse = ord(verse[-1]) - 96
-                            #yield BRef(book, cur_chapter, cur_verse, sub_verse)
-                            #print("({}), {} {}:{}({})".format(line, cur_book, cur_chapter, cur_verse, sub_verse))
+                            # yield BRef(book, cur_chapter, cur_verse, sub_verse)
+                            # print("({}), {} {}:{}({})".format(line, cur_book, cur_chapter, cur_verse, sub_verse))
                         else:
                             cur_verse = int(verse)
                         self._current = (filename, cur_book, cur_chapter, cur_verse)
@@ -305,9 +274,9 @@ class IterCatSS(ContextObject):
                         corr_chap = cur_chapter
                         if self.MAP[book] == '2Es':
                             if cur_chapter <= 10:
-                                corr_book = BOOK_ABBR[17]  #'Ezr'
+                                corr_book = BOOK_ABBR[17]  # 'Ezr'
                             else:
-                                corr_book = BOOK_ABBR[18]  #'Neh'
+                                corr_book = BOOK_ABBR[18]  # 'Neh'
                                 corr_chap = cur_chapter - 10
                         else:
                             corr_book = self.MAP[book]
