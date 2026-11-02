@@ -27,11 +27,12 @@ from perseusconverter.util.utils import BRef, Counter
 
 class Emitter:
 
-    def __init__(self, iterator, start_ref = BRef('n/a', -1, -1, -1), token_filter: Callable[[int], bool] = lambda x: True):
+    def __init__(self, iterator, start_ref: BRef | Tuple[str, ...] = BRef('n/a', -1, -1, -1), token_filter: Callable[[int], bool] = lambda x: True):
         self._iterator = iterator.__iter__()
         self._filter = token_filter
-        self._ref = start_ref
         self._last = None
+        self._ref = start_ref if isinstance(start_ref, BRef) else BRef(start_ref[0], -1, -1, -1)
+        self._book_list = start_ref if isinstance(start_ref, Tuple) else tuple()
         self._token_counter = Counter()
         self._bible = dict()
         self._chapter_cnt = Counter()
@@ -40,6 +41,10 @@ class Emitter:
     @property
     def same(self) -> bool:
         return self._last is not None and self._last.book == self._ref.book
+
+    @property
+    def valid(self) -> bool:
+        return self.same or self._last.book in self._book_list if self._last is not None else False
 
     @property
     def book(self) -> str:
@@ -106,7 +111,7 @@ class Emitter:
             raise RuntimeError("No match found")
 
     def get_chapter(self)-> Tuple[BRef | Tuple[int, int, str], ...]:
-        if not self.same:
+        if not self.valid:
             return tuple()
 
         tokens = list()
@@ -114,6 +119,8 @@ class Emitter:
         for token in self._iterator:
             if isinstance(token, BRef):
                 if self._update_model(token, self._chapter_cnt, self._verse_cnt, self._bible):
+                    if self._last.book != token.book:
+                        self._token_counter.reset()
                     self._last = token
                     break
                 tokens.append(token)

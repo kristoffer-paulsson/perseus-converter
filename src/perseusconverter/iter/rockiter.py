@@ -43,7 +43,7 @@ class IterRSGNT(ContextObject):
         self._current = 'n/a'
 
     def __iter__(self):
-        return self.iter_verse()
+        return self.iter()
 
     def location(self) -> Tuple[str, ...]:
         return str(self._current), ''
