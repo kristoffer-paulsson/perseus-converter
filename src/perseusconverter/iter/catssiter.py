@@ -20,12 +20,12 @@
 #     Kristoffer Paulsson - initial implementation
 #
 from curses.ascii import isdigit, isalpha
-from email import feedparser
-from pprint import pprint
 from typing import Tuple
 
+from greektextify.beta.word import BetaWord
 from greektextify.nlp.contextual import ContextObject, NlpOperation, NlpContext
 from greektextify.nlp.detoken import Tokenizer
+from greektextify.text.prnt import PrintGreek
 from perseusconverter.iter.fileiter import BasicIterFile
 from perseusconverter.recursiveiterator import RecursiveIterator
 from perseusconverter.util.books import BOOK_ABBR
@@ -306,6 +306,8 @@ class IterCatSS(ContextObject):
                         for line in sublines[1:]:
                             end = line.find(' ')
                             for token in self._tokenize(line[:end]):
+                                if token[0] == 0:
+                                    token = (0, PrintGreek.format(BetaWord.glyphen(token[1])))
                                 yield token
 
         # print(dict(zip(self.MAP, BOOK_ABBR[:61])))

@@ -77,26 +77,6 @@ class BetaWord(GreekWord):
             return tuple(token)
 
     @classmethod
-    def glyphen2(cls, word: str) -> Tuple[GreekGlyph]:
-        apostrophe = ord(word[-1]) == BetaMidway.APOSTROPHE
-        prime = ord(word[-1]) == BetaMidway.HASH
-        position = 0
-        length = len(word)-1 if apostrophe or prime else len(word)
-        glyphs = list()
-
-        while position != length:
-            glyph, size = BetaGlyph.glyphen(word[position:])
-            glyphs.append(glyph)
-            position += size
-
-        if apostrophe:
-            glyphs.append(GreekGlyph(GreekMidway.APOSTROPHE, False, False, False, False, False, False, False, False, False))
-        elif prime:
-            glyphs.append(GreekGlyph(GreekMidway.MODIFIER_PRIME, False, False, False, False, False, False, False, False, False))
-
-        return tuple(glyphs)
-
-    @classmethod
     def glyphen(cls, word: str) -> Tuple[GreekGlyph]:
         modifier = ord(word[-1]) if ord(word[-1]) in BetaMidway.MODIFIERS else -1
         length = len(word)-1 if modifier != -1 else len(word)
