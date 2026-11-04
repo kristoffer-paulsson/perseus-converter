@@ -435,8 +435,10 @@ class KoineCommand(Command):
             citer = IterCatSS(CatSSFileIter(filename))
 
             #emitter = Emitter(citer, BRef('Pro', 23, -1, -1), lambda x: x == 0)
-            emitter = Emitter(citer, OLD_ABBR, lambda x: x == 0)
+            emitter = Emitter(citer, BRef('Ode', 6, -1, -1), lambda x: x == 0)
             emitter.fast_forward()
+            pprint(emitter.get_chapter())
+            exit()
             while emitter.valid:
                 last_chapter = emitter.get_chapter()
                 pprint(last_chapter)
@@ -1134,5 +1136,60 @@ class KoineCommand(Command):
             diff_emitter_collector = rsgnt_collection.difference(rsgnt_emitter)
             if diff_emitter_collector[0] or diff_emitter_collector[1]:
                 print(diff_emitter_collector)
+
+    def _meta_thorugh(self):
+        rsgnt_filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
+
+        rsgnt_struct: BStruct = None
+        with rsgnt_filename.open('r') as f1:
+            rsgnt_collection = Collector(IterRSGNT(f1))
+            rsgnt_collection.collect()
+            rsgnt_struct = rsgnt_collection.export()
+
+        miss_calc = list()
+        for book, chapters in rsgnt_struct.bible.items():
+            word_count = -1
+            for chapter in chapters:
+                with rsgnt_filename.open('r') as f1:
+                    rsgnt_emitter = Emitter(IterRSGNT(f1), BRef(book, chapter, -1, -1))
+                    rsgnt_emitter.fast_forward()
+                    tokens = None
+                    while rsgnt_emitter.valid:
+                        tokens = rsgnt_emitter.get_chapter()
+                    if word_count == -1:
+                        word_count = tokens[-1][1]
+                    else:
+                        if tokens[-1][1] != word_count:
+                            miss_calc.append((book, chapter, word_count - tokens[-1][1]))
+            print(book, word_count)
+
+        for miss in miss_calc:
+            print(miss, end=', ')
+
+        catss_filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
+
+        catss_collection = Collector(IterCatSS(CatSSFileIter(catss_filename)))
+        catss_collection.collect()
+        catss_struct = catss_collection.export()
+
+        miss_calc = list()
+        for book, chapters in catss_struct.bible.items():
+            word_count = -1
+            for chapter in chapters:
+                catss_emitter = Emitter(IterCatSS(CatSSFileIter(catss_filename)), BRef(book, chapter, -1, -1))
+                catss_emitter.fast_forward()
+                tokens = None
+                while catss_emitter.valid:
+                    tokens = catss_emitter.get_chapter()
+                if word_count == -1:
+                    word_count = tokens[-1][1]
+                else:
+                    if tokens[-1][1] != word_count:
+                        miss_calc.append((book, chapter, word_count - tokens[-1][1]))
+            print(book, word_count)
+
+        for miss in miss_calc:
+            print(miss, end=', ')
+
 
 
