@@ -54,7 +54,7 @@ from ..traverse.general import AbstractTeiTraverser
 from ..traverse.lsjlex import LsjTraverser
 from ..traverse.rgnt import RockTraverser
 from ..util.books import OLD_ABBR, NEW_ABBR, BOOK_ABBR
-from ..util.collector import Counter, Collector
+from ..util.collector import Counter, Collector, BStruct
 from ..util.emitter import Emitter
 from ..util.utils import ListVerify, CountVerify
 
@@ -175,6 +175,8 @@ class KoineCommand(Command):
             self._opengnt()
         elif self._args.corpora == 'check':
             self._meta()
+        elif self._args.corpora == 'text-check':
+            self._text_meta()
         elif self._args.corpora == 'fix':
             self._lxxfix()
         else:
@@ -277,17 +279,21 @@ class KoineCommand(Command):
 
     def _bgt(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
+
         with filename.open('r') as f:
             viter = IterBGT(f, BOOK_ABBR)
-            #collect = Collector(viter)
-            #collect.collect()
-            #collect.analyze()
             #emitter = Emitter(viter, BRef('Jer', -1, -1, -1), lambda x: x == 0)
             emitter = Emitter(viter, BOOK_ABBR, lambda x: x == 0)
             emitter.fast_forward()
             while emitter.valid:
                 last_chapter = emitter.get_chapter()
                 pprint(last_chapter)
+
+        with filename.open('r') as f:
+            viter = IterBGT(f, BOOK_ABBR)
+            collect = Collector(viter)
+            collect.collect()
+            collect.analyze()
 
 
             exit()
@@ -352,6 +358,14 @@ class KoineCommand(Command):
         fiter = IterFix(FixFileIter(filename))
         collect = Collector(fiter.iter('mic', 7))
         collect.collect()
+        collect.analyze()
+
+        fiter = IterFix(FixFileIter(filename))
+        emitter = Emitter(fiter.iter('mic'), BRef('Mic', -1, -1, -1))
+        emitter.fast_forward()
+        while emitter.valid:
+            last_chapter = emitter.get_chapter()
+            pprint(last_chapter)
 
         exit()
         FINAL = [x.lower() for x in OLD_ABBR]
@@ -420,6 +434,7 @@ class KoineCommand(Command):
             filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
             citer = IterCatSS(CatSSFileIter(filename))
 
+            #emitter = Emitter(citer, BRef('Pro', 23, -1, -1), lambda x: x == 0)
             emitter = Emitter(citer, OLD_ABBR, lambda x: x == 0)
             emitter.fast_forward()
             while emitter.valid:
@@ -953,4 +968,171 @@ class KoineCommand(Command):
                 print("{} not in GreekDatabase".format(GreekDatabase.__dict__[attr][0]))
 
         print(len(GreekAlphabet.FROM_LOWER), len(GreekAlphabet.FROM_UPPER), len(GreekAlphabet.CASE_LOWER), len(GreekAlphabet.CASE_UPPER))
+
+    def _text_meta(self):
+        bgmorph_filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
+        bgmorph_collection = None
+        with bgmorph_filename.open('r') as f:
+           bgmorph_iter = IterBGM(f)
+           bgmorph_collection = Collector(bgmorph_iter)
+           bgmorph_collection.collect()
+
+        bgtext_filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
+        bgtext_collection = None
+        with bgtext_filename.open('r') as f:
+            bgtext_iter = IterBGT(f, BOOK_ABBR)
+            bgtext_collection = Collector(bgtext_iter)
+            bgtext_collection.collect()
+
+        res_morph_text = bgmorph_collection.difference(bgtext_collection)
+        res_text_morph = bgtext_collection.difference(bgmorph_collection)
+        if res_morph_text != res_text_morph:
+            print("BGMorph and BGText is indifferent")
+            print(res_morph_text)
+            print(res_text_morph)
+        else:
+            bgmorph_collection = None
+            bgtext_collection = None
+
+        nocr_filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
+        catss_filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
+
+        nocr_struct: BStruct = None
+        bgtext_struct: BStruct = None
+        catss_struct: BStruct = None
+        nocr_collection = Collector(IterNocr(NocrFileIter(nocr_filename)))
+        nocr_collection.collect()
+        nocr_struct = nocr_collection.export()
+
+        with bgtext_filename.open('r') as f2:
+            bgtext_collection = Collector(IterBGT(f2, OLD_ABBR))
+            bgtext_collection.collect()
+            bgtext_struct = bgtext_collection.export()
+
+            catss_collection = Collector(IterCatSS(CatSSFileIter(catss_filename)))
+            catss_collection.collect()
+            catss_struct = catss_collection.export()
+
+            diff_nocr_bgtext = nocr_collection.difference(bgtext_collection)
+            diff_bgtext_rsgnt = bgtext_collection.difference(nocr_collection)
+            if diff_nocr_bgtext != diff_bgtext_rsgnt:
+                print("Structural difference between NOCR and BibleWorks Greek Text")
+                print('NOCR-BGT', diff_nocr_bgtext)
+                print('BGT-NOCR', diff_bgtext_rsgnt)
+
+            diff_nocr_catss = nocr_collection.difference(catss_collection)
+            diff_catss_nocr = catss_collection.difference(nocr_collection)
+            if diff_nocr_catss != diff_catss_nocr:
+                print("Structural difference between NOCR and CATSS")
+                print('NOCR-CATSS', nocr_collection.difference(catss_collection))
+                print('CATSS-NOCR', catss_collection.difference(nocr_collection))
+
+            diff_bgtext_catss = bgtext_collection.difference(catss_collection)
+            diff_catss_bgtext = catss_collection.difference(bgtext_collection)
+            if diff_bgtext_catss != diff_catss_bgtext:
+                print("Structural difference between CATSS and BibleWorks Greek Text")
+                print('BGT-CATSS', diff_bgtext_catss)
+                print('CATSS-BGT', diff_catss_bgtext)
+
+        rsgnt_filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
+        ognt_filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
+
+        miss_calc = list()
+        for book, chapters in catss_struct.bible.items():
+            word_count = -1
+            for chapter in chapters:
+                catss_emitter = Emitter(IterCatSS(CatSSFileIter(catss_filename)), BRef(book, chapter, -1, -1))
+                catss_emitter.fast_forward()
+                tokens = None
+                while catss_emitter.valid:
+                    tokens = catss_emitter.get_chapter()
+                if word_count == -1:
+                    word_count = tokens[-1][1]
+                else:
+                    if tokens[-1][1] != word_count:
+                        miss_calc.append((book, chapter, word_count - tokens[-1][1]))
+            print(book, word_count)
+
+        for miss in miss_calc:
+            print(miss, end=', ')
+
+        with rsgnt_filename.open('r') as f1:
+            rsgnt_emitter = Emitter(IterRSGNT(f1), NEW_ABBR)
+            rsgnt_emitter.fast_forward()
+            while rsgnt_emitter.valid:
+                _ = rsgnt_emitter.get_chapter()
+
+            diff_emitter_collector = catss_collection.difference(rsgnt_emitter)
+            if diff_emitter_collector[0] or diff_emitter_collector[1]:
+                print(diff_emitter_collector)
+
+        rsgnt_struct: BStruct = None
+        bgtext_struct: BStruct = None
+        ognt_struct: BStruct = None
+        with rsgnt_filename.open('r') as f1:
+            rsgnt_collection = Collector(IterRSGNT(f1))
+            rsgnt_collection.collect()
+            rsgnt_struct = rsgnt_collection.export()
+
+            with bgtext_filename.open('r') as f2:
+                bgtext_collection = Collector(IterBGT(f2, NEW_ABBR))
+                bgtext_collection.collect()
+                bgtext_struct = bgtext_collection.export()
+
+                with ognt_filename.open('r') as f3:
+                    ognt_collectiom = Collector(IterOpenGNT(csv.reader(f3, delimiter='\t')))
+                    ognt_collectiom.collect()
+                    ognt_struct = ognt_collectiom.export()
+
+                    diff_rsgnt_bgtext = rsgnt_collection.difference(bgtext_collection)
+                    diff_bgtext_rsgnt = bgtext_collection.difference(rsgnt_collection)
+                    if diff_rsgnt_bgtext != diff_bgtext_rsgnt:
+                        print("Structural difference between Rock Solid GNT and BibleWorks Greek Text")
+                        print('RSGNT-BGT', diff_rsgnt_bgtext)
+                        print('BGT-RSGNT', diff_bgtext_rsgnt)
+
+                    diff_rsgnt_ognt = rsgnt_collection.difference(ognt_collectiom)
+                    diff_ognt_rsgnt = ognt_collectiom.difference(rsgnt_collection)
+                    if diff_rsgnt_ognt != diff_ognt_rsgnt:
+                        print("Structural difference between Rock Solid GNT and OpenGNT")
+                        print('RSGNT-OpenGNT', rsgnt_collection.difference(ognt_collectiom))
+                        print('OpenGNT-RSGNT', ognt_collectiom.difference(rsgnt_collection))
+
+                    diff_bgtext_ognt = bgtext_collection.difference(ognt_collectiom)
+                    diff_ognt_bgtext = ognt_collectiom.difference(bgtext_collection)
+                    if diff_bgtext_ognt != diff_ognt_bgtext:
+                        print("Structural difference between OpenGNT and BibleWorks Greek Text")
+                        print('BGT-OpenGNT', diff_bgtext_ognt)
+                        print('OpenGNT-BGT', diff_ognt_bgtext)
+
+        miss_calc = list()
+        for book, chapters in rsgnt_struct.bible.items():
+            word_count = -1
+            for chapter in chapters:
+                with rsgnt_filename.open('r') as f1:
+                    rsgnt_emitter = Emitter(IterRSGNT(f1), BRef(book, chapter, -1, -1))
+                    rsgnt_emitter.fast_forward()
+                    tokens = None
+                    while rsgnt_emitter.valid:
+                        tokens = rsgnt_emitter.get_chapter()
+                    if word_count == -1:
+                        word_count = tokens[-1][1]
+                    else:
+                        if tokens[-1][1] != word_count:
+                            miss_calc.append((book, chapter, word_count - tokens[-1][1]))
+            print(book, word_count)
+
+        for miss in miss_calc:
+            print(miss, end=', ')
+
+        with rsgnt_filename.open('r') as f1:
+            rsgnt_emitter = Emitter(IterRSGNT(f1), NEW_ABBR)
+            rsgnt_emitter.fast_forward()
+            while rsgnt_emitter.valid:
+                _ = rsgnt_emitter.get_chapter()
+
+            diff_emitter_collector = rsgnt_collection.difference(rsgnt_emitter)
+            if diff_emitter_collector[0] or diff_emitter_collector[1]:
+                print(diff_emitter_collector)
+
 
