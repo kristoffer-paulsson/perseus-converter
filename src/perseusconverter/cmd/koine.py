@@ -194,89 +194,6 @@ class KoineCommand(Command):
             collect.collect()
             collect.analyze()
 
-            exit()
-            chapter_num = 0
-            verse_num = 0
-            sub_verse = ''
-            last_word = ''
-            chapter_changed = True
-            for book in xml.find_all('div', attrs={'type': 'book'}):
-                # for chapter in book.find_all('div', attrs={'type': 'chapter'}):
-                book_title = book.get('title')
-                if book_title == 'Fragments':
-                    continue
-                books[book_title] = dict()
-                print('\n\n', book_title)
-                for chapter in book.find_all('div', attrs={'type': 'chapter'}):
-                    chapter_cnt = chapter.get('n')
-                    chapter_changed = True
-                    for ab in chapter.find_all('ab'):
-                        verse_cnt = ab.get('n')
-                        if chapter_changed:
-                            print('\n{' + chapter_cnt + ':' + verse_cnt + '}', end=' ')
-                            chapter_changed = False
-                        else:
-                            print('{' + verse_cnt + '}', end=' ')
-
-                        for child in ab.find_all('w'):
-                            # choosing last correction of an apparatus to avoid doubles
-                            app = child.find_parent('app')
-                            if app is not None:
-                                rdgs = app.find_all('rdg', attrs={'type': 'corr'})
-                                rdg = child.find_parent('rdg')
-                                if rdgs[-1] is not rdg:
-                                    continue
-
-                            note = child.find('note')
-                            if note:
-                                note.decompose()
-                            nomina = child.find('hi', attrs={'rend': 'ol2'})
-                            text = child.text.strip()
-                            if nomina:
-                                marked.add(text.replace('\n', ''))
-                            word = text.replace('\n', ' ')
-                            if word == '':
-                                continue
-                            print(word, end=' ')
-
-                for verse in book.find_all('lb', attrs={'vnumber': True}):
-                    chapter_verse = verse.get('vnumber').strip()
-
-                    if chapter_verse.find('/'):
-                        chapter_verse = chapter_verse.split('/')[0].strip()
-
-                    if chapter_verse.find(':') != -1:
-                        r_parts = chapter_verse.split(':')
-                        chapter_num = int(r_parts[0].strip())
-                        if r_parts[1].find('-') != -1:
-                            verse_num = int(r_parts[1].split('-')[0])
-                        elif len(r_parts[1]) > 1 and not isdigit(r_parts[1][-1]):
-                            sub_verse = ord(r_parts[1][-1]) - 96
-                            verse_num = int(r_parts[1][:-1])
-                        else:
-                            verse_num = int(r_parts[1].strip())
-                    else:
-                        if chapter_verse.find('-') != -1:
-                            verse_num = int(chapter_verse.split('-')[0])
-                        elif len(chapter_verse) > 1 and not isdigit(chapter_verse[-1]):
-                            sub_verse = ord(chapter_verse[-1]) - 96
-                            verse_num = int(chapter_verse[:-1])
-                        else:
-                            verse_num = int(chapter_verse.strip())
-
-                    if books[book_title].get(chapter_num) is None:
-                        books[book_title][chapter_num] = dict()
-                    if books[book_title][chapter_num].get(verse_num) is None:
-                        books[book_title][chapter_num][verse_num] = list()
-                    if sub_verse != 0:
-                        books[book_title][chapter_num][verse_num].append(sub_verse)
-                        sub_verse = 0
-
-                    #print(book_title, "{}:{}".format(chapter_num, verse_num))
-        print(books)
-        for marking in sorted(marked, key=lambda x: len(x)):
-            print(marking, end='" - "')
-
     def _bgt(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
 
@@ -294,17 +211,6 @@ class KoineCommand(Command):
             collect = Collector(viter)
             collect.collect()
             collect.analyze()
-
-
-            exit()
-            filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
-            with filename2.open('r') as f:
-                viter2 = IterBGM(f)
-                collect2 = Collector(viter2)
-                collect2.collect()
-                #collect2.analyze()
-
-                print(collect.difference(collect2))
 
     def _bgm(self):
         dictionary = dict()
@@ -367,64 +273,7 @@ class KoineCommand(Command):
             last_chapter = emitter.get_chapter()
             pprint(last_chapter)
 
-        exit()
-        FINAL = [x.lower() for x in OLD_ABBR]
-
-        filename = self.target.joinpath("bible-analyzer-corpora/corpora/rhlxx")
-
-        files = [filename for filename in RecursiveIterator(filename)]
-
-        books_index = dict()
-        for filename in sorted(files, key=lambda x: x.stem):
-            parts = filename.stem.split('.')
-            book = parts[0]
-            if book in ('alt', 'lxx'):
-                continue
-            chapter = int(parts[1])
-            if book not in books_index:
-                books_index[book] = dict()
-            books_index[book][chapter] = filename
-
-        last_bref = ''
-        for book in books_index:
-            for chapter in books_index[book]:
-                print(books_index[book][chapter])
-                data = json.load(books_index[book][chapter].open('r'))
-                for paragraphs in data['data']['chapter']['content']:
-                    if 'content' not in paragraphs:
-                        print('Paragraph missing content')
-                    else:
-                        for content in paragraphs['content']:
-                            if content['type'] == 'verse-number':
-                                book_ref, chapter_num, verse_num = content['verseId'].split('.')
-                                if book_ref == 'DAG' and book == 'danth':
-                                    book_ref = 'DAT'
-                                elif book_ref == 'DAG' and book == 'dan':
-                                    book_ref = 'DAN'
-                                elif book_ref == 'ESG':
-                                    book_ref = 'EST'
-                                book_abbr = BOOK_ABBR[FINAL.index(book_ref.lower())]
-                                chapter_cnt = int(chapter_num)
-                                if isalpha(verse_num[-1]):
-                                    verse_cnt = int(verse_num[:-1])
-                                    sub_verse = ord(verse_num[-1]) - ord('a')
-                                else:
-                                    verse_cnt = int(verse_num)
-                                    sub_verse = -1
-                                bref = BRef(book_abbr, chapter_cnt, verse_cnt, sub_verse)
-                                if last_bref != str(bref):
-                                    last_bref = str(bref)
-                                    print(str(bref))
-                            elif content['type'] in ('verse-text', 'text'):
-                                print(content['content'])
-                            else:
-                                raise ValueError("Type: {}".format(content['type']))
-
-
     def _catss(self):
-        #filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-        #niter = IterNocr(NocrFileIter(filename2))
-
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
         citer = IterCatSS(CatSSFileIter(filename))
 
@@ -432,98 +281,6 @@ class KoineCommand(Command):
         emitter = Emitter(citer, BRef('Ode', 1, -1, -1), lambda x: x == 0)
         emitter.fast_forward()
         pprint(emitter.get_chapter())
-        exit()
-        while emitter.valid:
-            last_chapter = emitter.get_chapter()
-            pprint(last_chapter)
-
-        exit()
-        collect = Collector(citer)
-        collect.collect()
-        #collect.analyze()
-
-        print(collect2.difference(collect))
-        exit()
-
-
-        files = [filename for filename in RecursiveIterator(filename)]
-
-        books_index = dict()
-        num_order = dict()
-        for filename in sorted(files, key=lambda x: x.stem):
-            parts = filename.stem.split('.')
-            num = parts[0]
-            # book = parts[1]
-            #if book not in books_index:
-            #    books_index[book] = dict()
-            #books_index[book][chapter] = filename
-            num_order[int(num)] = filename
-
-            cur_book = ''
-            cur_chapter = 0
-            cur_verse = 0
-
-            for idx, filename in sorted(num_order.items(), key=lambda x: x[0]):
-                with open(filename, 'r') as f:
-                    after_empty = False
-                    before_verse = True
-                    refs = list()
-                    # print(filename)
-                    for lines in f.read().split('\n\n'):
-                        lines = lines.strip()
-                        line = lines.split('\n')[0].strip()
-
-                        if line == '':  # Unnatural empty row
-                            continue
-                        elif ' ' not in line:  # Unnatural row without ref part
-                            # We assume this only happens before the coming 1st verse of next chapter
-                            # Hopefully this only happens as a chapter prologue
-                            cur_verse = 0
-                            cur_chapter += 1
-                            book = line
-                            if book != cur_book:
-                                cur_chapter = 1
-                                cur_book = book
-                            print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
-                            continue
-
-                        if line.startswith('Sir Prolog'):  # Correcting sirach prolog refs
-                            book, chapter_verse = line.split(':')
-                        else:  # Normal Book chapter:verse
-                            book, chapter_verse = line.split(' ')
-                        if book != cur_book:  # Reset chapter and verse
-                            cur_verse = 1
-                            cur_chapter = 1
-                            cur_book = book
-                        if ':' in chapter_verse:  # Normal chapter:verse ref
-                            chapter, verse = chapter_verse.split(':')
-                            cur_chapter = int(chapter)
-                        else:  # For books with one implicit chapter
-                            verse = chapter_verse
-                            cur_chapter = 1
-                        if '/' in verse:
-                            cur_verse = int(verse.split('/')[0])
-                            print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
-                        elif '-' in verse:
-                            cur_verse = int(verse.split('-')[0])
-                            print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
-                        elif len(verse) > 0 and isalpha(chapter_verse[-1]):
-                            cur_verse = int(verse[:-1])
-                            sub_verse = ord(verse[-1]) - 96
-                            print("({}), {} {}:{}({})".format(line, cur_book, cur_chapter, cur_verse, sub_verse))
-                        else:
-                            cur_verse = int(verse)
-                            # print("{} {}:{}".format(cur_book, cur_chapter, cur_verse))
-                        #refs.append(line)
-
-                        # print(line)
-                        #if line == '':
-                        #    before_verse = True
-                        #if before_verse:
-                        #    before_verse = False
-                        #else:
-                        #    pass
-                    #print(refs)
 
     def find_digit(self, text: str, position: int = 0):
         if position < 0 or position >= len(text):
@@ -569,81 +326,12 @@ class KoineCommand(Command):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
         with filename.open('r') as f: # ,
             oiter = IterOpenGNT(csv.reader(f, delimiter='\t'))
-            #collect = Collector(oiter)
-            #collect.collect()
-            #collect.analyze()
 
             emitter = Emitter(oiter, NEW_ABBR, lambda x: x == 0)
             emitter.fast_forward()
             while emitter.valid:
                 last_chapter = emitter.get_chapter()
                 pprint(last_chapter)
-
-            exit()
-            csv.reader(f, delimiter='\t')
-            last_verse = 0
-            current_index = 0
-            v_text = None
-
-            reader = csv.reader(f, delimiter='\t')
-            next(reader)
-
-            for row in reader:
-                book_idx, chapter_num, verse_num = row[6].strip('〔〕').split('｜')
-                book_abbr = NEW_ABBR[int(book_idx) - 40]
-                chapter_cnt = int(chapter_num)
-                verse_cnt = int(verse_num)
-                if verse_cnt != last_verse:
-                    if v_text is not None:
-                        print(v_text)
-                    v_text = ''
-
-                    current_index = 1
-                    last_verse = verse_cnt
-                    bref = BRef(book_abbr, chapter_cnt, verse_cnt, -1)
-
-                    v_text = str(bref)
-                    # yield bref
-                else:
-                    current_index += 1
-
-                word = ' ' + row[7].strip('〔〕').split('｜')[2]
-                punctuation = ''.join(row[11].strip('〔〕').split('｜')).replace('<pm>', '').replace('</pm>', '')
-                v_text += word + punctuation
-
-            exit()
-            # Skip header
-            last_verse = 0
-            current_index = 0
-
-            next(f)
-
-            for line in f:
-                parts = line.strip().split('\t')
-                if len(parts) >= 8:
-                    # Extract book/chapter/verse info: 〔40｜1｜1〕
-                    book_info = parts[6].strip('〔〕')
-                    book_parts = book_info.split('｜')
-                    if len(book_parts) >= 3:
-                        book_num = int(book_parts[0])
-                        chapter = int(book_parts[1])
-                        verse = int(book_parts[2])
-
-                        book = NEW_ABBR[book_num-40]
-
-                        if(verse != last_verse):
-                            current_index = 1
-                            last_verse = verse
-                            bref = BRef(book, chapter, verse, -1)
-                            print(bref)
-                            # yield bref
-                        else:
-                            current_index += 1
-
-                        word_info = parts[7].strip('〔〕')
-                        word_parts = word_info.split('｜')
-                        #print(word_parts[2])
-                        #word = DbgUtfStandard.standardize(word_parts[2])
 
 
     def _rock(self):
@@ -655,65 +343,12 @@ class KoineCommand(Command):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
         with filename.open('r') as f:
             riter = IterRSGNT(f)
-            #collect = Collector(riter)
-            #collect.collect()
-            # collect.analyze()
 
             emitter = Emitter(riter, NEW_ABBR, lambda x: x == 0)
             emitter.fast_forward()
             while emitter.valid:
                 last_chapter = emitter.get_chapter()
                 pprint(last_chapter)
-
-            exit()
-
-
-            filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
-            with filename2.open('r') as f:
-                viter = IterBGT(f, NEW_ABBR)
-                collect2 = Collector(viter)
-                collect2.collect()
-                #collect.analyze()
-
-                filename3 = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
-                with filename3.open('r') as f:  # ,
-                    oiter = IterOpenGNT(csv.reader(f, delimiter='\t'))
-                    collect3 = Collector(oiter)
-                    collect3.collect()
-                    #collect3.analyze()
-
-                    print('RSGNT-BGT', collect.difference(collect2))
-                    print('BGT-RSGNT', collect2.difference(collect))
-
-                    print('RSGNT-OpenGNT', collect.difference(collect3))
-                    print('OpenGNT-RSGNT', collect3.difference(collect))
-
-                    print('BGT-OpenGNT', collect2.difference(collect3))
-                    print('OpenGNT-BGT', collect3.difference(collect2))
-
-            exit()
-            book_abbr = 'n/a'
-            chapter_cnt = 0
-            verse_cnt = 0
-            for line in f:
-                line = line.strip()
-                if line in ABBR:
-                    book_abbr = NEW_ABBR[ABBR.index(line)]
-                else:
-                    for e in self.find_ref(line):
-                        if e == '':
-                            continue
-                        elif isdigit(e[0]):
-                            if ':' in e:
-                                chapter_num, verse_num = e.split(':')
-                                chapter_cnt = int(chapter_num)
-                                verse_cnt = int(verse_num)
-                            else:
-                                verse_cnt = int(e)
-                            print(BRef(book_abbr, chapter_cnt, verse_cnt, -1))
-                        else:
-                            print(e)
-
 
     def _nocr(self):
         filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
@@ -730,186 +365,6 @@ class KoineCommand(Command):
             while emitter.valid:
                 last_chapter = emitter.get_chapter()
                 pprint(last_chapter)
-            exit()
-            collect = Collector(niter)
-            collect.collect()
-            #collect.analyze()
-
-        #filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
-        # citer = IterCatSS(CatSSFileIter(filename2))
-
-            # collect.analyze()
-
-            print(collect2.difference(collect))
-            exit()
-        filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
-        with filename.open('r') as f:
-            viter = IterBGM(f)
-            collect2 = Collector(viter)
-            collect2.collect()
-
-            print(collect.difference(collect2))
-            print(collect2.difference(collect))
-
-
-    def _sept3(self):
-        filename = self.target.joinpath("bible-analyzer-corpora/corpora/septuagint3")
-
-        files = [filename for filename in RecursiveIterator(filename)]
-
-        books_index = dict()
-        num_order = dict()
-        book_verify = CountVerify(len(files))
-        for filename in sorted(files, key=lambda x: int(x.stem.split('-')[2])):
-            parts = filename.stem.split('-')
-            book = parts[0]
-            chapter = int(parts[1])
-            num = int(parts[2])
-            book_verify.verify(num)
-            if book not in books_index:
-                books_index[book] = dict()
-            books_index[book][chapter] = filename
-            num_order[num] = filename
-
-        jos_a = {1: 15, 2: 18, 3: 19}
-
-        chapter_cnt = Counter()
-        sub_chapter_cnt = Counter()
-        verse_cnt = Counter()
-        subverse_cnt = Counter()
-        for idx, filename in sorted(num_order.items(), key=lambda x: x[0]):
-            with open(filename, 'r') as f:
-                # print("Working: {}".format(filename))
-                html = BeautifulSoup(f, 'html.parser')
-
-                spans = html.find_all('span')
-                for span in spans:
-                    span_id = span.get('id')
-                    if span_id == 'h2':
-                        b_part = span.text.split(' ')
-                        book_abbr = b_part[1].strip()
-                        print(book_abbr)
-                        if book_abbr == 'Sir.':
-                            chapter_cnt.reset(-1)
-                        else:
-                            chapter_cnt.reset()
-                        if book_abbr in ('Od.', '-') and verse_num in (1,): # 9a
-                            verse_cnt.reset(-1)
-                        else:
-                            verse_cnt.reset()
-                    elif span_id == 'h3':
-                        c_part = span.text.split(' ')
-                        chapter = c_part[1].strip()
-                        if chapter.find('_') != -1 and len(chapter) > 1:
-                            chapter = chapter.split('_')[0].strip()
-                        if chapter == '_':
-                            chapter_num = 1
-                        elif len(chapter) > 0 and isalpha(chapter[-1]): # Od 9 specific
-                            if sub_chapter_cnt.current() == 0:
-                                chapter_cnt.increment()
-                            sub_chapter_cnt.increment()
-                            chapter_num = int(chapter[:-1])
-                        else:
-                            if sub_chapter_cnt.current() != 0:
-                                sub_chapter_cnt.reset()
-                            chapter_num = int(chapter)
-                        if sub_chapter_cnt.current() == 0:
-                            if book_abbr in ('Jos._A', '-'):
-                                if jos_a[chapter_cnt.increment()] != chapter_num:
-                                    print("Chapter {} not consistent with {}: {}".format(chapter, chapter_cnt.current(), filename, idx))
-                            elif chapter_cnt.increment() != chapter_num:
-                                print("Chapter {} not consistent with {}: {}".format(chapter, chapter_cnt.current(), filename, idx))
-                        else:
-                            if chapter_cnt.current() != chapter_num:
-                                print("Chapter {} not consistent with {}: {}".format(chapter, chapter_cnt.current(), filename, idx))
-                        if book_abbr in ('Od.', '-') and verse_num in (1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14): # 9a
-                            verse_cnt.reset(-1)
-                        else:
-                            verse_cnt.reset()
-                        # print(chapter_num)
-                    elif span_id == 'h4':
-                        v_parts = span.text.split(' ')
-                        verse = v_parts[1].strip()
-                        if '/' in verse:
-                            verse = verse.split('/')[0]
-                            subverse_cnt.reset()
-                        elif '-' in verse:
-                            verse = verse.split('-')[0]
-                            subverse_cnt.reset()
-                        if len(verse) > 0 and isalpha(verse[-1]):
-                            verse_num = int(verse[:-1])
-                            sub_verse = ord(verse[-1]) - 96
-                            while subverse_cnt.increment() < sub_verse:
-                                print("Sub-verse {}:{}({}) is missing: {}".format(chapter_num, verse_num, subverse_cnt.current(), filename))
-                            print("{} {}:{}({})".format(book_abbr, chapter_num, verse_num, sub_verse))
-                        else:
-                            verse_num = int(verse)
-                            subverse_cnt.reset()
-                            while verse_cnt.increment() < verse_num:
-                                print("Verse {}:{} is missing: {}".format(chapter_num, verse_cnt.current(), filename))
-
-                        #print(span.text)
-                    elif span_id == 'gr16':
-                        pass
-                        # print(span.text)
-                    else:
-                        pass
-
-                """book = html.find('span', attrs={'id': 'h2'})
-                if hasattr(book, 'text'):
-                    book_name = book.text.split(' ')[1]
-                    if previous_book != book_name:
-                        previous_book = book_name
-                        chapter_cnt_exp = 0
-                greek = html.find('span', attrs={'id': 'gr22'})
-                if hasattr(greek, 'text'):
-                    greek_name = html.find('span', attrs={'id': 'gr22'}).text
-                chapter = html.find('span', attrs={'id': 'h3'})
-                if hasattr(chapter, 'text'):
-                    chapter_num = chapter.text.split(' ')[1][:-1].strip()
-                    if chapter_num.find('_') != -1 and len(chapter_num) > 1:
-                        chapter_num = chapter_num.split('_')[0]
-                    if isalpha(chapter_num[-1]) and len(chapter_num) > 1:
-                        chapter_num = chapter_num[:-1]
-                else:
-                    chapter_num = '_'
-                # Scan for spans and ceertain id:s in a type of state loop to extract full verses
-                #spans = html.find_all('span')
-                #for span in spans:
-                #    print(span.get('id'))
-                verse = html.find_all('span', attrs={'id': 'h4'})
-                # print(filename)
-                if chapter_num == '_':
-                    chapter_cnt = 1
-                    verse_cnt_exp = 0
-                else:
-                    chapter_cnt = int(chapter_num)
-                    verse_cnt_exp = 0
-                chapter_cnt_exp += 1
-                if chapter_cnt_exp != chapter_cnt:
-                    print("Chapter {} != {} not consistent: {}".format(chapter_cnt_exp, chapter_cnt, filename))
-                for v in verse:
-                    v2 = v.text.split(' ')[1].strip()
-                    split_index = v2.find('-')
-                    if split_index != -1:
-                        v_from = int(v2[:split_index])
-                        v_to = int(v2[split_index + 1:])
-                        for v3 in range(v_from, v_to+1):
-                            verse_cnt = int(v3)
-                            #print(greek_name, book_name, chapter_cnt, verse_cnt)
-                    else:
-                        if isalpha(v2[-1]):
-                            verse_cnt = int(v2[:-1])
-                            subv_cnt = ord(v2[-1]) - 96
-                            #print(greek_name, book_name, chapter_cnt, verse_cnt, subv_cnt)
-                        else:
-                            verse_cnt = int(v2)
-                            subv_cnt = 0
-                            #print(greek_name, book_name, chapter_cnt, verse_cnt)
-                    verse_cnt_exp += 1
-                    if verse_cnt_exp != verse_cnt:
-                        # print("Verse {} != {} not consistent: {}".format(verse_cnt_exp, verse_cnt, filename))
-                        pass"""
 
     def _meta(self):
         greek_dict = dict(GreekDatabase.ALL_UTF_LETTERS)
