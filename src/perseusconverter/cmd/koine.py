@@ -424,32 +424,26 @@ class KoineCommand(Command):
     def _catss(self):
         #filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
         #niter = IterNocr(NocrFileIter(filename2))
-        filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
-        with filename2.open('r') as f:
-            citer = IterBGT(f, OLD_ABBR)
-            collect2 = Collector(citer)
-            collect2.collect()
-            #collect2.analyze()
 
-            filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
-            citer = IterCatSS(CatSSFileIter(filename))
+        filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
+        citer = IterCatSS(CatSSFileIter(filename))
 
-            #emitter = Emitter(citer, BRef('Pro', 23, -1, -1), lambda x: x == 0)
-            emitter = Emitter(citer, BRef('Ode', 6, -1, -1), lambda x: x == 0)
-            emitter.fast_forward()
-            pprint(emitter.get_chapter())
-            exit()
-            while emitter.valid:
-                last_chapter = emitter.get_chapter()
-                pprint(last_chapter)
+        #emitter = Emitter(citer, BRef('Pro', 23, -1, -1), lambda x: x == 0)
+        emitter = Emitter(citer, BRef('Ode', 1, -1, -1), lambda x: x == 0)
+        emitter.fast_forward()
+        pprint(emitter.get_chapter())
+        exit()
+        while emitter.valid:
+            last_chapter = emitter.get_chapter()
+            pprint(last_chapter)
 
-            exit()
-            collect = Collector(citer)
-            collect.collect()
-            #collect.analyze()
+        exit()
+        collect = Collector(citer)
+        collect.collect()
+        #collect.analyze()
 
-            print(collect2.difference(collect))
-            exit()
+        print(collect2.difference(collect))
+        exit()
 
 
         files = [filename for filename in RecursiveIterator(filename)]
@@ -1036,37 +1030,17 @@ class KoineCommand(Command):
                 print('BGT-CATSS', diff_bgtext_catss)
                 print('CATSS-BGT', diff_catss_bgtext)
 
+        catss_emitter = Emitter(IterCatSS(CatSSFileIter(catss_filename)), OLD_ABBR)
+        catss_emitter.fast_forward()
+        while catss_emitter.valid:
+            _ = catss_emitter.get_chapter()
+
+        diff_emitter_collector = catss_collection.difference(catss_emitter)
+        if diff_emitter_collector[0] or diff_emitter_collector[1]:
+            print('CATSS emitter-collector', diff_emitter_collector)
+
         rsgnt_filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
         ognt_filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
-
-        miss_calc = list()
-        for book, chapters in catss_struct.bible.items():
-            word_count = -1
-            for chapter in chapters:
-                catss_emitter = Emitter(IterCatSS(CatSSFileIter(catss_filename)), BRef(book, chapter, -1, -1))
-                catss_emitter.fast_forward()
-                tokens = None
-                while catss_emitter.valid:
-                    tokens = catss_emitter.get_chapter()
-                if word_count == -1:
-                    word_count = tokens[-1][1]
-                else:
-                    if tokens[-1][1] != word_count:
-                        miss_calc.append((book, chapter, word_count - tokens[-1][1]))
-            print(book, word_count)
-
-        for miss in miss_calc:
-            print(miss, end=', ')
-
-        with rsgnt_filename.open('r') as f1:
-            rsgnt_emitter = Emitter(IterRSGNT(f1), NEW_ABBR)
-            rsgnt_emitter.fast_forward()
-            while rsgnt_emitter.valid:
-                _ = rsgnt_emitter.get_chapter()
-
-            diff_emitter_collector = catss_collection.difference(rsgnt_emitter)
-            if diff_emitter_collector[0] or diff_emitter_collector[1]:
-                print(diff_emitter_collector)
 
         rsgnt_struct: BStruct = None
         bgtext_struct: BStruct = None
@@ -1107,26 +1081,6 @@ class KoineCommand(Command):
                         print('BGT-OpenGNT', diff_bgtext_ognt)
                         print('OpenGNT-BGT', diff_ognt_bgtext)
 
-        miss_calc = list()
-        for book, chapters in rsgnt_struct.bible.items():
-            word_count = -1
-            for chapter in chapters:
-                with rsgnt_filename.open('r') as f1:
-                    rsgnt_emitter = Emitter(IterRSGNT(f1), BRef(book, chapter, -1, -1))
-                    rsgnt_emitter.fast_forward()
-                    tokens = None
-                    while rsgnt_emitter.valid:
-                        tokens = rsgnt_emitter.get_chapter()
-                    if word_count == -1:
-                        word_count = tokens[-1][1]
-                    else:
-                        if tokens[-1][1] != word_count:
-                            miss_calc.append((book, chapter, word_count - tokens[-1][1]))
-            print(book, word_count)
-
-        for miss in miss_calc:
-            print(miss, end=', ')
-
         with rsgnt_filename.open('r') as f1:
             rsgnt_emitter = Emitter(IterRSGNT(f1), NEW_ABBR)
             rsgnt_emitter.fast_forward()
@@ -1137,7 +1091,7 @@ class KoineCommand(Command):
             if diff_emitter_collector[0] or diff_emitter_collector[1]:
                 print(diff_emitter_collector)
 
-    def _meta_thorugh(self):
+    def _meta_thorough(self):
         rsgnt_filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
 
         rsgnt_struct: BStruct = None

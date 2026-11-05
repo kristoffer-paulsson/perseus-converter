@@ -251,39 +251,31 @@ class IterCatSS(ContextObject):
                             if book != cur_book:
                                 cur_chapter = 1
                                 cur_book = book
-                            # yield BRef(book, cur_chapter, cur_verse, -1)
-                            # print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
-                            continue
 
-                        if line.startswith('Sir Prolog'):  # Correcting sirach prolog refs
-                            book, chapter_verse = line.split(':')
-                        else:  # Normal Book chapter:verse
-                            book, chapter_verse = line.split(' ')
-                        if book != cur_book:  # Reset chapter and verse
-                            cur_verse = 1
-                            cur_chapter = 1
-                            cur_book = book
-                        if ':' in chapter_verse:  # Normal chapter:verse ref
-                            chapter, verse = chapter_verse.split(':')
-                            cur_chapter = int(chapter)
-                        else:  # For books with one implicit chapter
-                            verse = chapter_verse
-                            cur_chapter = 1
-                        if '/' in verse:
-                            cur_verse = int(verse.split('/')[0])
-                            # yield BRef(book, cur_chapter, cur_verse, -1)
-                            # print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
-                        elif '-' in verse:
-                            cur_verse = int(verse.split('-')[0])
-                            # yield BRef(book, cur_chapter, cur_verse, -1)
-                            # print("({}), {} {}:{}".format(line, cur_book, cur_chapter, cur_verse))
-                        elif len(verse) > 0 and isalpha(chapter_verse[-1]):
-                            cur_verse = int(verse[:-1])
-                            sub_verse = ord(verse[-1]) - 96
-                            # yield BRef(book, cur_chapter, cur_verse, sub_verse)
-                            # print("({}), {} {}:{}({})".format(line, cur_book, cur_chapter, cur_verse, sub_verse))
                         else:
-                            cur_verse = int(verse)
+                            if line.startswith('Sir Prolog'):  # Correcting sirach prolog refs
+                                book, chapter_verse = line.split(':')
+                            else:  # Normal Book chapter:verse  # CHANGED
+                                book, chapter_verse = line.split(' ')
+                            if book != cur_book:  # Reset chapter and verse
+                                cur_verse = 1
+                                cur_chapter = 1
+                                cur_book = book
+                            if ':' in chapter_verse:  # Normal chapter:verse ref
+                                chapter, verse = chapter_verse.split(':')
+                                cur_chapter = int(chapter)
+                            else:  # For books with one implicit chapter
+                                verse = chapter_verse
+                                cur_chapter = 1
+                            if '/' in verse:
+                                cur_verse = int(verse.split('/')[0])
+                            elif '-' in verse:
+                                cur_verse = int(verse.split('-')[0])
+                            elif len(verse) > 0 and isalpha(chapter_verse[-1]):
+                                cur_verse = int(verse[:-1])
+                                sub_verse = ord(verse[-1]) - 96
+                            else:
+                                cur_verse = int(verse)
                         self._current = (filename, cur_book, cur_chapter, cur_verse)
 
                         corr_chap = cur_chapter
