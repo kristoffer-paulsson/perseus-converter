@@ -22,19 +22,18 @@
 import glob
 import re
 import unicodedata
-from itertools import combinations, permutations
+from itertools import permutations
 from pathlib import PosixPath
 from typing import List, Tuple, Any, Iterable, Callable
 
-from greektextify.nlp.contextual import NlpOperation
 from greektextify.text.modify import WordModifier
-from greektextify.text.prnt import PrintGreek
-from greektextify.text.word import GreekWord
 from perseusconverter.iter.bgtiter import IterBGT
 from perseusconverter.iter.catssiter import IterCatSS, CatSSFileIter
 from perseusconverter.iter.fileiter import IterNocr, NocrFileIter
 from perseusconverter.iter.fixiter import IterFix, FixFileIter
-from perseusconverter.util.books import OLD_ABBR, BOOK_ABBR
+from perseusconverter.iter.openiter import IterOpenGNT
+from perseusconverter.iter.rockiter import IterRSGNT
+from perseusconverter.util.books import OLD_ABBR, BOOK_ABBR, NEW_ABBR
 from perseusconverter.util.emitter import Emitter
 from perseusconverter.util.utils import BRef
 
@@ -216,172 +215,9 @@ class Player:
                     if isinstance(token, BRef):
                         f.write("\n{}".format(token))
                     else:
-                        f.write(" {}".format(WordModifier.stringify(token[2], WordModifier.lower)))
+                        f.write(" {}".format(WordModifier.stringify(token[2], WordModifier.search_token)))
         for idx, _e in enumerate(e):
             _print(idx, _e)
-
-    def debug(self):
-        nocr_filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-        catss_filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
-
-        with self._bgtext_filename.open('r') as bgt:
-            efilter = lambda x: x == 0
-            test = OLD_ABBR
-            b_at = BRef('1Ki', 2, -1, -1)
-            bgtext_e = self._bgtext(bgt, test, efilter)
-            nocr_e = self._nocr(nocr_filename, test, efilter)
-            catss_e = self._catss(catss_filename, test, efilter)
-            #fix_e = self._lxxrh(test, efilter)
-
-            e = (bgtext_e, nocr_e, catss_e)
-
-            while self._sync(e):
-                if self._break(b_at, e):
-                    break
-                first = tuple([e_.get_chapter() for e_ in e])
-
-                histo = [Histogram(h) for h in first]
-                print(str(first[0][0]),
-                    (histo[0].distance(histo[1]), histo[0].distance(histo[2])),
-                    (histo[1].distance(histo[0]), histo[1].distance(histo[2])),
-                    (histo[2].distance(histo[0]), histo[2].distance(histo[1])),
-                )
-
-    def debug1(self):
-        nocr_filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-        catss_filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
-
-        with self._bgtext_filename.open('r') as bgt:
-            efilter = lambda x: x == 0
-            test = BRef('1Ki', 2, -1, -1) # OLD_ABBR[OLD_ABBR.index('1Ki'):]
-            b_at = BRef('1Ki', 3, -1, -1)
-            bgtext_e = self._bgtext(bgt, test, efilter)
-            # nocr_e = self._nocr(nocr_filename, test, efilter)
-            catss_e = self._catss(catss_filename, test, efilter)
-            fix_e = self._lxxrh(test, efilter)
-
-            e = (bgtext_e, catss_e, fix_e)
-
-            #print(bgtext_e.valid, catss_e.valid, fix_e.valid)
-            #print(bgtext_e.book, catss_e.book, fix_e.book)
-            #print(bgtext_e.chapter, catss_e.chapter, fix_e.chapter)
-            #print(self._sync(e))
-            while self._sync(e):
-                if self._break(b_at, e):
-                    break
-                first = tuple([e_.get_chapter() for e_ in e])
-
-                histo = [Histogram(h) for h in first]
-                print(str(first[0][0]),
-                    (histo[0].distance(histo[1]), histo[0].distance(histo[2])),
-                    (histo[1].distance(histo[0]), histo[1].distance(histo[2])),
-                    (histo[2].distance(histo[0]), histo[2].distance(histo[1])),
-                )
-
-    def debug2(self):
-        nocr_filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-        catss_filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
-
-        with self._bgtext_filename.open('r') as bgt:
-            efilter = lambda x: x == 0
-            test = BRef('1Ki', 3, -1, -1) # OLD_ABBR[OLD_ABBR.index('1Ki'):]
-            #b_at = BRef('2Ki', 1, -1, -1)
-            bgtext_e = self._bgtext(bgt, test, efilter)
-            nocr_e = self._nocr(nocr_filename, test, efilter)
-            catss_e = self._catss(catss_filename, test, efilter)
-            #fix_e = self._lxxrh(test, efilter)
-
-            e = (bgtext_e, nocr_e, catss_e)
-
-            while self._sync(e):
-                #print(bgtext_e.valid, nocr_e.valid, catss_e.valid)
-                #print(bgtext_e.book, nocr_e.book, catss_e.book)
-                #print(bgtext_e.chapter, catss_e.chapter, catss_e.chapter)
-                #print(self._sync(e))
-                #if self._break(b_at, e):
-                #    break
-                first = tuple([e_.get_chapter() for e_ in e])
-
-                histo = [Histogram(h) for h in first]
-                print(str(first[0][0]),
-                    (histo[0].distance(histo[1]), histo[0].distance(histo[2])),
-                    (histo[1].distance(histo[0]), histo[1].distance(histo[2])),
-                    (histo[2].distance(histo[0]), histo[2].distance(histo[1])),
-                )
-                if max(histo[0].distance(histo[1]), histo[0].distance(histo[2]),
-                histo[1].distance(histo[0]), histo[1].distance(histo[2]),
-                histo[2].distance(histo[0]), histo[2].distance(histo[1])) > 0.01:
-                    self.one_chapter(first[0][0], first)
-
-
-    def debug3(self):
-        nocr_filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-        catss_filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
-
-        with self._bgtext_filename.open('r') as bgt:
-            efilter = lambda x: x == 0
-            test = OLD_ABBR[OLD_ABBR.index('2Ki'):]
-            #b_at = BRef('Est', 1, -1, -1)
-            bgtext_e = self._bgtext(bgt, test, efilter)
-            nocr_e = self._nocr(nocr_filename, test, efilter)
-            catss_e = self._catss(catss_filename, test, efilter)
-            #fix_e = self._lxxrh(test, efilter)
-
-            e = (bgtext_e, nocr_e, catss_e)
-
-            #print(bgtext_e.valid, catss_e.valid, fix_e.valid)
-            #print(bgtext_e.book, catss_e.book, fix_e.book)
-            #print(bgtext_e.chapter, catss_e.chapter, fix_e.chapter)
-            #print(self._sync(e))
-            while self._sync(e):
-                #if self._break(b_at, e):
-                #    break
-                first = tuple([e_.get_chapter() for e_ in e])
-
-                histo = [Histogram(h) for h in first]
-                print(str(first[0][0]),
-                    (histo[0].distance(histo[1]), histo[0].distance(histo[2])),
-                    (histo[1].distance(histo[0]), histo[1].distance(histo[2])),
-                    (histo[2].distance(histo[0]), histo[2].distance(histo[1])),
-                )
-                if max(histo[0].distance(histo[1]), histo[0].distance(histo[2]),
-                histo[1].distance(histo[0]), histo[1].distance(histo[2]),
-                histo[2].distance(histo[0]), histo[2].distance(histo[1])) > 0.01:
-                    self.one_chapter(first[0][0], first)
-
-    def debug4(self):
-        nocr_filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-        catss_filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
-
-        with self._bgtext_filename.open('r') as bgt:
-            efilter = lambda x: x == 0
-            test = OLD_ABBR[OLD_ABBR.index('Est'):]
-            b_at = BRef('Sut', 1, -1, -1)
-            bgtext_e = self._bgtext(bgt, test, efilter)
-            nocr_e = self._nocr(nocr_filename, test, efilter)
-            catss_e = self._catss(catss_filename, test, efilter)
-            #fix_e = self._lxxrh(test, efilter)
-
-            e = (bgtext_e, nocr_e, catss_e) #, fix_e)
-
-            while self._sync(e):
-                if self._break(b_at, e):
-                    break
-                first = tuple([e_.get_chapter() for e_ in e])
-
-                print(first[1])
-
-                print(bgtext_e.valid, catss_e.valid, nocr_e.valid)
-                print(bgtext_e.book, catss_e.book, nocr_e.book)
-                print(bgtext_e.chapter, catss_e.chapter, nocr_e.chapter)
-                print(self._sync(e))
-
-                histo = [Histogram(h) for h in first]
-                print(str(first[0][0]),
-                    (histo[0].distance(histo[1]), histo[0].distance(histo[2])),
-                    (histo[1].distance(histo[0]), histo[1].distance(histo[2])),
-                    (histo[2].distance(histo[0]), histo[2].distance(histo[1])),
-                )
 
     def normal(self, bgt: Iterable, refs: BRef | Tuple[str, ...], token_filter: Callable[[int], bool] = lambda x: True) ->  Tuple[Emitter, ...]:
         nocr_filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
@@ -401,31 +237,51 @@ class Player:
             token_filter = lambda x: x == 0
             e = self.normal(bgt, BOOK_ABBR, token_filter)
             self.book_loop(e, BRef('1Ki', 2, -1, -1))
+
             fix_e = self._lxxrh(BRef('1Ki', 2, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
             self.book_loop(f, BRef('1Ki', 3, -1, -1))
+
             self.book_loop(e, BRef('Est', 1, -1, -1))
             self.chapter_loop(e, (False, False, True))
             self.book_loop(e, BRef('2Ma', 13, -1, -1))
+
             fix_e = self._lxxrh(BRef('2Ma', 13, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
             self.chapter_loop(f, (False, False, False))
+
             self.book_loop(e, None)
+
             fix_e = self._lxxrh(BRef('Pro', 24, -1, -1), token_filter)
             f = (e[0], e[1], fix_e)
             self.book_loop(f, BRef('Ecc', 1, -1, -1))
+
             self.book_loop(e, BRef('Mic', 1, -1, -1))
+
             fix_e = self._lxxrh(BRef('Mic', 1, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
             self.book_loop(f, BRef('Joe', 1, -1, -1))
+
             self.book_loop(e, BRef('Sut', 1, -1, -1))
+
             fix_e = self._lxxrh(BRef('Sut', 1, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
             self.chapter_loop(f, (False, False, False))
+
             self.book_loop(e, None)
-            #self._emitter_status(e)
 
+            filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
+            with filename.open('r') as f1:
+                ognt_e = Emitter(IterOpenGNT(csv.reader(f1, delimiter='\t')), NEW_ABBR, token_filter)
+                ognt_e.fast_forward()
 
+                filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
+                with filename.open('r') as f2:
+                    rsgnt_e = Emitter(IterRSGNT(f2), NEW_ABBR, token_filter)
+                    rsgnt_e.fast_forward()
+
+                    g = (e[0], ognt_e, rsgnt_e)
+                    self.book_loop(g, None)
 
     def book_loop(self, e: Tuple[Emitter, ...], b_at: BRef | None = None):
         while self._sync(e):

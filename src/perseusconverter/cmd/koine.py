@@ -38,6 +38,7 @@ from greektextify.text.database import GreekDatabase
 from greektextify.text.diacritic import GreekDiacritic
 from greektextify.text.extended import GreekExtended
 from greektextify.text.midway import GreekMidway
+from greektextify.text.modify import WordModifier
 from . import Command
 from ..app import Config, logging
 from ..iter.bgmiter import IterBGM, BRef
@@ -252,26 +253,7 @@ class KoineCommand(Command):
 
     def _lxxfix(self):
         player = Player(self.target)
-        #player.debug()
-        #player.debug1()
-        #player.debug2()
-        #player.debug3()
-        #player.debug4()
         player.print_book()
-
-        exit()
-        filename = self.target.joinpath("bible-analyzer-corpora/corpora/rhlxx")
-        fiter = IterFix(FixFileIter(filename))
-        collect = Collector(fiter.iter('mic', 7))
-        collect.collect()
-        collect.analyze()
-
-        fiter = IterFix(FixFileIter(filename))
-        emitter = Emitter(fiter.iter('mic'), BRef('Mic', -1, -1, -1))
-        emitter.fast_forward()
-        while emitter.valid:
-            last_chapter = emitter.get_chapter()
-            pprint(last_chapter)
 
     def _catss(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
@@ -344,7 +326,7 @@ class KoineCommand(Command):
         with filename.open('r') as f:
             riter = IterRSGNT(f)
 
-            emitter = Emitter(riter, NEW_ABBR, lambda x: x == 0)
+            emitter = Emitter(riter, NEW_ABBR, BRef('2Pe', 2, -1, -1), lambda x: x == 0)
             emitter.fast_forward()
             while emitter.valid:
                 last_chapter = emitter.get_chapter()
