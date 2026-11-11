@@ -127,13 +127,17 @@ class IterFix(ContextObject):
                                     book_ref = 'DAT'
                                 elif book_ref == 'DAG' and book == 'dan':
                                     book_ref = 'DAN'
+                                elif book_ref == 'JOS' and book == 'jsa':
+                                    book_ref = 'Jsa'
+                                elif book_ref == 'SUS' and book == 'sut':
+                                    book_ref = 'Sut'
                                 elif book_ref == 'ESG':
                                     book_ref = 'EST'
                                 book_abbr = BOOK_ABBR[self._file_iter.LOWER.index(book_ref.lower())]
                                 chapter_cnt = int(chapter_num)
                                 if isalpha(verse_num[-1]):
                                     verse_cnt = int(verse_num[:-1])
-                                    sub_verse = ord(verse_num[-1]) - ord('a')
+                                    sub_verse = ord(verse_num[-1]) - 96 # ord('a')
                                 else:
                                     verse_cnt = int(verse_num)
                                     sub_verse = -1

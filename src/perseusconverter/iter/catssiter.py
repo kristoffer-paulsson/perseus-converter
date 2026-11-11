@@ -25,6 +25,7 @@ from typing import Tuple
 from greektextify.beta.word import BetaWord
 from greektextify.nlp.contextual import ContextObject, NlpOperation, NlpContext
 from greektextify.nlp.detoken import Tokenizer
+from greektextify.text.modify import WordModifier
 from greektextify.text.prnt import PrintGreek
 from perseusconverter.iter.fileiter import BasicIterFile
 from perseusconverter.recursiveiterator import RecursiveIterator
@@ -97,7 +98,7 @@ class IterCatSS(ContextObject):
     OMITTED = (
         'Pro 24', 'Pro 25', 'Pro 26', 'Pro 27', 'Pro 28', 'Pro 29', 'Pro 30',
         'Pro 31', 'Pro 32', 'Pro 33', 'Pro 34', 'Pro 35', 'Pro 36',  # Disorder
-        'Dat 3', # Five verses removed that exists in other editions of LXX
+        # 'Dat 3', # Five verses removed that exists in other editions of LXX
     )
 
     MAP = {
@@ -271,7 +272,7 @@ class IterCatSS(ContextObject):
                                 cur_verse = int(verse.split('/')[0])
                             elif '-' in verse:
                                 cur_verse = int(verse.split('-')[0])
-                            elif len(verse) > 0 and isalpha(chapter_verse[-1]):
+                            elif len(verse) > 0 and isalpha(verse[-1]):
                                 cur_verse = int(verse[:-1])
                                 sub_verse = ord(verse[-1]) - 96
                             else:
@@ -299,7 +300,5 @@ class IterCatSS(ContextObject):
                             end = line.find(' ')
                             for token in self._tokenize(line[:end]):
                                 if token[0] == 0:
-                                    token = (0, PrintGreek.format(BetaWord.glyphen(token[1])))
+                                    token = (0, PrintGreek.format(WordModifier.final(BetaWord.glyphen(token[1]))))
                                 yield token
-
-        # print(dict(zip(self.MAP, BOOK_ABBR[:61])))

@@ -56,6 +56,7 @@ from ..traverse.rgnt import RockTraverser
 from ..util.books import OLD_ABBR, NEW_ABBR, BOOK_ABBR
 from ..util.collector import Counter, Collector, BStruct
 from ..util.emitter import Emitter
+from ..util.scan import Player
 from ..util.utils import ListVerify, CountVerify
 
 BETACODE = (
@@ -163,16 +164,6 @@ class KoineCommand(Command):
             self._bgt()
         elif self._args.corpora == 'sinai':
             self._sinai()
-        elif self._args.corpora == 'nocr':
-            self._nocr()
-        elif self._args.corpora == 'sept3':
-            self._sept3()
-        elif self._args.corpora == 'catss':
-            self._catss()
-        elif self._args.corpora == 'rock':
-            self._rock()
-        elif self._args.corpora == 'ognt':
-            self._opengnt()
         elif self._args.corpora == 'check':
             self._meta()
         elif self._args.corpora == 'text-check':
@@ -260,6 +251,15 @@ class KoineCommand(Command):
             print(key, len(dictionary[key]))
 
     def _lxxfix(self):
+        player = Player(self.target)
+        #player.debug()
+        #player.debug1()
+        #player.debug2()
+        #player.debug3()
+        #player.debug4()
+        player.print_book()
+
+        exit()
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/rhlxx")
         fiter = IterFix(FixFileIter(filename))
         collect = Collector(fiter.iter('mic', 7))
@@ -278,7 +278,7 @@ class KoineCommand(Command):
         citer = IterCatSS(CatSSFileIter(filename))
 
         #emitter = Emitter(citer, BRef('Pro', 23, -1, -1), lambda x: x == 0)
-        emitter = Emitter(citer, BRef('Ode', 1, -1, -1), lambda x: x == 0)
+        emitter = Emitter(citer, BRef('Mal', 1, -1, -1), lambda x: x == 0)
         emitter.fast_forward()
         pprint(emitter.get_chapter())
 
