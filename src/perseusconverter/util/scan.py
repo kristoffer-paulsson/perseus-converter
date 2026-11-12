@@ -19,6 +19,7 @@
 # Contributors:
 #     Kristoffer Paulsson - initial implementation
 #
+import csv
 import glob
 import re
 import unicodedata
@@ -303,3 +304,4 @@ class Player:
         print(str(first[0][0]), all_distances)
         if max(all_distances) > 0.01:
             self.one_chapter(first[0][0], first)
+
