@@ -29,17 +29,16 @@ from greektextify.text.glyph import GreekGlyph
 
 class PrintGreek:
     PRINTABLES = tuple([
-       (GreekDatabase.DEBUG_CIRCLE[1], GreekDatabase.DEBUG_CIRCLE[0])
-   ] + [
-       (u[1], u[0]) for u in GreekDatabase.ALL_UTF_LETTERS
-   ])
+        (GreekDatabase.DEBUG_CIRCLE[1], GreekDatabase.DEBUG_CIRCLE[0])
+    ] + [
+        (u[1], u[0]) for u in GreekDatabase.ALL_UTF_LETTERS
+    ])
 
     DICT = MappingProxyType(dict(PRINTABLES))
 
-
     TRANS = MappingProxyType(dict([
-       (u[1], u[0]) for u in GreekDatabase.OLD_STYLE
-   ]))
+        (u[1], u[0]) for u in GreekDatabase.OLD_STYLE
+    ]))
 
     @classmethod
     def format(cls, word: Tuple[GreekGlyph]) -> str:

@@ -20,11 +20,11 @@
 #     Kristoffer Paulsson - initial implementation
 #
 import csv
-from curses.ascii import isalnum
+import itertools
+import pprint
 from itertools import permutations
 from pathlib import PosixPath
-from pprint import pprint
-from typing import List, Tuple, Any, Iterable, Callable
+from typing import List, Tuple, Any, Iterable, Callable, Dict
 
 from collatex import Collation, collate
 
@@ -225,8 +225,9 @@ class Player:
         while self._sync(e):
             if b_at is not None and self._break(b_at, e):
                 break
+            c_book = e[0].book
             first = tuple([e_.get_chapter() for e_ in e])
-            self._rec.rec(first)
+            self._rec.rec(first, c_book != e[0].book)
 
             histo = [Histogram(h) for h in first]
             all_distances = [h1.distance(h2) for h1, h2 in permutations(histo, 2)]
@@ -235,8 +236,9 @@ class Player:
                 self.one_chapter(first[0][0], first)
 
     def chapter_loop(self, e: Tuple[Emitter, ...], extra: Tuple[bool, ...]):
+        c_book = e[0].book
         first = tuple([e_.get_chapter() + e_.get_chapter() if extra[i] else e_.get_chapter() for i, e_ in enumerate(e)])
-        self._rec.rec(first)
+        self._rec.rec(first, c_book != e[0].book)
 
         histo = [Histogram(h) for h in first]
         all_distances = [h1.distance(h2) for h1, h2 in permutations(histo, 2)]
@@ -246,44 +248,89 @@ class Player:
 
 
 class Recorder:
-    def __init__(self):
-        pass
+    def __init__(self, filename: PosixPath):
+        self._file = filename
+        self._tail = dict()
+        self._last = BRef('n/a', -1, -1, -1)
+
+    def _tailing(self, columns) -> Dict[str, List[BRef | Tuple[int, int, str]]]:
+        tail = dict()
+        for column in columns:
+            grouping = dict(column.tokens_per_witness.items())
+            for key, tokens in grouping.items():
+                if key not in tail:
+                    tail[key] = list()
+                l = tail[key]
+                for token in tokens:
+                    l.append(token.token_data['data'])
+        return tail
+
+    def _tail_idx(self, columns):
+        """Scans large column bottom up for 10 straight agreements one row at a time"""
+        for idx in range(len(columns) - 1, -1, -1):
+            for idc in range(idx, idx - 10, -1):
+                if not self._flat_same(self._flat_col(columns, idc)):
+                    break
+            else:
+                return idx + 1
+        return -1
 
     @classmethod
     def _cmp(cls, token1, token2) -> bool:
-        return False if '_' in (token1, token2) else GreekWord.cmp_semi(GreekWord.glyphen(token1), GreekWord.glyphen(token2), True)
+        b1 = '_' in token1
+        b2 = '_' in token2
+        if b1 and b2:
+            return token1 == token2
+        elif b1 or b2:
+            return False
+        else:
+            return GreekWord.cmp_semi(GreekWord.glyphen(token1), GreekWord.glyphen(token2), True)
 
-    @classmethod
-    def _all_same(cls, g: List[GreekWord], op: Callable[[Tuple[GreekGlyph]], Tuple[GreekGlyph]] = WordModifier.search_token) -> bool:
-        return all(WordModifier.stringify(x[2][2], op) for x in g)
+    def rec(self, e: Tuple[List[BRef | Tuple[int, int, str]], ...], last_chapter: bool = False):
 
-    def rec(self, e: Tuple[List[BRef | Tuple[int, int, str]], ...]):
         c = Collation()
         for idx, e_ in enumerate(e):
-            c.add_witness({"id": str(idx), "tokens": [{"t": x[2], "data": x} if not isinstance(x, BRef) else {"t": '_', "data": x} for x in e_]})
+            s = str(idx)
+            if s in self._tail:
+                e_ = self._tail[s] + e_
+                del self._tail[s]
+            c.add_witness({"id": str(idx), "tokens": [{"t": x[2], "data": x} if not isinstance(x, BRef) else {"t": str(x).replace(' ', '_'), "data": x} for x in e_]})
         table = collate(c, segmentation=False, properties_filter=lambda t1, t2: Recorder._cmp(t1['t'], t2['t']))
 
-        all_sigla = [row.header for row in table.rows]
-        sigla_len = len(all_sigla)
-        for col_idx, column in enumerate(table.columns):
-            # print("col: " + str(col_idx))
-            # Grouping of witnesses
-            grouping = list()
-            for sigil, tokens in column.tokens_per_witness.items():
-                grouping.append((sigil, tokens[0].token_data['t'], tokens[0].token_data['data']))
-                t = tokens[0].token_data['t']
-                data = tokens[0].token_data['data']
-            # print(grouping)
+        if not last_chapter:
+            tail_idx = self._tail_idx(table.columns)
+            if tail_idx < len(table.columns):
+                tail = self._tailing(table.columns[tail_idx:])
+                e2 = dict(enumerate(e))
+                for k, v in tail.items():
+                    self._tail[str(k)] = e2[int(k)][:len(v)]
+        else:
+            tail_idx = len(table.columns)
 
-            if len(grouping) >= 2:
-                if grouping[0][1] == '_':
-                    print('\n' + str(grouping[0][2]), end=' ')
-                else:
-                    if self._all_same(grouping):
-                        print(WordModifier.stringify(grouping[0][2][2], op=WordModifier.lower), end=' ')
+        with self._file.open('a') as out:
+            for col_idx, column in enumerate(table.columns[:tail_idx]):
+                grouping = dict(column.tokens_per_witness.items())
+                fcol = self._flat_col(table.columns, col_idx)
+
+                if len(grouping) >= 2:
+                    token = grouping['0'][0].token_data['data']
+                    if '_' in fcol[0]:
+                        out.write("\n{}".format(str(token)))
                     else:
-                        raise ValueError("Weird grouping, all are excepted the same")
-            else:
-                print('Skipping: ' + str(grouping))
+                        if self._flat_same(fcol):
+                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.lower)))
+                        else:
+                            raise ValueError("Weird grouping, all are excepted the same")
+                else:
+                    print('Skipping: ' + str(grouping))
+
+    def _flat_col(self, columns, col_idx) -> List[str]:
+        col = columns[col_idx]
+        row = list(str(x) for x in itertools.chain.from_iterable(col.tokens_per_witness.values()))
+        return row
+
+    @classmethod
+    def _flat_same(cls, g: List[str], op: Callable[[Tuple[GreekGlyph]], Tuple[GreekGlyph]] = WordModifier.search_token) -> bool:
+        return all(WordModifier.stringify(x, False, op) for x in g)
 
 

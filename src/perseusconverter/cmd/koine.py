@@ -26,6 +26,7 @@ import json
 import string
 from argparse import Namespace
 from curses.ascii import isalpha, isdigit
+from pathlib import PosixPath
 from pprint import pprint
 
 import unicodedata
@@ -251,7 +252,7 @@ class KoineCommand(Command):
             print(key, len(dictionary[key]))
 
     def _lxxfix(self):
-        player = Player(self.target, Recorder())
+        player = Player(self.target, Recorder(PosixPath('test.out')))
         player.print_book()
 
     def _catss(self):
@@ -401,7 +402,7 @@ class KoineCommand(Command):
 
         print(len(GreekAlphabet.FROM_LOWER), len(GreekAlphabet.FROM_UPPER), len(GreekAlphabet.CASE_LOWER), len(GreekAlphabet.CASE_UPPER))
 
-        l = (''.join(chr(x) for x in dict(GreekDatabase.ALL_UTF_LETTERS).keys()))[3:]
+        l = (''.join(chr(x) for x in sorted(dict(GreekDatabase.ALL_UTF_LETTERS).keys())))[3:]
         print(l)
         m = PrintGreek.format_old(GreekWord.glyphen(l))
         print(m)
