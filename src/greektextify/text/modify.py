@@ -39,8 +39,9 @@ class WordModifier:
     )
 
     @staticmethod
-    def stringify(token: str, op: Callable[[Tuple[GreekGlyph]], Tuple[GreekGlyph]]) -> str:
-        return PrintGreek.format(op(GreekWord.glyphen(token)))
+    def stringify(token: str, old: bool = False, op: Callable[[Tuple[GreekGlyph]], Tuple[GreekGlyph]] = lambda x: x) -> str:
+        tmp = op(GreekWord.glyphen(token))
+        return PrintGreek.format(tmp) if not old else PrintGreek.format_old(tmp)
 
     @staticmethod
     def _fix_final(token: List[GreekGlyph]) -> List[GreekGlyph]:

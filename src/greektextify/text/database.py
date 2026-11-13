@@ -1251,6 +1251,27 @@ class GreekDatabase:
 
     LEGAL = frozenset(dict(ALL_UTF_LETTERS).values())
 
+    OLD_STYLE = (
+        (GreekExtended.SMALL_ALPHA_OXIA, SMALL_ALPHA_TONOS[1]),
+        (GreekExtended.SMALL_EPSILON_OXIA, SMALL_EPSILON_TONOS[1]),
+        (GreekExtended.SMALL_ETA_OXIA, SMALL_ETA_TONOS[1]),
+        (GreekExtended.SMALL_IOTA_OXIA, SMALL_IOTA_TONOS[1]),
+        (GreekExtended.SMALL_OMICRON_OXIA, SMALL_OMICRON_TONOS[1]),
+        (GreekExtended.SMALL_UPSILON_OXIA, SMALL_UPSILON_TONOS[1]),
+        (GreekExtended.SMALL_OMEGA_OXIA, SMALL_OMEGA_TONOS[1]),
+        (GreekExtended.CAPITAL_ALPHA_OXIA, CAPITAL_ALPHA_TONOS[1]),
+        (GreekExtended.CAPITAL_EPSILON_OXIA, CAPITAL_EPSILON_TONOS[1]),
+        (GreekExtended.CAPITAL_ETA_OXIA, CAPITAL_ETA_TONOS[1]),
+        (GreekExtended.SMALL_IOTA_DIALYTIKA_OXIA, SMALL_IOTA_DIALYTIKA_TONOS[1]),
+        (GreekExtended.CAPITAL_IOTA_OXIA, CAPITAL_IOTA_TONOS[1]),
+        (GreekExtended.SMALL_UPSILON_DIALYTIKA_OXIA, SMALL_UPSILON_DIALYTIKA_TONOS[1]),
+        (GreekExtended.CAPITAL_UPSILON_OXIA, CAPITAL_UPSILON_TONOS[1]),
+        (GreekExtended.CAPITAL_OMICRON_OXIA, CAPITAL_OMICRON_TONOS[1]),
+        (GreekExtended.CAPITAL_OMEGA_OXIA, CAPITAL_OMEGA_TONOS[1])
+    )
+
+    TRANSLATE = frozenset(dict(OLD_STYLE).values())
+
     @staticmethod
     def isvalid(glyph: GreekGlyph) -> bool:
         return glyph in GreekDatabase.LEGAL

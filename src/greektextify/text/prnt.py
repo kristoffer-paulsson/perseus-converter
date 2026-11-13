@@ -37,6 +37,14 @@ class PrintGreek:
     DICT = MappingProxyType(dict(PRINTABLES))
 
 
+    TRANS = MappingProxyType(dict([
+       (u[1], u[0]) for u in GreekDatabase.OLD_STYLE
+   ]))
+
     @classmethod
     def format(cls, word: Tuple[GreekGlyph]) -> str:
         return ''.join([chr(cls.DICT[l]) for l in word])
+
+    @classmethod
+    def format_old(cls, word: Tuple[GreekGlyph]) -> str:
+        return ''.join([chr(cls.DICT[l] if l not in GreekDatabase.TRANSLATE else cls.TRANS[l]) for l in word])

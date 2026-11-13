@@ -20,11 +20,17 @@
 #     Kristoffer Paulsson - initial implementation
 #
 import csv
+from curses.ascii import isalnum
 from itertools import permutations
 from pathlib import PosixPath
+from pprint import pprint
 from typing import List, Tuple, Any, Iterable, Callable
 
+from collatex import Collation, collate
+
+from greektextify.text.glyph import GreekGlyph
 from greektextify.text.modify import WordModifier
+from greektextify.text.word import GreekWord
 from perseusconverter.iter.bgtiter import IterBGT
 from perseusconverter.iter.catssiter import IterCatSS, CatSSFileIter
 from perseusconverter.iter.fileiter import IterNocr, NocrFileIter
@@ -60,10 +66,11 @@ class Histogram:
 
 class Player:
 
-    def __init__(self, target: PosixPath):
+    def __init__(self, target: PosixPath, rec: "Recorder"):
         self.target = target
         self._bgtext_filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
         self._fix_filename = self.target.joinpath("bible-analyzer-corpora/corpora/rhlxx")
+        self._rec = rec
 
     def _bgtext(self, fd, test, t_filter):
         bgtext_e = Emitter(IterBGT(fd, test), test, t_filter)
@@ -219,6 +226,7 @@ class Player:
             if b_at is not None and self._break(b_at, e):
                 break
             first = tuple([e_.get_chapter() for e_ in e])
+            self._rec.rec(first)
 
             histo = [Histogram(h) for h in first]
             all_distances = [h1.distance(h2) for h1, h2 in permutations(histo, 2)]
@@ -228,10 +236,54 @@ class Player:
 
     def chapter_loop(self, e: Tuple[Emitter, ...], extra: Tuple[bool, ...]):
         first = tuple([e_.get_chapter() + e_.get_chapter() if extra[i] else e_.get_chapter() for i, e_ in enumerate(e)])
+        self._rec.rec(first)
 
         histo = [Histogram(h) for h in first]
         all_distances = [h1.distance(h2) for h1, h2 in permutations(histo, 2)]
         print(str(first[0][0]), all_distances)
         if max(all_distances) > 0.01:
             self.one_chapter(first[0][0], first)
+
+
+class Recorder:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def _cmp(cls, token1, token2) -> bool:
+        return False if '_' in (token1, token2) else GreekWord.cmp_semi(GreekWord.glyphen(token1), GreekWord.glyphen(token2), True)
+
+    @classmethod
+    def _all_same(cls, g: List[GreekWord], op: Callable[[Tuple[GreekGlyph]], Tuple[GreekGlyph]] = WordModifier.search_token) -> bool:
+        return all(WordModifier.stringify(x[2][2], op) for x in g)
+
+    def rec(self, e: Tuple[List[BRef | Tuple[int, int, str]], ...]):
+        c = Collation()
+        for idx, e_ in enumerate(e):
+            c.add_witness({"id": str(idx), "tokens": [{"t": x[2], "data": x} if not isinstance(x, BRef) else {"t": '_', "data": x} for x in e_]})
+        table = collate(c, segmentation=False, properties_filter=lambda t1, t2: Recorder._cmp(t1['t'], t2['t']))
+
+        all_sigla = [row.header for row in table.rows]
+        sigla_len = len(all_sigla)
+        for col_idx, column in enumerate(table.columns):
+            # print("col: " + str(col_idx))
+            # Grouping of witnesses
+            grouping = list()
+            for sigil, tokens in column.tokens_per_witness.items():
+                grouping.append((sigil, tokens[0].token_data['t'], tokens[0].token_data['data']))
+                t = tokens[0].token_data['t']
+                data = tokens[0].token_data['data']
+            # print(grouping)
+
+            if len(grouping) >= 2:
+                if grouping[0][1] == '_':
+                    print('\n' + str(grouping[0][2]), end=' ')
+                else:
+                    if self._all_same(grouping):
+                        print(WordModifier.stringify(grouping[0][2][2], op=WordModifier.lower), end=' ')
+                    else:
+                        raise ValueError("Weird grouping, all are excepted the same")
+            else:
+                print('Skipping: ' + str(grouping))
+
 

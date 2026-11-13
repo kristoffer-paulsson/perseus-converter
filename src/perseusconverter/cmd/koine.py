@@ -28,6 +28,7 @@ from argparse import Namespace
 from curses.ascii import isalpha, isdigit
 from pprint import pprint
 
+import unicodedata
 from bs4 import BeautifulSoup
 from lxml.etree import XMLSyntaxError
 
@@ -38,27 +39,25 @@ from greektextify.text.database import GreekDatabase
 from greektextify.text.diacritic import GreekDiacritic
 from greektextify.text.extended import GreekExtended
 from greektextify.text.midway import GreekMidway
-from greektextify.text.modify import WordModifier
+from greektextify.text.prnt import PrintGreek
+from greektextify.text.word import GreekWord
 from . import Command
 from ..app import Config, logging
 from ..iter.bgmiter import IterBGM, BRef
 from ..iter.bgtiter import IterBGT
 from ..iter.catssiter import IterCatSS, CatSSFileIter
 from ..iter.fileiter import NocrFileIter, IterNocr
-from ..iter.fixiter import FixFileIter, IterFix
 from ..iter.openiter import IterOpenGNT
+from ..iter.play import Player, Recorder
 from ..iter.rockiter import IterRSGNT
 from ..iter.sinaiiter import IterSinai
 from ..recursiveiterator import RecursiveIterator
 from ..traverse.bibbgt import BgtTraverser
 from ..traverse.general import AbstractTeiTraverser
 from ..traverse.lsjlex import LsjTraverser
-from ..traverse.rgnt import RockTraverser
 from ..util.books import OLD_ABBR, NEW_ABBR, BOOK_ABBR
 from ..util.collector import Counter, Collector, BStruct
 from ..util.emitter import Emitter
-from ..util.scan import Player
-from ..util.utils import ListVerify, CountVerify
 
 BETACODE = (
     'tlg2003.tlg008.perseus-grc1.xml',
@@ -252,7 +251,7 @@ class KoineCommand(Command):
             print(key, len(dictionary[key]))
 
     def _lxxfix(self):
-        player = Player(self.target)
+        player = Player(self.target, Recorder())
         player.print_book()
 
     def _catss(self):
@@ -390,7 +389,7 @@ class KoineCommand(Command):
 
         upper = string.ascii_uppercase + '_'
         valid_attr = set()
-        remove = ('ALL_UTF_LETTERS', 'LEGAL', 'DEBUG_CIRCLE')
+        remove = ('ALL_UTF_LETTERS', 'LEGAL', 'DEBUG_CIRCLE', 'OLD_STYLE', 'TRANSLATE')
         for attr in GreekDatabase.__dict__.keys():
             if all(char in upper for char in attr):
                 if attr not in remove:
@@ -401,6 +400,18 @@ class KoineCommand(Command):
                 print("{} not in GreekDatabase".format(GreekDatabase.__dict__[attr][0]))
 
         print(len(GreekAlphabet.FROM_LOWER), len(GreekAlphabet.FROM_UPPER), len(GreekAlphabet.CASE_LOWER), len(GreekAlphabet.CASE_UPPER))
+
+        l = (''.join(chr(x) for x in dict(GreekDatabase.ALL_UTF_LETTERS).keys()))[3:]
+        print(l)
+        m = PrintGreek.format_old(GreekWord.glyphen(l))
+        print(m)
+        print(m == l)
+        cnt = 0
+        for t1, t2 in zip(l, m):
+            if t1 != t2:
+                cnt += 1
+                print('{} :'.format(cnt), t1, '({})'.format(hex(ord(t1[0]))), unicodedata.name(t1[0]), ' -> ', t2, '({})'.format(hex(ord(t2[0]))), unicodedata.name(t2[0]))
+
 
     def _text_meta(self):
         bgmorph_filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
