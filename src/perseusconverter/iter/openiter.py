@@ -74,6 +74,7 @@ class IterOpenGNT(ContextObject):
         last_verse = 0
         current_index = 0
         v_text = None
+        v_morph = list()
         row_idx = 1
 
         next(self._reader)
@@ -87,8 +88,12 @@ class IterOpenGNT(ContextObject):
                 if verse_cnt != last_verse:
                     if v_text is not None:
                         for token in self._tokenize(v_text):
-                            yield token
+                            if token[0] == 0:
+                                yield token[0], token[1], v_morph.pop(0)
+                            else:
+                                yield token
                     v_text = ''
+                    v_morph = list()
 
                     current_index = 1
                     last_verse = verse_cnt
@@ -100,7 +105,10 @@ class IterOpenGNT(ContextObject):
 
                 row_idx += 1
                 self._current += " row: {}".format(row_idx)
-
-                word = ' ' + row[7].strip('〔〕').split('｜')[2]
+                parts = row[7].strip('〔〕').split('｜')
+                word = ' ' + parts[2]
+                morph = parts[4]
                 punctuation = ''.join(row[11].strip('〔〕').split('｜')).replace('<pm>', '').replace('</pm>', '')
                 v_text += word + punctuation
+                v_morph.append(morph)
+
