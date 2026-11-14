@@ -200,6 +200,11 @@ class Player:
             f = (e[0], e[1], fix_e)
             self.book_loop(f, m, BRef('Ecc', 1, -1, -1))
 
+            self.book_loop(e, m, BRef('Sip', 1, -1, -1))
+            fix_e = self._lxxrh(BRef('Sir', 1, -1, -1), token_filter)
+            f = (fix_e, e[0], e[1], e[2])
+            self.chapter_loop(f, m, (False, True, True, True))
+
             self.book_loop(e, m, BRef('Mic', 1, -1, -1))
 
             fix_e = self._lxxrh(BRef('Mic', 1, -1, -1), token_filter)
@@ -226,6 +231,7 @@ class Player:
 
                     g = (e[0], ognt_e, rsgnt_e)
                     self.book_loop(g, m, None)
+
 
     def _proper_noun(self, m: Emitter):
         x = set()
@@ -260,6 +266,21 @@ class Player:
         print(str(first[0][0]), all_distances)
         if max(all_distances) > 0.01:
             self.one_chapter(first[0][0], first)
+
+    def test_book(self, m: Set[str] = frozenset([''])):
+        with self._bgtext_filename.open('r') as bgt:
+            token_filter = lambda x: x == 0
+            e = self.normal(bgt, BOOK_ABBR[BOOK_ABBR.index('Sip'):], token_filter)
+
+            self.book_loop(e, m, BRef('Sip', 1, -1, -1))
+            self._emitter_status(e)
+            fix_e = self._lxxrh(BRef('Sir', 1, -1, -1), token_filter)
+            f = (fix_e, e[0], e[1], e[2])
+            self._emitter_status(f)
+            self.chapter_loop(f, m, (False, True, True, True))
+            self._emitter_status(e)
+
+            self.book_loop(e, m,None)
 
 
 class Recorder:
@@ -302,15 +323,16 @@ class Recorder:
             return GreekWord.cmp_semi(GreekWord.glyphen(token1), GreekWord.glyphen(token2), True)
 
     def rec(self, e: Tuple[List[BRef | Tuple[int, int, str]], ...], last_chapter: bool = False, nouns: Set[str] = set()):
+        threshold = len(e) / 2.0
 
         c = Collation()
         for idx, e_ in enumerate(e):
             s = str(idx)
             if s in self._tail:
                 e_ = self._tail[s] + e_
-                del self._tail[s]
             c.add_witness({"id": str(idx), "tokens": [{"t": x[2], "data": x} if not isinstance(x, BRef) else {"t": str(x).replace(' ', '_'), "data": x} for x in e_]})
         table = collate(c, segmentation=False, properties_filter=lambda t1, t2: Recorder._cmp(t1['t'], t2['t']))
+        self._tail = dict()
 
         if not last_chapter:
             tail_idx = self._tail_idx(table.columns)
@@ -322,25 +344,29 @@ class Recorder:
         else:
             tail_idx = len(table.columns)
 
+        new_file = not self._file.exists()
+
         with self._file.open('a') as out:
             for col_idx, column in enumerate(table.columns[:tail_idx]):
                 grouping = dict(column.tokens_per_witness.items())
                 fcol = self._flat_col(table.columns, col_idx)
 
-                if len(grouping) >= 2:
-                    token = grouping['0'][0].token_data['data']
-                    if '_' in fcol[0]:
-                        out.write("\n{}".format(str(token)))
+                token = grouping['0'][0].token_data['data'] if '0' in grouping.keys() else grouping[list(grouping.keys())[0]][0].token_data['data']
+                if '_' in fcol[0] and '0' in grouping:
+                    if new_file:
+                        new_file = False
+                        out.write(Recorder._bref_str(token))
                     else:
-                        if self._flat_same(fcol):
-                            test = WordModifier.stringify(token[2], op=WordModifier.deaccent)
-                            if test in nouns:
-                                out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.capitalize)))
-                            else:
-                                out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.lower)))
-
+                        out.write("\n{}".format(Recorder._bref_str(token)))
+                elif len(grouping) >= threshold and '_' not in fcol[0]:
+                    if self._flat_same(fcol):
+                        test = WordModifier.stringify(token[2], op=WordModifier.deaccent)
+                        if test in nouns:
+                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.capitalize)))
                         else:
-                            raise ValueError("Weird grouping, all are excepted the same")
+                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.lower)))
+                    else:
+                        raise ValueError("Weird grouping, all are excepted the same")
                 else:
                     print('Skipping: ' + str(grouping))
 
@@ -352,5 +378,9 @@ class Recorder:
     @classmethod
     def _flat_same(cls, g: List[str], op: Callable[[Tuple[GreekGlyph]], Tuple[GreekGlyph]] = WordModifier.search_token) -> bool:
         return all(WordModifier.stringify(x, False, op) for x in g)
+
+    @staticmethod
+    def _bref_str(bref: BRef) -> str:
+        return "{} {}:{}{}".format(bref.book, bref.chapter, bref.verse, '' if bref.sub == -1 else chr(bref.sub + 96))
 
 
