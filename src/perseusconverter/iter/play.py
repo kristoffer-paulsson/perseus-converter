@@ -24,13 +24,15 @@ import itertools
 import pprint
 from itertools import permutations
 from pathlib import PosixPath
-from typing import List, Tuple, Any, Iterable, Callable, Dict
+from typing import List, Tuple, Any, Iterable, Callable, Dict, NamedTuple, Set
 
 from collatex import Collation, collate
 
+from greektextify.text.alphabet import GreekAlphabet
 from greektextify.text.glyph import GreekGlyph
 from greektextify.text.modify import WordModifier
 from greektextify.text.word import GreekWord
+from perseusconverter.iter.bgmiter import IterBGM
 from perseusconverter.iter.bgtiter import IterBGT
 from perseusconverter.iter.catssiter import IterCatSS, CatSSFileIter
 from perseusconverter.iter.fileiter import IterNocr, NocrFileIter
@@ -68,9 +70,16 @@ class Player:
 
     def __init__(self, target: PosixPath, rec: "Recorder"):
         self.target = target
+        self._bgmorph_filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
         self._bgtext_filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
         self._fix_filename = self.target.joinpath("bible-analyzer-corpora/corpora/rhlxx")
+        self._nocr_filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
         self._rec = rec
+
+    def _bgmorph(self, fd, test, t_filter):
+        bgmorph_e = Emitter(IterBGM(fd), test, t_filter)
+        bgmorph_e.fast_forward()
+        return bgmorph_e
 
     def _bgtext(self, fd, test, t_filter):
         bgtext_e = Emitter(IterBGT(fd, test), test, t_filter)
@@ -106,45 +115,42 @@ class Player:
         return b.book == e[0].book and b.chapter == e[0].chapter
 
     def print(self):
-        nocr_filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-        catss_filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
+        x = set()
+        with self._bgmorph_filename.open('r') as morph, self._bgtext_filename.open('r') as bgt:
+            token_filter = lambda x: x == 0
+            m = self._bgmorph(morph, BOOK_ABBR, token_filter)
+            t = self._bgtext(bgt, BOOK_ABBR, token_filter)
 
-        with self._bgtext_filename.open('r') as bgt:
-            efilter = lambda x: x == 0
-            test = BRef('Psa', 9, -1, -1)
-            #test = OLD_ABBR[:5]
-            #for test in OLD_ABBR:
-                #test = [test]
-            bgtext_e = self._bgtext(bgt, test, efilter)
-            nocr_e = self._nocr(nocr_filename, test, efilter)
-            catss_e = self._catss(catss_filename, test, efilter)
-            # fix_e = self._lxxrh(test, efilter)
+            while m.valid and t.valid:
+                for r in zip(m.get_chapter(), t.get_chapter()):
+                    if isinstance(r[0], BRef) or isinstance(r[1], BRef):
+                        if str(r[0]) != str(r[1]):
+                            # print(r)
+                            pass
+                        continue
+                    if r[0][1] != r[1][1]:
+                        #raise ValueError("Morph and text not in order")
+                        continue
+                    s = r[0][3]
+                    if len(s) == 5 and s.startswith('n') and s.endswith('p'):
+                        if GreekWord.glyphen(r[1][2])[0].ch in GreekAlphabet.CASE_UPPER:
+                            x.add(WordModifier.stringify(r[1][2], False, WordModifier.deaccent))
 
-            #while all((bgtext_e.valid, nocr_e.valid, catss_e.valid)):
-            #first = (bgtext_e.get_chapter(), nocr_e.get_chapter(), catss_e.get_chapter(), fix_e.get_chapter())
-            first = (bgtext_e.get_chapter(), nocr_e.get_chapter(), catss_e.get_chapter())
-            #first = (bgtext_e.get_chapter(), catss_e.get_chapter(), fix_e.get_chapter())
-            #first = (bgtext_e.get_chapter(), nocr_e.get_chapter(), fix_e.get_chapter())
-
-            all_max = list()
-            for i in first:
-                all_max.append(len(i))
-            max_len = max(all_max)
-            #for idx in range(0, max_len):
-            #    print(
-            #        first[0][idx] if idx < all_max[0] else 'n/a',
-            #        first[1][idx]  if idx < all_max[1] else 'n/a',
-            #        first[2][idx] if idx < all_max[2] else 'n/a'
-            #    )
-            histo = list()
-            for h in first:
-                histo.append(Histogram(h))
-            print(str(first[0][0]),
-                (histo[0].distance(histo[1]), histo[0].distance(histo[2])),
-                (histo[1].distance(histo[0]), histo[1].distance(histo[2])),
-                (histo[2].distance(histo[0]), histo[2].distance(histo[1])),
-            )
-            self.one_chapter(test, first)
+            filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
+            with filename.open('r') as f1:
+                ognt_e = Emitter(IterOpenGNT(csv.reader(f1, delimiter='\t')), NEW_ABBR, token_filter)
+                ognt_e.fast_forward()
+                while ognt_e.valid:
+                    for r in ognt_e.get_chapter():
+                        if isinstance(r, BRef):
+                            continue
+                        s = r[3]
+                        if len(s) == 7 and s.startswith('N-') and s[-2] == '-' and s[-1] in 'PTL':
+                            if GreekWord.glyphen(r[2])[0].ch in GreekAlphabet.CASE_UPPER:
+                                x.add(WordModifier.stringify(r[2], False, WordModifier.deaccent))
+        for q in sorted(x):
+            print(q, end=' ')
+        return frozenset(x)
 
     def one_chapter(self, bref: BRef, e: Tuple[List[BRef | Tuple[int, int, str]], ...]):
         def _print(num: int, c: List[BRef | Tuple[int, int, str]]):
@@ -153,7 +159,7 @@ class Player:
                     if isinstance(token, BRef):
                         f.write("\n{}".format(token))
                     else:
-                        f.write(" {}".format(WordModifier.stringify(token[2], WordModifier.search_token)))
+                        f.write(" {}".format(WordModifier.stringify(token[2], False, WordModifier.search_token)))
         for idx, _e in enumerate(e):
             _print(idx, _e)
 
@@ -170,43 +176,43 @@ class Player:
         for e_ in e:
             print(e_.valid, e_.book, e_.chapter)
 
-    def print_book(self):
+    def print_book(self, m: Set[str] = frozenset([''])):
         with self._bgtext_filename.open('r') as bgt:
             token_filter = lambda x: x == 0
             e = self.normal(bgt, BOOK_ABBR, token_filter)
-            self.book_loop(e, BRef('1Ki', 2, -1, -1))
+            self.book_loop(e, m, BRef('1Ki', 2, -1, -1))
 
             fix_e = self._lxxrh(BRef('1Ki', 2, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
-            self.book_loop(f, BRef('1Ki', 3, -1, -1))
+            self.book_loop(f, m, BRef('1Ki', 3, -1, -1))
 
-            self.book_loop(e, BRef('Est', 1, -1, -1))
-            self.chapter_loop(e, (False, False, True))
-            self.book_loop(e, BRef('2Ma', 13, -1, -1))
+            self.book_loop(e, m, BRef('Est', 1, -1, -1))
+            self.chapter_loop(e, m, (False, False, True))
+            self.book_loop(e, m, BRef('2Ma', 13, -1, -1))
 
             fix_e = self._lxxrh(BRef('2Ma', 13, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
-            self.chapter_loop(f, (False, False, False))
+            self.chapter_loop(f, m, (False, False, False))
 
-            self.book_loop(e, None)
+            self.book_loop(e, m,None)
 
             fix_e = self._lxxrh(BRef('Pro', 24, -1, -1), token_filter)
             f = (e[0], e[1], fix_e)
-            self.book_loop(f, BRef('Ecc', 1, -1, -1))
+            self.book_loop(f, m, BRef('Ecc', 1, -1, -1))
 
-            self.book_loop(e, BRef('Mic', 1, -1, -1))
+            self.book_loop(e, m, BRef('Mic', 1, -1, -1))
 
             fix_e = self._lxxrh(BRef('Mic', 1, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
-            self.book_loop(f, BRef('Joe', 1, -1, -1))
+            self.book_loop(f, m, BRef('Joe', 1, -1, -1))
 
-            self.book_loop(e, BRef('Sut', 1, -1, -1))
+            self.book_loop(e, m, BRef('Sut', 1, -1, -1))
 
             fix_e = self._lxxrh(BRef('Sut', 1, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
-            self.chapter_loop(f, (False, False, False))
+            self.chapter_loop(f, m, (False, False, False))
 
-            self.book_loop(e, None)
+            self.book_loop(e, m,None)
 
             filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
             with filename.open('r') as f1:
@@ -219,15 +225,24 @@ class Player:
                     rsgnt_e.fast_forward()
 
                     g = (e[0], ognt_e, rsgnt_e)
-                    self.book_loop(g, None)
+                    self.book_loop(g, m, None)
 
-    def book_loop(self, e: Tuple[Emitter, ...], b_at: BRef | None = None):
+    def _proper_noun(self, m: Emitter):
+        x = set()
+        for t in list(m.get_chapter()):
+            if not isinstance(t, BRef):
+                morph: str = t[3]
+                if len(morph) == 5 and morph.startswith('n') and morph.endswith('p'):
+                    x.add(t[1])
+        return frozenset(x)
+
+    def book_loop(self, e: Tuple[Emitter, ...], m: Set[str],  b_at: BRef | None = None):
         while self._sync(e):
             if b_at is not None and self._break(b_at, e):
                 break
             c_book = e[0].book
             first = tuple([e_.get_chapter() for e_ in e])
-            self._rec.rec(first, c_book != e[0].book)
+            self._rec.rec(first, c_book != e[0].book, m)
 
             histo = [Histogram(h) for h in first]
             all_distances = [h1.distance(h2) for h1, h2 in permutations(histo, 2)]
@@ -235,10 +250,10 @@ class Player:
             if max(all_distances) > 0.01:
                 self.one_chapter(first[0][0], first)
 
-    def chapter_loop(self, e: Tuple[Emitter, ...], extra: Tuple[bool, ...]):
+    def chapter_loop(self, e: Tuple[Emitter, ...], m: Set[str], extra: Tuple[bool, ...]):
         c_book = e[0].book
         first = tuple([e_.get_chapter() + e_.get_chapter() if extra[i] else e_.get_chapter() for i, e_ in enumerate(e)])
-        self._rec.rec(first, c_book != e[0].book)
+        self._rec.rec(first, c_book != e[0].book, m)
 
         histo = [Histogram(h) for h in first]
         all_distances = [h1.distance(h2) for h1, h2 in permutations(histo, 2)]
@@ -286,7 +301,7 @@ class Recorder:
         else:
             return GreekWord.cmp_semi(GreekWord.glyphen(token1), GreekWord.glyphen(token2), True)
 
-    def rec(self, e: Tuple[List[BRef | Tuple[int, int, str]], ...], last_chapter: bool = False):
+    def rec(self, e: Tuple[List[BRef | Tuple[int, int, str]], ...], last_chapter: bool = False, nouns: Set[str] = set()):
 
         c = Collation()
         for idx, e_ in enumerate(e):
@@ -318,7 +333,12 @@ class Recorder:
                         out.write("\n{}".format(str(token)))
                     else:
                         if self._flat_same(fcol):
-                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.lower)))
+                            test = WordModifier.stringify(token[2], op=WordModifier.deaccent)
+                            if test in nouns:
+                                out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.capitalize)))
+                            else:
+                                out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.lower)))
+
                         else:
                             raise ValueError("Weird grouping, all are excepted the same")
                 else:

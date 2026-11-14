@@ -33,7 +33,7 @@ class IterBGM:
         self._stream = stream
 
     def __iter__(self):
-        return self.iter_sub()
+        return self.iter()
 
     def _line(self):
         while (line := self._stream.readline()):
@@ -92,7 +92,7 @@ class IterBGM:
                     sub_verse = int(t[1:sve])
                     yield BRef(bref.book, bref.chapter, bref.verse, sub_verse)
                 else:
-                    tag = t.split('@')[0]
-                    yield tag
+                    t_part = t.split('@')
+                    yield 0, t_part[0], '-' if len(t_part) < 2 else t_part[1]
 
 

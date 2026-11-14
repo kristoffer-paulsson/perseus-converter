@@ -73,7 +73,7 @@ class Emitter(BaseCollector):
         else:
             raise RuntimeError("No match found")
 
-    def get_chapter(self)-> Tuple[BRef | Tuple[int, int, str], ...]:
+    def get_chapter(self)-> Tuple[BRef | Tuple[int, int, str] | Tuple[int, int, str, str], ...]:
         if not self.valid:
             return tuple()
 
@@ -90,7 +90,10 @@ class Emitter(BaseCollector):
             elif isinstance(token, Tuple):
                 if self._filter(token[0]):
                     self._token_counter.increment()
-                    tokens.append((token[0], self._token_counter.current(), token[1]))
+                    if len(token) > 2:
+                        tokens.append((token[0], self._token_counter.current(), token[1], token[2]))
+                    else:
+                        tokens.append((token[0], self._token_counter.current(), token[1]))
             else:
                 raise TypeError("Token type {} not supported".format(type(token)))
         else:

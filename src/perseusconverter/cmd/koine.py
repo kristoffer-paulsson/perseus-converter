@@ -253,7 +253,7 @@ class KoineCommand(Command):
 
     def _lxxfix(self):
         player = Player(self.target, Recorder(PosixPath('test.out')))
-        player.print_book()
+        player.print_book(player.print())
 
     def _catss(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
