@@ -53,7 +53,7 @@ class Histogram:
         self._gram = dict()
         for token in tokens:
             if not isinstance(token, BRef):
-                word = WordModifier.stringify(token[2], WordModifier.search_token)
+                word = WordModifier.stringify(token[2], False, WordModifier.search_token)
                 if word not in self._gram:
                     self._gram[word] = 0
                 self._gram[word] += 1
@@ -410,11 +410,6 @@ class Recorder:
         col = columns[col_idx]
         row = list(str(x) for x in itertools.chain.from_iterable(col.tokens_per_witness.values()))
         return row
-
-    @classmethod
-    def _flat_same(cls, g: List[str], op: Callable[[Tuple[GreekGlyph]], Tuple[GreekGlyph]] = WordModifier.search_token) -> bool:
-        #return all(WordModifier.stringify(x, False, op) for x in g)
-        return all(x for x in g)
 
     @staticmethod
     def _bref_str(bref: BRef) -> str:

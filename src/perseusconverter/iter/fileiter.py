@@ -141,6 +141,7 @@ class NocrUtfStandard(TokenStandardizerMixin):
 
     @classmethod
     def standardize(cls, text: str) -> str:
+        text = text.replace('[', '').replace(']', '')
         return text.translate(cls.TRANSFORM)  # Translates the rest
 
 
