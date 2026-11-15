@@ -28,6 +28,7 @@ import regex
 
 from greektextify.nlp.contextual import ContextObject, NlpOperation, NlpContext
 from greektextify.nlp.detoken import Tokenizer
+from greektextify.text.bracket import Bracketing
 from greektextify.text.extended import GreekExtended
 from greektextify.text.midway import GreekMidway
 from greektextify.text.punctuation import GreekPunctuation
@@ -50,6 +51,7 @@ class BgtUtfStandard(TokenStandardizerMixin):
     @classmethod
     def standardize(cls, text: str) -> str:
         text = regex.sub(r'-(?!\S)|(?<!\S)-', chr(cls.EM_DASH), text)  # Translates HYPHEN MINUS not between two words as EM DASH
+        text = text.replace('[', '').replace(']', '')
         return text.translate(cls.TRANSFORM)  # Translates the rest
 
 

@@ -29,9 +29,12 @@ from typing import List, Tuple, Any, Iterable, Callable, Dict, NamedTuple, Set
 from collatex import Collation, collate
 
 from greektextify.text.alphabet import GreekAlphabet
+from greektextify.text.dbg_standard import DbgUtfStandard
 from greektextify.text.glyph import GreekGlyph
+from greektextify.text.midway import GreekMidway
 from greektextify.text.modify import WordModifier
 from greektextify.text.word import GreekWord
+from perseusconverter import Logger
 from perseusconverter.iter.bgmiter import IterBGM
 from perseusconverter.iter.bgtiter import IterBGT
 from perseusconverter.iter.catssiter import IterCatSS, CatSSFileIter
@@ -68,7 +71,8 @@ class Histogram:
 
 class Player:
 
-    def __init__(self, target: PosixPath, rec: "Recorder"):
+    def __init__(self, logger: Logger, target: PosixPath, rec: "Recorder"):
+        self._log = logger
         self.target = target
         self._bgmorph_filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
         self._bgtext_filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
@@ -248,6 +252,7 @@ class Player:
                 break
             c_book = e[0].book
             first = tuple([e_.get_chapter() for e_ in e])
+            self._log.info("Process: {} {}".format(e[0].book, e[0].chapter))
             self._rec.rec(first, c_book != e[0].book, m)
 
             histo = [Histogram(h) for h in first]
@@ -259,6 +264,7 @@ class Player:
     def chapter_loop(self, e: Tuple[Emitter, ...], m: Set[str], extra: Tuple[bool, ...]):
         c_book = e[0].book
         first = tuple([e_.get_chapter() + e_.get_chapter() if extra[i] else e_.get_chapter() for i, e_ in enumerate(e)])
+        self._log.info("Process: {} {}".format(e[0].book, e[0].chapter))
         self._rec.rec(first, c_book != e[0].book, m)
 
         histo = [Histogram(h) for h in first]
@@ -267,7 +273,7 @@ class Player:
         if max(all_distances) > 0.01:
             self.one_chapter(first[0][0], first)
 
-    def test_book(self, m: Set[str] = frozenset([''])):
+    def sample_sirach(self, m: Set[str] = frozenset([''])):
         with self._bgtext_filename.open('r') as bgt:
             token_filter = lambda x: x == 0
             e = self.normal(bgt, BOOK_ABBR[BOOK_ABBR.index('Sip'):], token_filter)
@@ -282,9 +288,43 @@ class Player:
 
             self.book_loop(e, m,None)
 
+    def sample_psamls(self, m: Set[str] = frozenset([''])):
+        with self._bgtext_filename.open('r') as bgt:
+            token_filter = lambda x: x == 0
+            e = self.normal(bgt, BOOK_ABBR[BOOK_ABBR.index('Pss'):], token_filter)
+
+            self.book_loop(e, m,None)
+
+    def sample_odes(self, m: Set[str] = frozenset([''])):
+        with self._bgtext_filename.open('r') as bgt:
+            token_filter = lambda x: x == 0
+            e = self.normal(bgt, BOOK_ABBR[BOOK_ABBR.index('Ode'):], token_filter)
+
+            self.book_loop(e, m,None)
+
+    def sample_mark(self, m: Set[str] = frozenset([''])):
+        with self._bgtext_filename.open('r') as bgt:
+            token_filter = lambda x: x == 0
+            refs = NEW_ABBR[NEW_ABBR.index('Luk'):]
+            bgt_e = self._bgtext(bgt, refs, token_filter)
+
+            filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
+            with filename.open('r') as f1:
+                ognt_e = Emitter(IterOpenGNT(csv.reader(f1, delimiter='\t')), refs, token_filter)
+                ognt_e.fast_forward()
+
+                filename = self.target.joinpath("bible-analyzer-corpora/corpora/rock-solid-gnt.txt")
+                with filename.open('r') as f2:
+                    rsgnt_e = Emitter(IterRSGNT(f2), refs, token_filter)
+                    rsgnt_e.fast_forward()
+
+                    g = (bgt_e, ognt_e, rsgnt_e)
+                    self.book_loop(g, m, None)
+
 
 class Recorder:
-    def __init__(self, filename: PosixPath):
+    def __init__(self, logger: Logger, filename: PosixPath):
+        self._log = logger
         self._file = filename
         self._tail = dict()
         self._last = BRef('n/a', -1, -1, -1)
@@ -305,7 +345,8 @@ class Recorder:
         """Scans large column bottom up for 10 straight agreements one row at a time"""
         for idx in range(len(columns) - 1, -1, -1):
             for idc in range(idx, idx - 10, -1):
-                if not self._flat_same(self._flat_col(columns, idc)):
+                fcol = self._flat_col(columns, idc)
+                if not (all('_' in f for f in fcol) or all(x for x in fcol)):
                     break
             else:
                 return idx + 1
@@ -313,14 +354,7 @@ class Recorder:
 
     @classmethod
     def _cmp(cls, token1, token2) -> bool:
-        b1 = '_' in token1
-        b2 = '_' in token2
-        if b1 and b2:
-            return token1 == token2
-        elif b1 or b2:
-            return False
-        else:
-            return GreekWord.cmp_semi(GreekWord.glyphen(token1), GreekWord.glyphen(token2), True)
+         return token1 == token2
 
     def rec(self, e: Tuple[List[BRef | Tuple[int, int, str]], ...], last_chapter: bool = False, nouns: Set[str] = set()):
         threshold = len(e) / 2.0
@@ -328,9 +362,11 @@ class Recorder:
         c = Collation()
         for idx, e_ in enumerate(e):
             s = str(idx)
+            if s != '0':
+                e_ = list(filter(lambda x: not isinstance(x, BRef), e_))
             if s in self._tail:
                 e_ = self._tail[s] + e_
-            c.add_witness({"id": str(idx), "tokens": [{"t": x[2], "data": x} if not isinstance(x, BRef) else {"t": str(x).replace(' ', '_'), "data": x} for x in e_]})
+            c.add_witness({"id": str(idx), "tokens": [{"t": WordModifier.stringify(str(x[2]), False, op=lambda x: WordModifier.deaccent(WordModifier.lower(x))), "data": x} if not isinstance(x, BRef) else {"t": str(x).replace(' ', '_'), "data": x} for x in e_]})
         table = collate(c, segmentation=False, properties_filter=lambda t1, t2: Recorder._cmp(t1['t'], t2['t']))
         self._tail = dict()
 
@@ -358,17 +394,17 @@ class Recorder:
                         out.write(Recorder._bref_str(token))
                     else:
                         out.write("\n{}".format(Recorder._bref_str(token)))
-                elif len(grouping) >= threshold and '_' not in fcol[0]:
-                    if self._flat_same(fcol):
+                elif len(grouping) >= threshold and all('_' not in f for f in fcol):
+                    if all(x for x in fcol):
                         test = WordModifier.stringify(token[2], op=WordModifier.deaccent)
                         if test in nouns:
-                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.capitalize)))
+                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.capitalize).translate(self.MAP)))
                         else:
-                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.lower)))
+                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.lower).translate(self.MAP)))
                     else:
-                        raise ValueError("Weird grouping, all are excepted the same")
+                        self._log.info("Skipping (b): {}".format(str(grouping)))
                 else:
-                    print('Skipping: ' + str(grouping))
+                    self._log.info("Skipping (a): {}".format(str(grouping)))
 
     def _flat_col(self, columns, col_idx) -> List[str]:
         col = columns[col_idx]
@@ -377,10 +413,13 @@ class Recorder:
 
     @classmethod
     def _flat_same(cls, g: List[str], op: Callable[[Tuple[GreekGlyph]], Tuple[GreekGlyph]] = WordModifier.search_token) -> bool:
-        return all(WordModifier.stringify(x, False, op) for x in g)
+        #return all(WordModifier.stringify(x, False, op) for x in g)
+        return all(x for x in g)
 
     @staticmethod
     def _bref_str(bref: BRef) -> str:
         return "{} {}:{}{}".format(bref.book, bref.chapter, bref.verse, '' if bref.sub == -1 else chr(bref.sub + 96))
+
+    MAP = {GreekMidway.APOSTROPHE: DbgUtfStandard.MODIFIER_LETTER_APOSTROPHE}
 
 
