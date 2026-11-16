@@ -252,8 +252,8 @@ class KoineCommand(Command):
             print(key, len(dictionary[key]))
 
     def _lxxfix(self):
-        player = Player(self.logger, self.target, Recorder(self.logger, PosixPath('test.out')))
-        player.print_book(player.print())
+        player = Player(self.logger, self.target)
+        player.print_book(Recorder(self.logger, PosixPath('test.out'), player.nouns_proper(), player.elision()))
 
     def _catss(self):
         filename = self.target.joinpath("bible-analyzer-corpora/corpora/catss")
@@ -313,7 +313,11 @@ class KoineCommand(Command):
             emitter.fast_forward()
             while emitter.valid:
                 last_chapter = emitter.get_chapter()
-                pprint(last_chapter)
+                for token in last_chapter:
+                    if isinstance(token, BRef):
+                        print("\n{}".format(str(token)), end=' ')
+                    else:
+                        print(token[2].strip(), end=' ')
 
 
     def _rock(self):
@@ -326,11 +330,15 @@ class KoineCommand(Command):
         with filename.open('r') as f:
             riter = IterRSGNT(f)
 
-            emitter = Emitter(riter, NEW_ABBR, BRef('2Pe', 2, -1, -1), lambda x: x == 0)
+            emitter = Emitter(riter, NEW_ABBR, lambda x: x == 0)
             emitter.fast_forward()
             while emitter.valid:
                 last_chapter = emitter.get_chapter()
-                pprint(last_chapter)
+                for token in last_chapter:
+                    if isinstance(token, BRef):
+                        print("\n{}".format(str(token)), end=' ')
+                    else:
+                        print(token[2].strip(), end=' ')
 
     def _nocr(self):
         filename2 = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")

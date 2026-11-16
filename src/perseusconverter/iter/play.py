@@ -47,6 +47,108 @@ from perseusconverter.util.emitter import Emitter
 from perseusconverter.util.utils import BRef
 
 
+class Recorder:
+    def __init__(self, logger: Logger, filename: PosixPath, nouns: Set[str] = set(), subs: Dict[str, str] = dict()):
+        self._log = logger
+        self._file = filename
+        self._nouns = nouns
+        self._subs = subs
+        self._tail = dict()
+        self._last = BRef('n/a', -1, -1, -1)
+
+    def _tailing(self, columns) -> Dict[str, List[BRef | Tuple[int, int, str]]]:
+        tail = dict()
+        for column in columns:
+            grouping = dict(column.tokens_per_witness.items())
+            for key, tokens in grouping.items():
+                if key not in tail:
+                    tail[key] = list()
+                l = tail[key]
+                for token in tokens:
+                    l.append(token.token_data['data'])
+        return tail
+
+    def _tail_idx(self, columns):
+        """Scans large column bottom up for 10 straight agreements one row at a time"""
+        for idx in range(len(columns) - 1, -1, -1):
+            for idc in range(idx, idx - 10, -1):
+                fcol = self._flat_col(columns, idc)
+                if not (all('_' in f for f in fcol) or all(x for x in fcol)):
+                    break
+            else:
+                return idx + 1
+        return -1
+
+    def _cmp(self, token1, token2) -> bool:
+        if token1 in self._subs:
+            token1 = self._subs[token1]
+        if token2 in self._subs:
+            token2 = self._subs[token2]
+
+        return token1 == token2
+
+    def rec(self, e: Tuple[List[BRef | Tuple[int, int, str]], ...], last_chapter: bool = False):
+        threshold = len(e) / 2.0
+
+        c = Collation()
+        for idx, e_ in enumerate(e):
+            s = str(idx)
+            if s != '0':
+                e_ = list(filter(lambda x: not isinstance(x, BRef), e_))
+            if s in self._tail:
+                e_ = self._tail[s] + e_
+            c.add_witness({"id": str(idx), "tokens": [{"t": WordModifier.stringify(str(x[2]), False, op=lambda x: WordModifier.deaccent(WordModifier.lower(x))), "data": x} if not isinstance(x, BRef) else {"t": str(x).replace(' ', '_'), "data": x} for x in e_]})
+        table = collate(c, segmentation=False, properties_filter=lambda t1, t2: self._cmp(t1['t'], t2['t']))
+        self._tail = dict()
+
+        if not last_chapter:
+            tail_idx = self._tail_idx(table.columns)
+            if tail_idx < len(table.columns):
+                tail = self._tailing(table.columns[tail_idx:])
+                e2 = dict(enumerate(e))
+                for k, v in tail.items():
+                    self._tail[str(k)] = e2[int(k)][:len(v)]
+        else:
+            tail_idx = len(table.columns)
+
+        new_file = not self._file.exists()
+
+        with self._file.open('a') as out:
+            for col_idx, column in enumerate(table.columns[:tail_idx]):
+                grouping = dict(column.tokens_per_witness.items())
+                fcol = self._flat_col(table.columns, col_idx)
+
+                token = grouping['0'][0].token_data['data'] if '0' in grouping.keys() else grouping[list(grouping.keys())[0]][0].token_data['data']
+                if '_' in fcol[0] and len(fcol) == 1 and '0' in grouping:
+                    if new_file:
+                        new_file = False
+                        out.write(Recorder._bref_str(token))
+                    else:
+                        out.write("\n{}".format(Recorder._bref_str(token)))
+                elif len(grouping) >= threshold and all('_' not in f for f in fcol):
+                    if all(x for x in fcol):
+                        test = WordModifier.stringify(token[2], op=WordModifier.deaccent)
+                        if test in self._nouns:
+                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.capitalize).translate(self.MAP)))
+                        else:
+                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.lower).translate(self.MAP)))
+                    else:
+                        self._log.info("Skipping (b): {}".format(str(grouping)))
+                else:
+                    self._log.info("Skipping (a): {}".format(str(grouping)))
+
+    def _flat_col(self, columns, col_idx) -> List[str]:
+        col = columns[col_idx]
+        row = list(str(x) for x in itertools.chain.from_iterable(col.tokens_per_witness.values()))
+        return row
+
+    @staticmethod
+    def _bref_str(bref: BRef) -> str:
+        return "{} {}:{}{}".format(bref.book, bref.chapter, bref.verse, '' if bref.sub == -1 else chr(bref.sub + 96))
+
+    MAP = {GreekMidway.APOSTROPHE: DbgUtfStandard.MODIFIER_LETTER_APOSTROPHE}
+
+
 class Histogram:
 
     def __init__(self, tokens: List[Tuple[Any, ...] | BRef]):
@@ -71,14 +173,13 @@ class Histogram:
 
 class Player:
 
-    def __init__(self, logger: Logger, target: PosixPath, rec: "Recorder"):
+    def __init__(self, logger: Logger, target: PosixPath):
         self._log = logger
         self.target = target
         self._bgmorph_filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgm.txt")
         self._bgtext_filename = self.target.joinpath("bible-analyzer-corpora/corpora/bgt.txt")
         self._fix_filename = self.target.joinpath("bible-analyzer-corpora/corpora/rhlxx")
         self._nocr_filename = self.target.joinpath("bible-analyzer-corpora/corpora/nocr")
-        self._rec = rec
 
     def _bgmorph(self, fd, test, t_filter):
         bgmorph_e = Emitter(IterBGM(fd), test, t_filter)
@@ -118,8 +219,9 @@ class Player:
     def _break(self, b: BRef, e: Tuple[Emitter, ...]) -> bool:
         return b.book == e[0].book and b.chapter == e[0].chapter
 
-    def print(self):
+    def nouns_proper(self):
         x = set()
+        e = dict()
         with self._bgmorph_filename.open('r') as morph, self._bgtext_filename.open('r') as bgt:
             token_filter = lambda x: x == 0
             m = self._bgmorph(morph, BOOK_ABBR, token_filter)
@@ -135,6 +237,7 @@ class Player:
                     if r[0][1] != r[1][1]:
                         #raise ValueError("Morph and text not in order")
                         continue
+
                     s = r[0][3]
                     if len(s) == 5 and s.startswith('n') and s.endswith('p'):
                         if GreekWord.glyphen(r[1][2])[0].ch in GreekAlphabet.CASE_UPPER:
@@ -152,9 +255,41 @@ class Player:
                         if len(s) == 7 and s.startswith('N-') and s[-2] == '-' and s[-1] in 'PTL':
                             if GreekWord.glyphen(r[2])[0].ch in GreekAlphabet.CASE_UPPER:
                                 x.add(WordModifier.stringify(r[2], False, WordModifier.deaccent))
+
         for q in sorted(x):
             print(q, end=' ')
-        return frozenset(x)
+
+        return frozenset(x), e
+
+    def elision(self):
+        e = dict()
+        with self._bgmorph_filename.open('r') as morph, self._bgtext_filename.open('r') as bgt:
+            token_filter = lambda x: x == 0
+            m = self._bgmorph(morph, BOOK_ABBR, token_filter)
+            t = self._bgtext(bgt, BOOK_ABBR, token_filter)
+
+            while m.valid and t.valid:
+                for r in zip(m.get_chapter(), t.get_chapter()):
+                    if isinstance(r[0], BRef) or isinstance(r[1], BRef):
+                        if str(r[0]) != str(r[1]):
+                            # print(r)
+                            pass
+                        continue
+                    if r[0][1] != r[1][1]:
+                        #raise ValueError("Morph and text not in order")
+                        continue
+                    if r[1][2][-1] == "'" and '---' not in r[0][2]:
+                        k = WordModifier.stringify(r[1][2], False, op=lambda x: WordModifier.deaccent(WordModifier.lower(x)))
+                        if k not in e:
+                            e[k] = set()
+                        v = WordModifier.stringify(r[0][2], False, op=lambda x: WordModifier.deaccent(WordModifier.lower(x)))
+
+                        e[k].add(v)
+
+        for k, v in e.items():
+            print(k, ':', v)
+            e[k] = v.pop()
+        return e
 
     def one_chapter(self, bref: BRef, e: Tuple[List[BRef | Tuple[int, int, str]], ...]):
         def _print(num: int, c: List[BRef | Tuple[int, int, str]]):
@@ -180,48 +315,48 @@ class Player:
         for e_ in e:
             print(e_.valid, e_.book, e_.chapter)
 
-    def print_book(self, m: Set[str] = frozenset([''])):
+    def print_book(self, rec: Recorder):
         with self._bgtext_filename.open('r') as bgt:
             token_filter = lambda x: x == 0
             e = self.normal(bgt, BOOK_ABBR, token_filter)
-            self.book_loop(e, m, BRef('1Ki', 2, -1, -1))
+            self.book_loop(e, rec, BRef('1Ki', 2, -1, -1))
 
             fix_e = self._lxxrh(BRef('1Ki', 2, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
-            self.book_loop(f, m, BRef('1Ki', 3, -1, -1))
+            self.book_loop(f, rec, BRef('1Ki', 3, -1, -1))
 
-            self.book_loop(e, m, BRef('Est', 1, -1, -1))
-            self.chapter_loop(e, m, (False, False, True))
-            self.book_loop(e, m, BRef('2Ma', 13, -1, -1))
+            self.book_loop(e, rec, BRef('Est', 1, -1, -1))
+            self.chapter_loop(e, rec, (False, False, True))
+            self.book_loop(e, rec, BRef('2Ma', 13, -1, -1))
 
             fix_e = self._lxxrh(BRef('2Ma', 13, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
-            self.chapter_loop(f, m, (False, False, False))
+            self.chapter_loop(f, rec, (False, False, False))
 
-            self.book_loop(e, m,None)
+            self.book_loop(e, rec,None)
 
             fix_e = self._lxxrh(BRef('Pro', 24, -1, -1), token_filter)
             f = (e[0], e[1], fix_e)
-            self.book_loop(f, m, BRef('Ecc', 1, -1, -1))
+            self.book_loop(f, rec, BRef('Ecc', 1, -1, -1))
 
-            self.book_loop(e, m, BRef('Sip', 1, -1, -1))
+            self.book_loop(e, rec, BRef('Sip', 1, -1, -1))
             fix_e = self._lxxrh(BRef('Sir', 1, -1, -1), token_filter)
             f = (fix_e, e[0], e[1], e[2])
-            self.chapter_loop(f, m, (False, True, True, True))
+            self.chapter_loop(f, rec, (False, True, True, True))
 
-            self.book_loop(e, m, BRef('Mic', 1, -1, -1))
+            self.book_loop(e, rec, BRef('Mic', 1, -1, -1))
 
             fix_e = self._lxxrh(BRef('Mic', 1, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
-            self.book_loop(f, m, BRef('Joe', 1, -1, -1))
+            self.book_loop(f, rec, BRef('Joe', 1, -1, -1))
 
-            self.book_loop(e, m, BRef('Sut', 1, -1, -1))
+            self.book_loop(e, rec, BRef('Sut', 1, -1, -1))
 
             fix_e = self._lxxrh(BRef('Sut', 1, -1, -1), token_filter)
             f = (e[0], fix_e, e[2])
-            self.chapter_loop(f, m, (False, False, False))
+            self.chapter_loop(f, rec, (False, False, False))
 
-            self.book_loop(e, m,None)
+            self.book_loop(e, rec,None)
 
             filename = self.target.joinpath("bible-analyzer-corpora/corpora/OpenGNT_version3_3.csv")
             with filename.open('r') as f1:
@@ -234,26 +369,16 @@ class Player:
                     rsgnt_e.fast_forward()
 
                     g = (e[0], ognt_e, rsgnt_e)
-                    self.book_loop(g, m, None)
+                    self.book_loop(g, rec, None)
 
-
-    def _proper_noun(self, m: Emitter):
-        x = set()
-        for t in list(m.get_chapter()):
-            if not isinstance(t, BRef):
-                morph: str = t[3]
-                if len(morph) == 5 and morph.startswith('n') and morph.endswith('p'):
-                    x.add(t[1])
-        return frozenset(x)
-
-    def book_loop(self, e: Tuple[Emitter, ...], m: Set[str],  b_at: BRef | None = None):
+    def book_loop(self, e: Tuple[Emitter, ...], rec: Recorder,  b_at: BRef | None = None):
         while self._sync(e):
             if b_at is not None and self._break(b_at, e):
                 break
             c_book = e[0].book
             first = tuple([e_.get_chapter() for e_ in e])
             self._log.info("Process: {} {}".format(e[0].book, e[0].chapter))
-            self._rec.rec(first, c_book != e[0].book, m)
+            rec.rec(first, c_book != e[0].book)
 
             histo = [Histogram(h) for h in first]
             all_distances = [h1.distance(h2) for h1, h2 in permutations(histo, 2)]
@@ -261,11 +386,11 @@ class Player:
             if max(all_distances) > 0.01:
                 self.one_chapter(first[0][0], first)
 
-    def chapter_loop(self, e: Tuple[Emitter, ...], m: Set[str], extra: Tuple[bool, ...]):
+    def chapter_loop(self, e: Tuple[Emitter, ...], rec: Recorder, extra: Tuple[bool, ...]):
         c_book = e[0].book
         first = tuple([e_.get_chapter() + e_.get_chapter() if extra[i] else e_.get_chapter() for i, e_ in enumerate(e)])
         self._log.info("Process: {} {}".format(e[0].book, e[0].chapter))
-        self._rec.rec(first, c_book != e[0].book, m)
+        rec.rec(first, c_book != e[0].book)
 
         histo = [Histogram(h) for h in first]
         all_distances = [h1.distance(h2) for h1, h2 in permutations(histo, 2)]
@@ -273,36 +398,36 @@ class Player:
         if max(all_distances) > 0.01:
             self.one_chapter(first[0][0], first)
 
-    def sample_sirach(self, m: Set[str] = frozenset([''])):
+    def sample_sirach(self, rec: Recorder):
         with self._bgtext_filename.open('r') as bgt:
             token_filter = lambda x: x == 0
             e = self.normal(bgt, BOOK_ABBR[BOOK_ABBR.index('Sip'):], token_filter)
 
-            self.book_loop(e, m, BRef('Sip', 1, -1, -1))
+            self.book_loop(e, rec, BRef('Sip', 1, -1, -1))
             self._emitter_status(e)
             fix_e = self._lxxrh(BRef('Sir', 1, -1, -1), token_filter)
             f = (fix_e, e[0], e[1], e[2])
             self._emitter_status(f)
-            self.chapter_loop(f, m, (False, True, True, True))
+            self.chapter_loop(f, rec, (False, True, True, True))
             self._emitter_status(e)
 
-            self.book_loop(e, m,None)
+            self.book_loop(e, rec,None)
 
-    def sample_psamls(self, m: Set[str] = frozenset([''])):
+    def sample_psamls(self, rec: Recorder):
         with self._bgtext_filename.open('r') as bgt:
             token_filter = lambda x: x == 0
             e = self.normal(bgt, BOOK_ABBR[BOOK_ABBR.index('Pss'):], token_filter)
 
-            self.book_loop(e, m,None)
+            self.book_loop(e, rec,None)
 
-    def sample_odes(self, m: Set[str] = frozenset([''])):
+    def sample_odes(self, rec: Recorder):
         with self._bgtext_filename.open('r') as bgt:
             token_filter = lambda x: x == 0
             e = self.normal(bgt, BOOK_ABBR[BOOK_ABBR.index('Ode'):], token_filter)
 
-            self.book_loop(e, m,None)
+            self.book_loop(e, rec,None)
 
-    def sample_mark(self, m: Set[str] = frozenset([''])):
+    def sample_mark(self, rec: Recorder):
         with self._bgtext_filename.open('r') as bgt:
             token_filter = lambda x: x == 0
             refs = NEW_ABBR[NEW_ABBR.index('Luk'):]
@@ -319,102 +444,6 @@ class Player:
                     rsgnt_e.fast_forward()
 
                     g = (bgt_e, ognt_e, rsgnt_e)
-                    self.book_loop(g, m, None)
-
-
-class Recorder:
-    def __init__(self, logger: Logger, filename: PosixPath):
-        self._log = logger
-        self._file = filename
-        self._tail = dict()
-        self._last = BRef('n/a', -1, -1, -1)
-
-    def _tailing(self, columns) -> Dict[str, List[BRef | Tuple[int, int, str]]]:
-        tail = dict()
-        for column in columns:
-            grouping = dict(column.tokens_per_witness.items())
-            for key, tokens in grouping.items():
-                if key not in tail:
-                    tail[key] = list()
-                l = tail[key]
-                for token in tokens:
-                    l.append(token.token_data['data'])
-        return tail
-
-    def _tail_idx(self, columns):
-        """Scans large column bottom up for 10 straight agreements one row at a time"""
-        for idx in range(len(columns) - 1, -1, -1):
-            for idc in range(idx, idx - 10, -1):
-                fcol = self._flat_col(columns, idc)
-                if not (all('_' in f for f in fcol) or all(x for x in fcol)):
-                    break
-            else:
-                return idx + 1
-        return -1
-
-    @classmethod
-    def _cmp(cls, token1, token2) -> bool:
-         return token1 == token2
-
-    def rec(self, e: Tuple[List[BRef | Tuple[int, int, str]], ...], last_chapter: bool = False, nouns: Set[str] = set()):
-        threshold = len(e) / 2.0
-
-        c = Collation()
-        for idx, e_ in enumerate(e):
-            s = str(idx)
-            if s != '0':
-                e_ = list(filter(lambda x: not isinstance(x, BRef), e_))
-            if s in self._tail:
-                e_ = self._tail[s] + e_
-            c.add_witness({"id": str(idx), "tokens": [{"t": WordModifier.stringify(str(x[2]), False, op=lambda x: WordModifier.deaccent(WordModifier.lower(x))), "data": x} if not isinstance(x, BRef) else {"t": str(x).replace(' ', '_'), "data": x} for x in e_]})
-        table = collate(c, segmentation=False, properties_filter=lambda t1, t2: Recorder._cmp(t1['t'], t2['t']))
-        self._tail = dict()
-
-        if not last_chapter:
-            tail_idx = self._tail_idx(table.columns)
-            if tail_idx < len(table.columns):
-                tail = self._tailing(table.columns[tail_idx:])
-                e2 = dict(enumerate(e))
-                for k, v in tail.items():
-                    self._tail[str(k)] = e2[int(k)][:len(v)]
-        else:
-            tail_idx = len(table.columns)
-
-        new_file = not self._file.exists()
-
-        with self._file.open('a') as out:
-            for col_idx, column in enumerate(table.columns[:tail_idx]):
-                grouping = dict(column.tokens_per_witness.items())
-                fcol = self._flat_col(table.columns, col_idx)
-
-                token = grouping['0'][0].token_data['data'] if '0' in grouping.keys() else grouping[list(grouping.keys())[0]][0].token_data['data']
-                if '_' in fcol[0] and '0' in grouping:
-                    if new_file:
-                        new_file = False
-                        out.write(Recorder._bref_str(token))
-                    else:
-                        out.write("\n{}".format(Recorder._bref_str(token)))
-                elif len(grouping) >= threshold and all('_' not in f for f in fcol):
-                    if all(x for x in fcol):
-                        test = WordModifier.stringify(token[2], op=WordModifier.deaccent)
-                        if test in nouns:
-                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.capitalize).translate(self.MAP)))
-                        else:
-                            out.write(" {}".format(WordModifier.stringify(token[2], op=WordModifier.lower).translate(self.MAP)))
-                    else:
-                        self._log.info("Skipping (b): {}".format(str(grouping)))
-                else:
-                    self._log.info("Skipping (a): {}".format(str(grouping)))
-
-    def _flat_col(self, columns, col_idx) -> List[str]:
-        col = columns[col_idx]
-        row = list(str(x) for x in itertools.chain.from_iterable(col.tokens_per_witness.values()))
-        return row
-
-    @staticmethod
-    def _bref_str(bref: BRef) -> str:
-        return "{} {}:{}{}".format(bref.book, bref.chapter, bref.verse, '' if bref.sub == -1 else chr(bref.sub + 96))
-
-    MAP = {GreekMidway.APOSTROPHE: DbgUtfStandard.MODIFIER_LETTER_APOSTROPHE}
+                    self.book_loop(g, rec, None)
 
 
